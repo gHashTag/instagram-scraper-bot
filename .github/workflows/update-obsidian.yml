@@ -16,6 +16,9 @@ on:
 jobs:
   update-vault:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
     
     steps:
       - name: 📥 Checkout repository
@@ -68,25 +71,30 @@ jobs:
 
       - name: 💾 Commit and push changes
         if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
-          
+
+          # Настраиваем аутентификацию для push
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+
           # Добавляем только файлы vault
           git add vaults/coco-age/
-          
+
           # Создаем коммит с датой
           COMMIT_DATE=$(date '+%Y-%m-%d %H:%M:%S UTC')
           git commit -m "🔄 Auto-update Obsidian vault - $COMMIT_DATE
 
           📊 Обновлены данные:
           - Статистика проектов
-          - Анализ конкурентов  
+          - Анализ конкурентов
           - Метрики хэштегов
           - Топ-контент с транскрипциями
-          
+
           🤖 Автоматическое обновление через GitHub Actions"
-          
+
           # Пушим изменения
           git push
 
