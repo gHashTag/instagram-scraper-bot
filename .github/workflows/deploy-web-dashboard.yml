@@ -1,0 +1,112 @@
+name: 🌐 Deploy Web Dashboard
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'vaults/coco-age/**'
+      - 'scripts/create-web-dashboard.ts'
+  
+  # Запуск после обновления vault
+  workflow_run:
+    workflows: ["🔄 Update Obsidian Vault Daily"]
+    types:
+      - completed
+  
+  # Ручной запуск
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🌐 Generate web dashboard
+        run: |
+          echo "🌐 Генерация веб-дашборда..."
+          npm run web:dashboard
+
+      - name: 📋 Prepare deployment
+        run: |
+          # Создаем директорию для GitHub Pages
+          mkdir -p ./public
+          
+          # Копируем сгенерированные файлы
+          if [ -d "./docs/web-dashboard" ]; then
+            cp -r ./docs/web-dashboard/* ./public/
+            echo "✅ Файлы скопированы в public/"
+          else
+            echo "❌ Директория web-dashboard не найдена"
+            exit 1
+          fi
+          
+          # Создаем .nojekyll для GitHub Pages
+          touch ./public/.nojekyll
+          
+          # Добавляем CNAME если нужен кастомный домен
+          # echo "dashboard.cocoage.com" > ./public/CNAME
+
+      - name: 📊 Generate deployment info
+        run: |
+          cat > ./public/deployment-info.json << EOF
+          {
+            "deployedAt": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "deployedAtFormatted": "$(date -u +"%Y-%m-%d %H:%M:%S UTC")",
+            "commit": "${{ github.sha }}",
+            "branch": "${{ github.ref_name }}",
+            "workflow": "${{ github.workflow }}",
+            "actor": "${{ github.actor }}"
+          }
+          EOF
+
+      - name: 🚀 Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: |
+            🌐 Deploy web dashboard - ${{ github.event.head_commit.message }}
+            
+            📅 Deployed: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+            🔗 Commit: ${{ github.sha }}
+            👤 Actor: ${{ github.actor }}
+
+      - name: 📈 Generate deployment summary
+        run: |
+          echo "## 🌐 Web Dashboard Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Статус:** ✅ Успешно развернут" >> $GITHUB_STEP_SUMMARY
+          echo "**Время:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "**Коммит:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Ссылки:" >> $GITHUB_STEP_SUMMARY
+          echo "- [📊 Веб-дашборд](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
+          echo "- [📁 GitHub Pages](https://github.com/${{ github.repository }}/settings/pages)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Содержимое:" >> $GITHUB_STEP_SUMMARY
+          echo "- 🥥✨ Центральная карта Coco Age" >> $GITHUB_STEP_SUMMARY
+          echo "- 📅 Календарь планирования контента" >> $GITHUB_STEP_SUMMARY
+          echo "- 👥 Анализ конкурентов" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏷️ Стратегия хэштегов" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏭 Контент-завод" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🚨 Notify on failure
+        if: failure()
+        run: |
+          echo "## ❌ Deployment Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Веб-дашборд не удалось развернуть. Проверьте логи для диагностики." >> $GITHUB_STEP_SUMMARY

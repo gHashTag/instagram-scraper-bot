@@ -1,0 +1,228 @@
+{
+  "main": {
+    "id": "bd7a7f2fbcc3e6ea",
+    "type": "split",
+    "children": [
+      {
+        "id": "ebfe92a9342456da",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b6f032d986a1d192",
+            "type": "leaf",
+            "state": {
+              "type": "split-diff-view",
+              "state": {
+                "aFile": "src/scripts/check-openai-api.ts",
+                "bFile": "src/scripts/check-openai-api.ts",
+                "aRef": ""
+              },
+              "icon": "diff",
+              "title": "Diff: check-openai-api.ts"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "131fc406ddad0bdc",
+    "type": "split",
+    "children": [
+      {
+        "id": "8d1dc893bab5b53e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6c2652fa0e5c01d0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "c59c56cdf6e0fb75",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "efdecded07285bc7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "4aac15fffc7b1062",
+    "type": "split",
+    "children": [
+      {
+        "id": "0f3fe14950c84b93",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b445e9e43cd7d27b",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки"
+            }
+          },
+          {
+            "id": "7412e315ba36ace7",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "content-factory/🏭-Content-Factory/🎨-Visual-Concepts/Visual-Ideas.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки из Visual-Ideas"
+            }
+          },
+          {
+            "id": "a67ae6919ebb438d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "d62f8a6b716b2852",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "content-factory/🏭-Content-Factory/🎨-Visual-Concepts/Visual-Ideas.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура Visual-Ideas"
+            }
+          },
+          {
+            "id": "e0ba2e78b47f8c0e",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
+          },
+          {
+            "id": "d6bec58c21299273",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Все свойства"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "obsidian-git:Open Git source control": false,
+      "markdown-importer:Импорт Markdown-файлов": false,
+      "publish:Публикация изменений": false,
+      "workspaces:Пространства": false,
+      "zk-prefixer:Создать заметку с уникальным идентификатором": false
+    }
+  },
+  "active": "b6f032d986a1d192",
+  "lastOpenFiles": [
+    "Clippings/replicatefast-flux-trainer – Replicate.md",
+    "Clippings",
+    "🥥✨ Coco Age - Центральная карта.md",
+    "📊 Планирование контента.md",
+    "👥 Конкуренты.md",
+    "🏷️ Хэштеги.md",
+    "test-trigger.md",
+    "content-factory/🏭-Content-Factory/🔥-Viral-Analysis/Top-Performers.md",
+    "content-factory/🏭-Content-Factory/🔥-Viral-Analysis",
+    "content-factory/🏭-Content-Factory/📝-Scripts/Script-Templates.md",
+    "content-factory/🏭-Content-Factory/📝-Scripts",
+    "content-factory/🏭-Content-Factory/📅-Content-Calendar/Monthly-Plan.md",
+    "content-factory/🏭-Content-Factory/📅-Content-Calendar",
+    "content-factory/🏭-Content-Factory/🏭 Контент-завод - Главная.md",
+    "content-factory/🏭-Content-Factory/🎬-Content-Ideas/Content-Generator.md",
+    "content-factory/🏭-Content-Factory/🎬-Content-Ideas",
+    "content-factory/🏭-Content-Factory/🎨-Visual-Concepts/Visual-Ideas.md",
+    "content-factory/🏭-Content-Factory/🎨-Visual-Concepts",
+    "TEAM_GUIDE.md",
+    "README.md",
+    "📊-Analytics/Viral-Content-Analysis.md",
+    "📊-Analytics",
+    "Добро пожаловать.md",
+    "content-factory/🏭-Content-Factory/📊-Analytics",
+    "content-factory/🏭-Content-Factory",
+    "Reports"
+  ]
+}

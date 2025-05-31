@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "functions": {
+    "api/webhook.mjs": {
+      "maxDuration": 30
+    },
+    "api/health.mjs": {
+      "maxDuration": 10
+    },
+    "api/telegram-webhook.mjs": {
+      "maxDuration": 30
+    },
+    "api/webhook-public.js": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/webhook",
+      "destination": "/api/webhook-edge.js"
+    },
+    {
+      "source": "/tg-webhook",
+      "destination": "/api/webhook-edge.js"
+    },
+    {
+      "source": "/api/webhook-edge",
+      "destination": "/api/webhook-edge.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/api/health.mjs"
+    }
+  ]
+}

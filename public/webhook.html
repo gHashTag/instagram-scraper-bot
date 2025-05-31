@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Webhook</title>
+</head>
+<body>
+    <script>
+        // Простой обработчик webhook
+        if (window.location.search.includes('webhook')) {
+            fetch('/api/telegram-webhook', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: 'Webhook received',
+                    timestamp: new Date().toISOString()
+                })
+            }).then(response => {
+                console.log('Webhook processed:', response.status);
+            }).catch(error => {
+                console.error('Webhook error:', error);
+            });
+        }
+        
+        document.body.innerHTML = '<h1>Telegram Webhook Handler</h1><p>Status: Ready</p>';
+    </script>
+</body>
+</html> 
