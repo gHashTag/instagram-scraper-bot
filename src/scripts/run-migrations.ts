@@ -9,10 +9,18 @@
 import { initializeDBConnection } from "../db/neonDB";
 import * as fs from "fs";
 import * as path from "path";
+import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 
+// Получаем __dirname для ES модулей
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Загружаем переменные окружения
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: '.env.local' }); // Для локального тестирования
+}
+dotenv.config(); // Fallback на .env
 
 async function runMigrations(): Promise<void> {
   console.log("🗄️ Запуск миграций базы данных...");

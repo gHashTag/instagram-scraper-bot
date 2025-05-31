@@ -36,6 +36,10 @@ import { eq, and, desc, sql, isNotNull } from "drizzle-orm";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Загружаем переменные окружения
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: path.join(__dirname, "../.env.local") }); // Для локального тестирования
+}
 const devEnvPath = path.join(__dirname, "../.env.development");
 const prodEnvPath = path.join(__dirname, "../.env");
 
