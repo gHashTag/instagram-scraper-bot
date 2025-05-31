@@ -36,6 +36,7 @@
     "test:button-handler": "bash scripts/test-button-handler.sh",
     "typecheck": "bun --bun exec tsc --noEmit",
     "db:seed": "dotenv -e .env.development -- tsx scripts/seed-database.ts",
+    "db:migrate": "tsx src/scripts/run-migrations.ts",
     "generate:tests": "bun run scripts/generate-scene-tests.ts",
     "generate:telegram-tests": "bun run scripts/generate-telegram-tests.ts",
     "tdd": "bash scripts/tdd-cycle.sh",

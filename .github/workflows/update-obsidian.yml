@@ -38,6 +38,13 @@ jobs:
           echo "OBSIDIAN_VAULT_PATH=${{ github.workspace }}/vaults/coco-age" >> $GITHUB_ENV
           echo "NODE_ENV=production" >> $GITHUB_ENV
 
+      - name: 🗄️ Run database migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "🗄️ Выполнение миграций базы данных..."
+          npm run db:migrate
+
       - name: 🔄 Update Obsidian vault data
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
