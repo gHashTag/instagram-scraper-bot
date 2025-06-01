@@ -4,7 +4,7 @@
 
 #CocoAge #MOC #Instagram #Analytics #Beauty
 
-**Последнее обновление:** 31.05.2025, 17:51:20
+**Последнее обновление:** 01.06.2025, 06:02:56
 
 ---
 
@@ -24,11 +24,25 @@
 
 ## 🗺️ Навигация по экосистеме
 
-### 👥 Конкурентная среда (0 брендов)
+### 👥 Конкурентная среда (6 брендов)
+- [[Competitors/clinicajoelleofficial|@clinicajoelleofficial]] (Clinica Joelle Official) - 0 просмотров #competitor #clinicajoelleofficial
+- [[Competitors/kayaclinicarabia|@kayaclinicarabia]] (Kaya Clinic Arabia) - 0 просмотров #competitor #kayaclinicarabia
+- [[Competitors/ziedasclinic|@ziedasclinic]] (Zieda's Clinic) - 0 просмотров #competitor #ziedasclinic
+- [[Competitors/med_yu_med|@med_yu_med]] (Med Yu Med) - 0 просмотров #competitor #medyumed
+- [[Competitors/milena_aesthetic_clinic|@milena_aesthetic_clinic]] (Milena Aesthetic Clinic) - 0 просмотров #competitor #milenaaestheticclinic
+- [[Competitors/graise.aesthetics|@graise.aesthetics]] (Graise Aesthetics) - 0 просмотров #competitor #graiseaesthetics
 
-
-### 🏷️ Хэштег-стратегия (0 тегов)
-
+### 🏷️ Хэштег-стратегия (13 тегов)
+- [[Hashtags/aestheticmedicine|#aestheticmedicine]] - 0 постов, 0 просмотров #hashtag #aestheticmedicine
+- [[Hashtags/aestheticclinic|#aestheticclinic]] - 0 постов, 0 просмотров #hashtag #aestheticclinic
+- [[Hashtags/cosmetology|#cosmetology]] - 0 постов, 0 просмотров #hashtag #cosmetology
+- [[Hashtags/hydrafacial|#hydrafacial]] - 0 постов, 0 просмотров #hashtag #hydrafacial
+- [[Hashtags/botox|#botox]] - 0 постов, 0 просмотров #hashtag #botox
+- [[Hashtags/fillers|#fillers]] - 0 постов, 0 просмотров #hashtag #fillers
+- [[Hashtags/beautyclinic|#beautyclinic]] - 0 постов, 0 просмотров #hashtag #beautyclinic
+- [[Hashtags/skincare|#skincare]] - 0 постов, 0 просмотров #hashtag #skincare
+- [[Hashtags/prpfacial|#prpfacial]] - 0 постов, 0 просмотров #hashtag #prpfacial
+- [[Hashtags/rfmicroneedling|#rfmicroneedling]] - 0 постов, 0 просмотров #hashtag #rfmicroneedling
 
 ### 🎯 Стратегические направления
 - [[Content-Strategy/Brand-Positioning|🎯 Позиционирование бренда]] #strategy #positioning
@@ -68,7 +82,7 @@
 
 ---
 
-*Создано: 31.05.2025, 17:51:20*  
+*Создано: 01.06.2025, 06:02:56*  
 *Статус: 🟢 Готово к использованию*  
 *Следующее обновление: автоматически*
 
