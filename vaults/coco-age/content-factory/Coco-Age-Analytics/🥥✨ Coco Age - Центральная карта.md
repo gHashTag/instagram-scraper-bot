@@ -4,7 +4,7 @@
 
 #CocoAge #MOC #Instagram #Analytics #Beauty
 
-**Последнее обновление:** 01.06.2025, 06:02:56
+**Последнее обновление:** 02.06.2025, 06:02:54
 
 ---
 
@@ -15,10 +15,10 @@
 **Статус:** 🟢 Активен
 
 ### 📊 Свежие показатели
-- **Контент-база:** 0 Reels
-- **Общий охват:** 0 просмотров
-- **AI-анализ:** 0 транскрипций (NaN%)
-- **Средний охват:** 0 просмотров
+- **Контент-база:** 138 Reels
+- **Общий охват:** 13 916 700 просмотров
+- **AI-анализ:** 0 транскрипций (0.0%)
+- **Средний охват:** 100 846 просмотров
 
 ---
 
@@ -33,16 +33,16 @@
 - [[Competitors/graise.aesthetics|@graise.aesthetics]] (Graise Aesthetics) - 0 просмотров #competitor #graiseaesthetics
 
 ### 🏷️ Хэштег-стратегия (13 тегов)
-- [[Hashtags/aestheticmedicine|#aestheticmedicine]] - 0 постов, 0 просмотров #hashtag #aestheticmedicine
-- [[Hashtags/aestheticclinic|#aestheticclinic]] - 0 постов, 0 просмотров #hashtag #aestheticclinic
-- [[Hashtags/cosmetology|#cosmetology]] - 0 постов, 0 просмотров #hashtag #cosmetology
-- [[Hashtags/hydrafacial|#hydrafacial]] - 0 постов, 0 просмотров #hashtag #hydrafacial
-- [[Hashtags/botox|#botox]] - 0 постов, 0 просмотров #hashtag #botox
-- [[Hashtags/fillers|#fillers]] - 0 постов, 0 просмотров #hashtag #fillers
-- [[Hashtags/beautyclinic|#beautyclinic]] - 0 постов, 0 просмотров #hashtag #beautyclinic
-- [[Hashtags/skincare|#skincare]] - 0 постов, 0 просмотров #hashtag #skincare
 - [[Hashtags/prpfacial|#prpfacial]] - 0 постов, 0 просмотров #hashtag #prpfacial
 - [[Hashtags/rfmicroneedling|#rfmicroneedling]] - 0 постов, 0 просмотров #hashtag #rfmicroneedling
+- [[Hashtags/botox|#botox]] - 44 постов, 6 339 495 просмотров #hashtag #botox
+- [[Hashtags/skincare|#skincare]] - 15 постов, 2 635 770 просмотров #hashtag #skincare
+- [[Hashtags/cosmetology|#cosmetology]] - 19 постов, 2 085 120 просмотров #hashtag #cosmetology
+- [[Hashtags/hydrafacial|#hydrafacial]] - 11 постов, 1 154 880 просмотров #hashtag #hydrafacial
+- [[Hashtags/fillers|#fillers]] - 18 постов, 582 120 просмотров #hashtag #fillers
+- [[Hashtags/beautyclinic|#beautyclinic]] - 9 постов, 450 180 просмотров #hashtag #beautyclinic
+- [[Hashtags/aestheticmedicine|#aestheticmedicine]] - 10 постов, 332 625 просмотров #hashtag #aestheticmedicine
+- [[Hashtags/aestheticclinic|#aestheticclinic]] - 5 постов, 161 325 просмотров #hashtag #aestheticclinic
 
 ### 🎯 Стратегические направления
 - [[Content-Strategy/Brand-Positioning|🎯 Позиционирование бренда]] #strategy #positioning
@@ -82,7 +82,7 @@
 
 ---
 
-*Создано: 01.06.2025, 06:02:56*  
+*Создано: 02.06.2025, 06:02:54*  
 *Статус: 🟢 Готово к использованию*  
 *Следующее обновление: автоматически*
 
