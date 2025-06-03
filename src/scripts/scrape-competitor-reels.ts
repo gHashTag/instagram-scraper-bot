@@ -74,8 +74,8 @@ async function main() {
         {
           limit,
           apifyToken: APIFY_TOKEN,
-          minViews: 1000, // Минимальное количество просмотров
-          maxAgeDays: 90  // Максимальный возраст Reels в днях
+          minViews: 50000, // Минимальное количество просмотров
+          maxAgeDays: 30  // Максимальный возраст Reels в днях
         }
       );
       
@@ -110,8 +110,8 @@ async function main() {
             {
               limit: Math.floor(limit / competitors.length) || 5, // Распределяем лимит между конкурентами
               apifyToken: APIFY_TOKEN,
-              minViews: 1000,
-              maxAgeDays: 90
+              minViews: 50000,
+              maxAgeDays: 30
             }
           );
           

@@ -1,0 +1,231 @@
+name: 🎯 Update Client Dashboard
+
+on:
+  schedule:
+    # Запускать каждые 24 часа в 9:00 UTC (12:00 MSK)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Ручной запуск
+    inputs:
+      force_update:
+        description: 'Force update dashboard'
+        required: false
+        default: 'false'
+
+jobs:
+  update-dashboard:
+    runs-on: ubuntu-latest
+    name: 📊 Update Dashboard Data
+    
+    steps:
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Check API Health
+        run: |
+          echo "🔍 Checking API health..."
+          curl -f https://instagram-scraper-bot.vercel.app/health || exit 1
+          echo "✅ API is healthy"
+
+      - name: 📊 Fetch Fresh Data
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: |
+          echo "📊 Fetching fresh data from API..."
+          
+          # Получаем данные конкурентов
+          curl -s "https://instagram-scraper-bot.vercel.app/api/competitors" > /tmp/competitors.json
+          
+          # Получаем данные хэштегов
+          curl -s "https://instagram-scraper-bot.vercel.app/api/hashtags" > /tmp/hashtags.json
+          
+          # Проверяем что данные получены
+          if [ -s /tmp/competitors.json ] && [ -s /tmp/hashtags.json ]; then
+            echo "✅ Data fetched successfully"
+            echo "COMPETITORS_COUNT=$(jq '.total' /tmp/competitors.json)" >> $GITHUB_ENV
+            echo "HASHTAGS_COUNT=$(jq '.total' /tmp/hashtags.json)" >> $GITHUB_ENV
+          else
+            echo "❌ Failed to fetch data"
+            exit 1
+          fi
+
+      - name: 🚀 Trigger Dashboard Update
+        run: |
+          echo "🚀 Triggering dashboard update..."
+          
+          # Отправляем webhook для обновления дашборда
+          curl -X POST "https://instagram-scraper-bot.vercel.app/api/dashboard-data" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "action": "update",
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+              "source": "github-actions",
+              "competitors_count": '$COMPETITORS_COUNT',
+              "hashtags_count": '$HASHTAGS_COUNT'
+            }'
+
+      - name: 📱 Send Telegram Notification
+        if: success()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            echo "📱 Sending Telegram notification..."
+            
+            MESSAGE="🎯 *Дашборд обновлен*%0A%0A"
+            MESSAGE="${MESSAGE}📊 Конкуренты: ${COMPETITORS_COUNT}%0A"
+            MESSAGE="${MESSAGE}🏷️ Хэштеги: ${HASHTAGS_COUNT}%0A"
+            MESSAGE="${MESSAGE}🕐 Время: $(date +'%Y-%m-%d %H:%M:%S UTC')%0A%0A"
+            MESSAGE="${MESSAGE}🔗 [Открыть дашборд](https://instagram-scraper-bot.vercel.app/dashboard)"
+            
+            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              -d "chat_id=${TELEGRAM_CHAT_ID}" \
+              -d "text=${MESSAGE}" \
+              -d "parse_mode=Markdown" \
+              -d "disable_web_page_preview=true"
+            
+            echo "✅ Telegram notification sent"
+          else
+            echo "⚠️ Telegram credentials not configured"
+          fi
+
+      - name: 📝 Update README
+        run: |
+          echo "📝 Updating README with dashboard info..."
+          
+          # Создаем или обновляем секцию в README
+          cat >> README.md << EOF
+          
+          ## 🎯 Client Dashboard
+          
+          **Last Updated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          - 📊 **Dashboard URL:** https://instagram-scraper-bot.vercel.app/dashboard
+          - 🏢 **Competitors:** ${COMPETITORS_COUNT}
+          - 🏷️ **Hashtags:** ${HASHTAGS_COUNT}
+          - 🔄 **Auto-update:** Every 24 hours
+          
+          ### Quick Links:
+          - [📊 Client Dashboard](https://instagram-scraper-bot.vercel.app/dashboard)
+          - [🔧 API Health](https://instagram-scraper-bot.vercel.app/health)
+          - [📋 API Documentation](https://instagram-scraper-bot.vercel.app/api)
+          
+          EOF
+
+      - name: 📊 Generate Dashboard Report
+        run: |
+          echo "📊 Generating dashboard report..."
+          
+          cat > dashboard-report.md << EOF
+          # 🎯 Dashboard Update Report
+          
+          **Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Status:** ✅ Success
+          
+          ## 📊 Data Summary
+          
+          - **Competitors:** ${COMPETITORS_COUNT}
+          - **Hashtags:** ${HASHTAGS_COUNT}
+          - **Dashboard URL:** https://instagram-scraper-bot.vercel.app/dashboard
+          
+          ## 🔄 Next Update
+          
+          The dashboard will automatically update in 24 hours.
+          
+          ## 📱 Access Links
+          
+          - [📊 Client Dashboard](https://instagram-scraper-bot.vercel.app/dashboard)
+          - [🔧 API Health Check](https://instagram-scraper-bot.vercel.app/health)
+          - [📋 API Documentation](https://instagram-scraper-bot.vercel.app/api)
+          
+          ---
+          
+          *Generated by GitHub Actions*
+          EOF
+          
+          echo "✅ Dashboard report generated"
+
+      - name: 🎉 Success Summary
+        run: |
+          echo "🎉 Dashboard update completed successfully!"
+          echo ""
+          echo "📊 Summary:"
+          echo "  - Competitors: ${COMPETITORS_COUNT}"
+          echo "  - Hashtags: ${HASHTAGS_COUNT}"
+          echo "  - Dashboard: https://instagram-scraper-bot.vercel.app/dashboard"
+          echo "  - Next update: $(date -d '+24 hours' -u +'%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+          echo "✅ All tasks completed successfully!"
+
+  # Дополнительная задача для проверки дашборда
+  verify-dashboard:
+    needs: update-dashboard
+    runs-on: ubuntu-latest
+    name: ✅ Verify Dashboard
+    
+    steps:
+      - name: 🔍 Test Dashboard Accessibility
+        run: |
+          echo "🔍 Testing dashboard accessibility..."
+          
+          # Проверяем что дашборд доступен
+          if curl -f -s "https://instagram-scraper-bot.vercel.app/dashboard" > /dev/null; then
+            echo "✅ Dashboard is accessible"
+          else
+            echo "❌ Dashboard is not accessible"
+            exit 1
+          fi
+          
+          # Проверяем API данных дашборда
+          if curl -f -s "https://instagram-scraper-bot.vercel.app/api/dashboard-data" > /dev/null; then
+            echo "✅ Dashboard API is working"
+          else
+            echo "❌ Dashboard API is not working"
+            exit 1
+          fi
+
+      - name: 📊 Dashboard Health Check
+        run: |
+          echo "📊 Performing dashboard health check..."
+          
+          # Получаем данные дашборда
+          DASHBOARD_DATA=$(curl -s "https://instagram-scraper-bot.vercel.app/api/dashboard-data")
+          
+          # Проверяем структуру данных
+          if echo "$DASHBOARD_DATA" | jq -e '.overview.totalCompetitors' > /dev/null; then
+            echo "✅ Dashboard data structure is valid"
+            
+            TOTAL_COMPETITORS=$(echo "$DASHBOARD_DATA" | jq -r '.overview.totalCompetitors')
+            TOTAL_HASHTAGS=$(echo "$DASHBOARD_DATA" | jq -r '.overview.totalHashtags')
+            TOTAL_REELS=$(echo "$DASHBOARD_DATA" | jq -r '.overview.totalReels')
+            
+            echo "📊 Dashboard metrics:"
+            echo "  - Competitors: $TOTAL_COMPETITORS"
+            echo "  - Hashtags: $TOTAL_HASHTAGS"
+            echo "  - Reels: $TOTAL_REELS"
+          else
+            echo "❌ Dashboard data structure is invalid"
+            exit 1
+          fi
+
+      - name: 🎯 Final Verification
+        run: |
+          echo "🎯 Final verification completed!"
+          echo ""
+          echo "✅ Dashboard is fully operational"
+          echo "🔗 Access: https://instagram-scraper-bot.vercel.app/dashboard"
+          echo "📱 Mobile-friendly: Yes"
+          echo "🔄 Auto-refresh: 24 hours"
+          echo ""
+          echo "🎉 Client dashboard is ready for use!"

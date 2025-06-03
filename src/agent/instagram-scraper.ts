@@ -132,6 +132,10 @@ export async function scrapeInstagramReels(
     input = {
       username: [sourceForApify],
       resultsLimit: limit,
+      proxy: {
+        useApifyProxy: true,
+        apifyProxyGroups: ["RESIDENTIAL"],
+      },
     };
     console.log(
       "Запуск актора Instagram Scraper на Apify с параметрами для пользователя:",
@@ -146,6 +150,27 @@ export async function scrapeInstagramReels(
 
   console.log(`ПОЛУЧЕНО ОТ APIFY (${items.length} элементов).`);
 
+  // Извлекаем посты из хэштегов
+  let allPosts: any[] = [];
+
+  if (sourceType === "hashtag") {
+    console.log("Извлекаем посты из хэштегов...");
+    items.forEach((item: any, index: number) => {
+      if (item.topPosts && Array.isArray(item.topPosts)) {
+        console.log(`  Хэштег ${index + 1}: ${item.topPosts.length} top posts`);
+        allPosts.push(...item.topPosts);
+      }
+      if (item.latestPosts && Array.isArray(item.latestPosts)) {
+        console.log(`  Хэштег ${index + 1}: ${item.latestPosts.length} latest posts`);
+        allPosts.push(...item.latestPosts);
+      }
+    });
+    console.log(`Всего извлечено постов: ${allPosts.length}`);
+  } else {
+    // Для пользователей используем items напрямую
+    allPosts = items;
+  }
+
   console.log("Применяем фильтры...");
 
   let maxAgeDate: Date | null = null;
@@ -158,7 +183,7 @@ export async function scrapeInstagramReels(
     console.log(`Фильтр по просмотрам: Reels с просмотрами >= ${minViews}`);
   }
 
-  const filteredReels = items
+  const filteredReels = allPosts
     .filter((item: ApifyReelItem) => {
       // Проверяем, является ли пост Reel
       const isPotentialReel =
@@ -176,11 +201,33 @@ export async function scrapeInstagramReels(
         passesDateFilter = false;
       }
 
-      // Проверяем количество просмотров
+      // Проверяем количество просмотров (ТОЛЬКО РЕАЛЬНЫЕ ДАННЫЕ!)
       let passesViewsFilter = true;
-      const currentViews = item.videoViewCount || item.videoPlayCount || 0;
       if (minViews !== undefined) {
-        passesViewsFilter = currentViews >= minViews;
+        let realViews = 0;
+        let hasRealViews = false;
+
+        // ТОЛЬКО реальные просмотры, НЕ используем лайки!
+        if (item.videoViewCount && item.videoViewCount > 0) {
+          realViews = item.videoViewCount;
+          hasRealViews = true;
+        } else if (item.videoPlayCount && item.videoPlayCount > 0) {
+          realViews = item.videoPlayCount;
+          hasRealViews = true;
+        }
+
+        // Если нет реальных просмотров - отклоняем пост
+        if (!hasRealViews) {
+          passesViewsFilter = false;
+          console.log(`  ❌ ОТКЛОНЕН: Нет данных о просмотрах (@${item.ownerUsername})`);
+        } else {
+          passesViewsFilter = realViews >= minViews;
+          if (passesViewsFilter) {
+            console.log(`  ✅ ПРОШЕЛ ФИЛЬТР: ${realViews} реальных просмотров (@${item.ownerUsername})`);
+          } else {
+            console.log(`  ❌ НЕ ПРОШЕЛ: ${realViews} < ${minViews} просмотров (@${item.ownerUsername})`);
+          }
+        }
       }
 
       return passesDateFilter && passesViewsFilter;
@@ -194,8 +241,14 @@ export async function scrapeInstagramReels(
         return null;
       }
 
-      const views =
-        typeof item.videoPlayCount === "number" ? item.videoPlayCount : 0;
+      // ТОЛЬКО реальные просмотры (если дошли до этого этапа, значит они есть)
+      let views = 0;
+      if (item.videoViewCount && item.videoViewCount > 0) {
+        views = item.videoViewCount;
+      } else if (item.videoPlayCount && item.videoPlayCount > 0) {
+        views = item.videoPlayCount;
+      }
+      // НЕ используем лайки для подсчета просмотров!
 
       let songTitle: string | null = null;
       let artistName: string | null = null;

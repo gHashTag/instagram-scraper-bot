@@ -12,6 +12,12 @@
     },
     "api/webhook-public.js": {
       "maxDuration": 30
+    },
+    "api/index.js": {
+      "maxDuration": 30
+    },
+    "api/dashboard.js": {
+      "maxDuration": 30
     }
   },
   "rewrites": [
@@ -28,8 +34,44 @@
       "destination": "/api/webhook-edge.js"
     },
     {
-      "source": "/(.*)",
-      "destination": "/api/health.mjs"
+      "source": "/api/competitors",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/api/hashtags",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/api/transcribe",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/api/scrape/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/api/dashboard-data",
+      "destination": "/api/dashboard.js"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/api/dashboard.js"
+    },
+    {
+      "source": "/mobile",
+      "destination": "/api/dashboard.js"
+    },
+    {
+      "source": "/client",
+      "destination": "/api/dashboard.js"
+    },
+    {
+      "source": "/",
+      "destination": "/api/dashboard.js"
     }
   ]
 }

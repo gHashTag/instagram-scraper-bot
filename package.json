@@ -9,6 +9,16 @@
     "dev:pm2": "pm2 start ecosystem.config.cjs --env development",
     "start:pm2": "pm2 start ecosystem.config.cjs --env production",
     "stop:pm2": "pm2 stop ecosystem.config.cjs",
+    "setup-fresh-data": "npx tsx src/scripts/setup-fresh-data.ts",
+    "scrape-mode": "npx tsx src/scripts/scrape-with-modes.ts",
+    "scrape-viral": "npx tsx src/scripts/scrape-viral-content.ts",
+    "check-db": "npx tsx src/scripts/check-db-stats.ts",
+    "scrape-hashtags-working": "npx tsx src/scripts/save-popular-hashtag-reels.ts",
+    "debug-apify": "npx tsx src/scripts/debug-apify-response.ts",
+    "diagnose-apify": "npx tsx src/scripts/diagnose-apify-data.ts",
+    "analyze-views": "npx tsx src/scripts/analyze-views-vs-likes.ts",
+    "scrape-strategy": "npx tsx src/scripts/scrape-with-strategy.ts",
+    "strategy": "npx tsx src/scripts/run-strategy.ts",
     "delete:pm2": "pm2 delete ecosystem.config.cjs",
     "logs:pm2": "pm2 logs",
     "db:studio": "bunx drizzle-kit studio --port 3457",
@@ -72,7 +82,10 @@
     "obsidian:update": "tsx scripts/daily-sync.ts",
     "web:dashboard": "tsx scripts/create-web-dashboard.ts",
     "test:telegram": "tsx scripts/test-telegram-notification.ts",
-    "test:system": "tsx scripts/test-full-system.ts"
+    "test:system": "tsx scripts/test-full-system.ts",
+    "server": "tsx src/scripts/start-server.ts",
+    "server:dev": "NODE_ENV=development tsx src/scripts/start-server.ts",
+    "server:prod": "NODE_ENV=production tsx src/scripts/start-server.ts"
   },
   "keywords": [
     "instagram",

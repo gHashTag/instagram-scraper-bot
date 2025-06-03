@@ -1,0 +1,181 @@
+{
+  "main": {
+    "id": "de338eb745706253",
+    "type": "split",
+    "children": [
+      {
+        "id": "7ffeb6487a7184e5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "1bb156fd1dde71f2",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Competitors/evolving.ai.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "evolving.ai"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7e6c4dc78703ae0c",
+    "type": "split",
+    "children": [
+      {
+        "id": "5389845b2cbe11c8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "dd4075a93f4bde23",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "3184fdb291051033",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "cb6faff7dca8460d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "571f4b91cb09b5a6",
+    "type": "split",
+    "children": [
+      {
+        "id": "ece5b09d4111171d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0e6467a3742b38f5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Competitors/evolving-ai.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки для evolving-ai"
+            }
+          },
+          {
+            "id": "efe630bd9f4ac963",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Competitors/evolving-ai.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки из evolving-ai"
+            }
+          },
+          {
+            "id": "f2001bfb9d0dc065",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "5dd19b7fb42df66d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Competitors/evolving-ai.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура evolving-ai"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false
+    }
+  },
+  "active": "1bb156fd1dde71f2",
+  "lastOpenFiles": [
+    "Competitors/evolving-ai.md",
+    "Competitors/edu_v_peru.md",
+    "Reports/2025-06-01.md",
+    "🤖📈 ГЛАВНЫЙ ДАШБОРД.md",
+    "Competitors/evolving.ai.md",
+    "Competitors/theaipage.md",
+    "README.md"
+  ]
+}

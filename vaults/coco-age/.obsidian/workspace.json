@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "ebfe92a9342456da",
+        "id": "f68bfea0169e1b13",
         "type": "tabs",
         "children": [
           {
-            "id": "b6f032d986a1d192",
+            "id": "47c90ce02fcb7412",
             "type": "leaf",
             "state": {
-              "type": "split-diff-view",
+              "type": "markdown",
               "state": {
-                "aFile": "src/scripts/check-openai-api.ts",
-                "bFile": "src/scripts/check-openai-api.ts",
-                "aRef": ""
+                "file": "🎯 ГЛАВНЫЙ ДАШБОРД.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "diff",
-              "title": "Diff: check-openai-api.ts"
+              "icon": "lucide-file",
+              "title": "🎯 ГЛАВНЫЙ ДАШБОРД"
             }
           }
         ]
@@ -196,33 +196,43 @@
       "zk-prefixer:Создать заметку с уникальным идентификатором": false
     }
   },
-  "active": "b6f032d986a1d192",
+  "active": "47c90ce02fcb7412",
   "lastOpenFiles": [
-    "Clippings/replicatefast-flux-trainer – Replicate.md",
-    "Clippings",
-    "🥥✨ Coco Age - Центральная карта.md",
-    "📊 Планирование контента.md",
-    "👥 Конкуренты.md",
-    "🏷️ Хэштеги.md",
-    "test-trigger.md",
-    "content-factory/🏭-Content-Factory/🔥-Viral-Analysis/Top-Performers.md",
-    "content-factory/🏭-Content-Factory/🔥-Viral-Analysis",
-    "content-factory/🏭-Content-Factory/📝-Scripts/Script-Templates.md",
-    "content-factory/🏭-Content-Factory/📝-Scripts",
-    "content-factory/🏭-Content-Factory/📅-Content-Calendar/Monthly-Plan.md",
-    "content-factory/🏭-Content-Factory/📅-Content-Calendar",
-    "content-factory/🏭-Content-Factory/🏭 Контент-завод - Главная.md",
-    "content-factory/🏭-Content-Factory/🎬-Content-Ideas/Content-Generator.md",
-    "content-factory/🏭-Content-Factory/🎬-Content-Ideas",
-    "content-factory/🏭-Content-Factory/🎨-Visual-Concepts/Visual-Ideas.md",
-    "content-factory/🏭-Content-Factory/🎨-Visual-Concepts",
-    "TEAM_GUIDE.md",
+    "📋 Roadmap & Timeline.md",
+    "📋 Technical Specification.md",
+    "👥 Team Structure & Roles.md",
+    "📊 Conv.Rules - Content Factory Conversion Framework.md",
+    "🤖 Content Factory Manager Agent - Job Description.md",
+    "🏠 Project Index - Navigation Hub.md",
+    "📋 AI Content Factory - CocoAge Project.md",
+    "🎯 ГЛАВНЫЙ ДАШБОРД.md",
+    "Competitors/kayaclinicarabia.md",
+    "Competitors/graise.aesthetics.md",
+    "Competitors/clinicajoelleofficial.md",
+    "📊 ОТЧЕТ ДЛЯ КЛИЕНТА.md",
+    "📊 Анализ конкурентов.md",
     "README.md",
-    "📊-Analytics/Viral-Content-Analysis.md",
+    "Analysis/competitor-performance.md",
+    "Templates/competitor-template.md",
+    "Reports/Проблемы скрапинга.md",
+    "Templates/hashtag-template.md",
+    "🥥✨ ГЛАВНЫЙ ДАШБОРД.md",
+    "Scripts/api-client.js",
+    "Scripts",
+    "Hashtags/beautyclinic.md",
+    "Hashtags/fillers.md",
+    "Hashtags/hydrafacial.md",
+    "Hashtags/cosmetology.md",
+    "Hashtags/aestheticmedicine.md",
+    "Competitors/milena_aesthetic_clinic.md",
+    "Competitors/med_yu_med.md",
+    "Clippings",
+    "content-factory/🏭-Content-Factory/🔥-Viral-Analysis",
+    "content-factory/🏭-Content-Factory/📝-Scripts",
+    "content-factory/🏭-Content-Factory/📅-Content-Calendar",
+    "content-factory/🏭-Content-Factory/🎬-Content-Ideas",
+    "content-factory/🏭-Content-Factory/🎨-Visual-Concepts",
     "📊-Analytics",
-    "Добро пожаловать.md",
-    "content-factory/🏭-Content-Factory/📊-Analytics",
-    "content-factory/🏭-Content-Factory",
-    "Reports"
+    "content-factory/🏭-Content-Factory/📊-Analytics"
   ]
 }

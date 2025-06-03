@@ -1,0 +1,330 @@
+{
+  "strategy": {
+    "name": "TrendWatching - Тренды и конкуренты",
+    "description": "Парсинг трендов с сайтов + анализ конкурентов в AI/Tech нише",
+    "client": "TrendWatching",
+    "active": true,
+    "schedule": "0 9 * * *"
+  },
+  
+  "scraping": {
+    "mode": "trendwatching",
+    "minViews": 50000,
+    "maxAgeDays": 7,
+    "onlyRealViews": true,
+    "totalLimit": 500,
+    "perSourceLimit": 50
+  },
+  
+  "trends": {
+    "enabled": true,
+    "schedule": "0 9 * * *",
+    "sources": [
+      {
+        "name": "Google Trends",
+        "url": "https://trends.google.com",
+        "enabled": true,
+        "priority": 1,
+        "categories": ["AI", "Technology", "Innovation"]
+      },
+      {
+        "name": "Exploding Topics",
+        "url": "https://explodingtopics.com",
+        "enabled": true,
+        "priority": 1,
+        "categories": ["AI", "Tools", "Startups"]
+      },
+      {
+        "name": "Product Hunt",
+        "url": "https://www.producthunt.com",
+        "enabled": true,
+        "priority": 2,
+        "categories": ["AI", "Tools", "Productivity"]
+      },
+      {
+        "name": "Trend Hunter",
+        "url": "https://trendhunter.com",
+        "enabled": true,
+        "priority": 2,
+        "categories": ["Technology", "Innovation", "Future"]
+      },
+      {
+        "name": "Future Tools",
+        "url": "https://futuretools.io",
+        "enabled": true,
+        "priority": 1,
+        "categories": ["AI", "Tools", "Automation"]
+      },
+      {
+        "name": "BuzzSumo",
+        "url": "https://buzzsumo.com/trending",
+        "enabled": true,
+        "priority": 3,
+        "categories": ["Content", "Marketing", "Trends"]
+      },
+      {
+        "name": "Springwise",
+        "url": "https://www.springwise.com",
+        "enabled": true,
+        "priority": 3,
+        "categories": ["Innovation", "Sustainability", "Tech"]
+      },
+      {
+        "name": "The Reel Truth",
+        "url": "https://thereeltruth.com",
+        "enabled": true,
+        "priority": 3,
+        "categories": ["Social Media", "Content", "Trends"]
+      },
+      {
+        "name": "TrendWatching",
+        "url": "https://trendwatching.com",
+        "enabled": true,
+        "priority": 2,
+        "categories": ["Consumer", "Innovation", "Future"]
+      },
+      {
+        "name": "Toolify AI",
+        "url": "https://toolify.ai/trending",
+        "enabled": true,
+        "priority": 1,
+        "categories": ["AI", "Tools", "Automation"]
+      }
+    ],
+    "filters": {
+      "categories": ["AI", "Technology", "Innovation", "Tools", "Future", "Automation"],
+      "minRelevanceScore": 0.7,
+      "excludeKeywords": ["spam", "fake", "clickbait", "scam"],
+      "includeKeywords": ["AI", "artificial intelligence", "automation", "innovation", "future", "tech"]
+    }
+  },
+  
+  "sources": {
+    "hashtags": [
+      {
+        "tag": "ai",
+        "priority": 1,
+        "limit": 100
+      },
+      {
+        "tag": "artificialintelligence",
+        "priority": 1,
+        "limit": 100
+      },
+      {
+        "tag": "technology",
+        "priority": 2,
+        "limit": 80
+      },
+      {
+        "tag": "innovation",
+        "priority": 2,
+        "limit": 80
+      },
+      {
+        "tag": "future",
+        "priority": 3,
+        "limit": 60
+      },
+      {
+        "tag": "automation",
+        "priority": 3,
+        "limit": 60
+      }
+    ],
+    
+    "competitors": [
+      {
+        "platform": "instagram",
+        "username": "evolving.ai",
+        "url": "https://www.instagram.com/evolving.ai",
+        "priority": 1,
+        "limit": 50,
+        "notes": "AI тренды и инновации",
+        "categories": ["AI", "Innovation", "Future"]
+      },
+      {
+        "platform": "instagram",
+        "username": "theaipage",
+        "url": "https://www.instagram.com/theaipage", 
+        "priority": 1,
+        "limit": 50,
+        "notes": "AI новости и обучение",
+        "categories": ["AI", "Education", "News"]
+      },
+      {
+        "platform": "instagram",
+        "username": "edu_v_peru",
+        "url": "https://www.instagram.com/edu_v_peru",
+        "priority": 1,
+        "limit": 50,
+        "notes": "Образовательный контент",
+        "categories": ["Education", "Technology", "Innovation"]
+      }
+    ]
+  },
+  
+  "filters": {
+    "excludeKeywords": [
+      "spam",
+      "fake", 
+      "clickbait",
+      "scam"
+    ],
+    "includeKeywords": [
+      "AI",
+      "artificial intelligence",
+      "automation",
+      "innovation",
+      "future tech",
+      "machine learning",
+      "neural networks"
+    ],
+    "minLikes": 1000,
+    "minComments": 50,
+    "languages": ["en", "ru"],
+    "contentTypes": ["reels", "videos", "posts"]
+  },
+  
+  "output": {
+    "database": {
+      "enabled": true,
+      "table": "trendwatching_data",
+      "updateExisting": false
+    },
+    
+    "excel": {
+      "enabled": true,
+      "filename": "trendwatching-{date}.xlsx",
+      "path": "./exports/trendwatching/",
+      "includeTranscripts": true,
+      "includeAnalysis": true,
+      "sheets": {
+        "trends": "Тренды с сайтов",
+        "competitors": "Конкуренты Instagram",
+        "analysis": "Анализ и инсайты"
+      }
+    },
+    
+    "obsidian": {
+      "enabled": true,
+      "vaultPath": "./vaults/trendwatching/",
+      "templates": {
+        "trend": "Templates/Trend Analysis.md",
+        "competitor": "Templates/Competitor Content.md",
+        "daily_summary": "Templates/Daily TrendWatch.md",
+        "weekly_report": "Templates/Weekly Trends Report.md"
+      },
+      "folders": {
+        "trends": "Trends/",
+        "competitors": "Competitors/",
+        "reports": "Reports/",
+        "analysis": "Analysis/",
+        "transcripts": "Transcripts/"
+      },
+      "sync": true,
+      "autoUpdate": true
+    },
+    
+    "notifications": {
+      "telegram": {
+        "enabled": true,
+        "botToken": "env:TELEGRAM_BOT_TOKEN",
+        "chatId": "144022504",
+        "template": "🔥 TrendWatching Update!\n\n📈 Новых трендов: {trendsCount}\n🎬 Вирусных Reels: {reelsCount}\n🤖 AI инновации: {aiCount}\n\n🔗 Топ тренд: {topTrend}"
+      }
+    }
+  },
+  
+  "analysis": {
+    "transcription": {
+      "enabled": true,
+      "provider": "openai-whisper",
+      "language": "auto",
+      "style": "рубрика",
+      "avatarKnowledgeBase": true,
+      "customPrompt": "Транскрибируй в стиле рубрики с учетом базы знаний аватара. Фокус на AI и технологических трендах."
+    },
+    
+    "sentiment": {
+      "enabled": true,
+      "categories": [
+        "инновационный",
+        "перспективный",
+        "сомнительный",
+        "устаревший"
+      ]
+    },
+    
+    "keywords": {
+      "enabled": true,
+      "extractTopics": true,
+      "findTrends": true,
+      "aiCategories": ["machine learning", "neural networks", "automation", "robotics", "AI tools"]
+    },
+    
+    "trendAnalysis": {
+      "enabled": true,
+      "scoreFactors": {
+        "novelty": 0.3,
+        "impact": 0.3,
+        "adoption": 0.2,
+        "sustainability": 0.2
+      },
+      "categories": ["AI", "Technology", "Innovation", "Future", "Automation"]
+    }
+  },
+  
+  "technical": {
+    "scraper": {
+      "primary": "apify/instagram-scraper",
+      "fallback": ["apify/instagram-reel-scraper"],
+      "timeout": 300,
+      "retries": 3,
+      "delay": 2000
+    },
+    
+    "trendScraper": {
+      "enabled": true,
+      "userAgent": "Mozilla/5.0 (compatible; TrendWatcher/1.0)",
+      "timeout": 30000,
+      "retries": 3,
+      "delay": 5000
+    },
+    
+    "proxy": {
+      "enabled": true,
+      "type": "residential",
+      "rotation": true
+    },
+    
+    "rateLimit": {
+      "requestsPerMinute": 20,
+      "pauseBetweenSources": 10000,
+      "trendsRequestsPerHour": 100
+    }
+  },
+  
+  "presets": {
+    "ai_trends": {
+      "minViews": 100000,
+      "maxAgeDays": 3,
+      "onlyRealViews": true,
+      "description": "Только AI тренды с высокими просмотрами"
+    },
+    
+    "tech_innovation": {
+      "minViews": 50000,
+      "maxAgeDays": 7,
+      "onlyRealViews": true,
+      "description": "Технологические инновации"
+    },
+    
+    "competitor_watch": {
+      "minViews": 30000,
+      "maxAgeDays": 7,
+      "onlyRealViews": false,
+      "description": "Мониторинг конкурентов"
+    }
+  }
+}

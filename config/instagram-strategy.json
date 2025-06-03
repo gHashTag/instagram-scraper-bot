@@ -1,0 +1,249 @@
+{
+  "strategy": {
+    "name": "Эстетическая медицина - Вирусный контент",
+    "description": "Поиск вирусного контента для клиники эстетической медицины",
+    "active": true,
+    "schedule": "0 9 * * *"
+  },
+  "scraping": {
+    "mode": "viral",
+    "minViews": 75000,
+    "maxAgeDays": 7,
+    "onlyRealViews": true,
+    "totalLimit": 1000,
+    "perSourceLimit": 50
+  },
+  "sources": {
+    "hashtags": [
+      {
+        "tag": "aestheticmedicine",
+        "priority": 3,
+        "limit": 50
+      },
+      {
+        "tag": "aestheticclinic",
+        "priority": 3,
+        "limit": 50
+      },
+      {
+        "tag": "cosmetology",
+        "priority": 2,
+        "limit": 30
+      },
+      {
+        "tag": "hydrafacial",
+        "priority": 3,
+        "limit": 40
+      },
+      {
+        "tag": "botox",
+        "priority": 3,
+        "limit": 50
+      },
+      {
+        "tag": "fillers",
+        "priority": 3,
+        "limit": 50
+      },
+      {
+        "tag": "beautyclinic",
+        "priority": 2,
+        "limit": 30
+      },
+      {
+        "tag": "skincare",
+        "priority": 1,
+        "limit": 20
+      },
+      {
+        "tag": "prpfacial",
+        "priority": 2,
+        "limit": 30
+      },
+      {
+        "tag": "rfmicroneedling",
+        "priority": 2,
+        "limit": 30
+      },
+      {
+        "tag": "skinrejuvenation",
+        "priority": 3,
+        "limit": 40
+      },
+      {
+        "tag": "facialtreatment",
+        "priority": 2,
+        "limit": 30
+      },
+      {
+        "tag": "aesthetictreatment",
+        "priority": 3,
+        "limit": 40
+      }
+    ],
+    "competitors": [
+      {
+        "username": "clinicajoelleofficial",
+        "priority": 3,
+        "limit": 30,
+        "notes": "Премиальная клиника эстетической медицины"
+      },
+      {
+        "username": "kayaclinicarabia",
+        "priority": 3,
+        "limit": 30,
+        "notes": "Сеть клиник красоты и эстетической медицины"
+      },
+      {
+        "username": "ziedasclinic",
+        "priority": 3,
+        "limit": 30,
+        "notes": "Клиника эстетической медицины"
+      },
+      {
+        "username": "med_yu_med",
+        "priority": 3,
+        "limit": 30,
+        "notes": "Медицинский центр эстетической медицины"
+      },
+      {
+        "username": "milena_aesthetic_clinic",
+        "priority": 3,
+        "limit": 30,
+        "notes": "Клиника эстетической медицины"
+      },
+      {
+        "username": "graise.aesthetics",
+        "priority": 3,
+        "limit": 30,
+        "notes": "Центр эстетической медицины"
+      }
+    ]
+  },
+  "filters": {
+    "excludeKeywords": [
+      "lips for kiss",
+      "spam",
+      "fake"
+    ],
+    "includeKeywords": [
+      "результат",
+      "до и после",
+      "процедура"
+    ],
+    "minLikes": 1000,
+    "minComments": 50,
+    "languages": [
+      "ru",
+      "en"
+    ]
+  },
+  "output": {
+    "database": {
+      "enabled": true,
+      "table": "reels",
+      "updateExisting": false
+    },
+    "excel": {
+      "enabled": true,
+      "filename": "viral-content-{date}.xlsx",
+      "path": "./exports/",
+      "includeTranscripts": true,
+      "includeAnalysis": true
+    },
+    "obsidian": {
+      "enabled": true,
+      "vaultPath": "./vaults/coco-age/",
+      "templates": {
+        "competitor": "Templates/Competitor Analysis.md",
+        "hashtag": "Templates/Hashtag Research.md",
+        "summary": "Templates/Daily Summary.md"
+      },
+      "folders": {
+        "competitors": "Competitors/",
+        "hashtags": "Hashtags/",
+        "reports": "Reports/Daily/"
+      },
+      "sync": true
+    },
+    "notifications": {
+      "telegram": {
+        "enabled": true,
+        "botToken": "env:TELEGRAM_BOT_TOKEN",
+        "chatId": "144022504",
+        "template": "🔥 Найден вирусный контент!\n\n📊 {views} просмотров\n👤 @{username}\n🏷️ #{hashtag}\n\n🔗 {url}"
+      },
+      "email": {
+        "enabled": false,
+        "to": "marketer@clinic.com",
+        "subject": "Новый вирусный контент - {date}"
+      }
+    }
+  },
+  "analysis": {
+    "transcription": {
+      "enabled": true,
+      "provider": "openai-whisper",
+      "language": "auto"
+    },
+    "sentiment": {
+      "enabled": true,
+      "categories": [
+        "положительный",
+        "нейтральный",
+        "негативный"
+      ]
+    },
+    "keywords": {
+      "enabled": true,
+      "extractTopics": true,
+      "findTrends": true
+    }
+  },
+  "technical": {
+    "scraper": {
+      "primary": "apify/instagram-scraper",
+      "fallback": [
+        "apify/instagram-reel-scraper"
+      ],
+      "timeout": 300,
+      "retries": 3,
+      "delay": 2000
+    },
+    "proxy": {
+      "enabled": true,
+      "type": "residential",
+      "rotation": true
+    },
+    "rateLimit": {
+      "requestsPerMinute": 30,
+      "pauseBetweenSources": 5000
+    }
+  },
+  "presets": {
+    "viral": {
+      "minViews": 50000,
+      "maxAgeDays": 7,
+      "onlyRealViews": true,
+      "description": "Только самый вирусный контент"
+    },
+    "popular": {
+      "minViews": 10000,
+      "maxAgeDays": 30,
+      "onlyRealViews": false,
+      "description": "Популярный контент за месяц"
+    },
+    "trending": {
+      "minViews": 5000,
+      "maxAgeDays": 14,
+      "onlyRealViews": false,
+      "description": "Трендовый контент за 2 недели"
+    },
+    "research": {
+      "minViews": 1000,
+      "maxAgeDays": 90,
+      "onlyRealViews": false,
+      "description": "Исследовательский режим"
+    }
+  }
+}

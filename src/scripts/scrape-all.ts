@@ -43,7 +43,7 @@ if (args.length < 1) {
 }
 
 const projectId = parseInt(args[0], 10);
-const totalLimit = args[1] ? parseInt(args[1], 10) : 20;
+const totalLimit = args[1] ? parseInt(args[1], 10) : 500;
 
 if (isNaN(projectId) || isNaN(totalLimit)) {
   logger.error("Ошибка: projectId и limit должны быть числами");
@@ -127,8 +127,8 @@ async function main() {
           {
             limit: limitPerSource,
             apifyToken: APIFY_TOKEN,
-            minViews: 1000,
-            maxAgeDays: 90,
+            minViews: 10000,
+            maxAgeDays: 30,
           }
         );
 
@@ -183,8 +183,8 @@ async function main() {
           {
             limit: limitPerSource,
             apifyToken: APIFY_TOKEN,
-            minViews: 1000,
-            maxAgeDays: 90,
+            minViews: 10000,
+            maxAgeDays: 30,
           }
         );
 

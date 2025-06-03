@@ -80,6 +80,10 @@ jobs:
           # Настраиваем аутентификацию для push
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
 
+          # Синхронизируемся с remote перед коммитом
+          git fetch origin main
+          git rebase origin/main
+
           # Добавляем только файлы vault
           git add vaults/coco-age/
 
@@ -96,7 +100,7 @@ jobs:
           🤖 Автоматическое обновление через GitHub Actions"
 
           # Пушим изменения
-          git push
+          git push origin main
 
       - name: 📱 Send Telegram notification
         if: always()

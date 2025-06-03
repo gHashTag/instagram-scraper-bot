@@ -1,0 +1,48 @@
+{
+  "name": "Viral Content Strategy",
+  "description": "Стратегия для поиска вирусного контента в эстетической медицине",
+  "mode": "viral",
+  "filters": {
+    "minViews": 50000,
+    "maxAgeDays": 7,
+    "requireRealViews": true,
+    "minLikes": 1000,
+    "minComments": 50
+  },
+  "limits": {
+    "totalLimit": 1000,
+    "perSourceLimit": 50,
+    "hashtagLimit": 30,
+    "competitorLimit": 20
+  },
+  "scrapers": {
+    "primary": "apify/instagram-scraper",
+    "fallback": ["apify/instagram-reel-scraper"],
+    "timeout": 300,
+    "retryAttempts": 3,
+    "requestDelay": 2000
+  },
+  "sources": {
+    "hashtags": [
+      "aestheticclinic",
+      "aestheticmedicine", 
+      "aesthetictreatment",
+      "botox",
+      "dermalfillers",
+      "antiaging",
+      "nonsurgical",
+      "injectables"
+    ],
+    "competitors": [
+      "clinicajoelleofficial",
+      "kayaclinicarabia",
+      "ziedasclinic"
+    ]
+  },
+  "options": {
+    "saveIntermediateResults": true,
+    "logLevel": "info",
+    "exportToExcel": true,
+    "exportPath": "./exports/viral-content.xlsx"
+  }
+}
