@@ -20,8 +20,23 @@
               "icon": "lucide-file",
               "title": "🎯 ГЛАВНЫЙ ДАШБОРД"
             }
+          },
+          {
+            "id": "43f24db826de2643",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "🎯 ГЛАВНЫЙ ДАШБОРД.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "🎯 ГЛАВНЫЙ ДАШБОРД"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -196,43 +211,43 @@
       "zk-prefixer:Создать заметку с уникальным идентификатором": false
     }
   },
-  "active": "47c90ce02fcb7412",
+  "active": "43f24db826de2643",
   "lastOpenFiles": [
+    "conflict-files-obsidian-git.md",
+    "🎯 ГЛАВНЫЙ ДАШБОРД.md",
+    "content-factory/Coco-Age-Analytics/Reports/Executive-Summary.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/skincare.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/rfmicroneedling.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/prpfacial.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/hydrafacial.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/fillers.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/cosmetology.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/botox.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/beautyclinic.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/aestheticmedicine.md",
+    "content-factory/Coco-Age-Analytics/Hashtags/aestheticclinic.md",
+    "content-factory/Coco-Age-Analytics/Competitors/ziedasclinic.md",
+    "content-factory/Coco-Age-Analytics/Competitors/milena_aesthetic_clinic.md",
+    "content-factory/Coco-Age-Analytics/Competitors/med_yu_med.md",
+    "content-factory/Coco-Age-Analytics/Competitors/kayaclinicarabia.md",
+    "content-factory/Coco-Age-Analytics/Competitors/graise.aesthetics.md",
+    "content-factory/Coco-Age-Analytics/Competitors/clinicajoelleofficial.md",
+    "content-factory/Coco-Age-Analytics/Analytics/Performance-Overview.md",
+    "content-factory/Coco-Age-Analytics/🥥✨ Coco Age - Центральная карта.md",
+    "content-factory/Coco-Age-Analytics/Reports",
+    "content-factory/Coco-Age-Analytics/Hashtags",
+    "content-factory/Coco-Age-Analytics/Competitors",
+    "content-factory/Coco-Age-Analytics/Analytics",
+    "content-factory/Coco-Age-Analytics",
+    "content-factory",
     "📋 Roadmap & Timeline.md",
     "📋 Technical Specification.md",
     "👥 Team Structure & Roles.md",
     "📊 Conv.Rules - Content Factory Conversion Framework.md",
     "🤖 Content Factory Manager Agent - Job Description.md",
-    "🏠 Project Index - Navigation Hub.md",
-    "📋 AI Content Factory - CocoAge Project.md",
-    "🎯 ГЛАВНЫЙ ДАШБОРД.md",
-    "Competitors/kayaclinicarabia.md",
-    "Competitors/graise.aesthetics.md",
-    "Competitors/clinicajoelleofficial.md",
-    "📊 ОТЧЕТ ДЛЯ КЛИЕНТА.md",
-    "📊 Анализ конкурентов.md",
-    "README.md",
-    "Analysis/competitor-performance.md",
-    "Templates/competitor-template.md",
-    "Reports/Проблемы скрапинга.md",
-    "Templates/hashtag-template.md",
-    "🥥✨ ГЛАВНЫЙ ДАШБОРД.md",
     "Scripts/api-client.js",
     "Scripts",
-    "Hashtags/beautyclinic.md",
-    "Hashtags/fillers.md",
-    "Hashtags/hydrafacial.md",
-    "Hashtags/cosmetology.md",
-    "Hashtags/aestheticmedicine.md",
-    "Competitors/milena_aesthetic_clinic.md",
-    "Competitors/med_yu_med.md",
     "Clippings",
-    "content-factory/🏭-Content-Factory/🔥-Viral-Analysis",
-    "content-factory/🏭-Content-Factory/📝-Scripts",
-    "content-factory/🏭-Content-Factory/📅-Content-Calendar",
-    "content-factory/🏭-Content-Factory/🎬-Content-Ideas",
-    "content-factory/🏭-Content-Factory/🎨-Visual-Concepts",
-    "📊-Analytics",
-    "content-factory/🏭-Content-Factory/📊-Analytics"
+    "content-factory/🏭-Content-Factory/🔥-Viral-Analysis"
   ]
 }

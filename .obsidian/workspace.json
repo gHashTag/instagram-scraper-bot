@@ -1,20 +1,20 @@
 {
   "main": {
-    "id": "de338eb745706253",
+    "id": "ebe0902f2d383ac3",
     "type": "split",
     "children": [
       {
-        "id": "95c36768df9acc30",
+        "id": "05959a61d8d5f9ff",
         "type": "tabs",
         "children": [
           {
-            "id": "23320aa8e0272050",
+            "id": "59643179a9132a7a",
             "type": "leaf",
             "state": {
-              "type": "empty",
+              "type": "graph",
               "state": {},
-              "icon": "lucide-file",
-              "title": "Новая вкладка"
+              "icon": "lucide-git-fork",
+              "title": "Граф"
             }
           }
         ]
@@ -23,15 +23,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "7e6c4dc78703ae0c",
+    "id": "da0b105c9356a236",
     "type": "split",
     "children": [
       {
-        "id": "5389845b2cbe11c8",
+        "id": "db17be936b74893e",
         "type": "tabs",
         "children": [
           {
-            "id": "dd4075a93f4bde23",
+            "id": "6bd3bc48a71cc632",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -44,7 +44,7 @@
             }
           },
           {
-            "id": "3184fdb291051033",
+            "id": "88c095b40482b6fa",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -61,7 +61,7 @@
             }
           },
           {
-            "id": "cb6faff7dca8460d",
+            "id": "920b9f5de4818eae",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -77,20 +77,19 @@
     "width": 300
   },
   "right": {
-    "id": "571f4b91cb09b5a6",
+    "id": "fb6cd03e7b042feb",
     "type": "split",
     "children": [
       {
-        "id": "ece5b09d4111171d",
+        "id": "a2bf34dd685f554e",
         "type": "tabs",
         "children": [
           {
-            "id": "0e6467a3742b38f5",
+            "id": "4da9d35ba0fd50d5",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Competitors/evolving-ai.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,25 +99,24 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Обратные ссылки для evolving-ai"
+              "title": "Обратные ссылки"
             }
           },
           {
-            "id": "efe630bd9f4ac963",
+            "id": "e0ff6416b4b8b8b7",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Competitors/evolving-ai.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Исходящие ссылки из evolving-ai"
+              "title": "Исходящие ссылки"
             }
           },
           {
-            "id": "f2001bfb9d0dc065",
+            "id": "83fcfd041b4748f8",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -133,18 +131,17 @@
             }
           },
           {
-            "id": "5dd19b7fb42df66d",
+            "id": "bb3f97deb58976a5",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "Competitors/evolving-ai.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Структура evolving-ai"
+              "title": "Структура"
             }
           }
         ]
@@ -164,14 +161,18 @@
       "command-palette:Открыть палитру команд": false
     }
   },
-  "active": "23320aa8e0272050",
+  "active": "59643179a9132a7a",
   "lastOpenFiles": [
-    "Competitors/evolving.ai.md",
-    "Competitors/evolving-ai.md",
-    "Competitors/edu_v_peru.md",
-    "Reports/2025-06-01.md",
-    "🤖📈 ГЛАВНЫЙ ДАШБОРД.md",
-    "Competitors/theaipage.md",
-    "README.md"
+    "DETAILED_APIFY_INSTAGRAM_SCRAPERS_ANALYSIS.md",
+    "APIFY_INSTAGRAM_SCRAPERS_RESEARCH.md",
+    "SUCCESS_HISTORY.md",
+    "ДИАГНОСТИКА_РЕЗУЛЬТАТ.md",
+    "OBSIDIAN_GUIDE.md",
+    "DASHBOARD_STATUS.md",
+    "CURRENT_DATA_ANALYSIS.md",
+    "CLOUD_API_USAGE.md",
+    "CLEAR_DATABASE_STATUS.md",
+    "ВИРУСНЫЙ_ТЕКСТ_ДЛЯ_КЛИЕНТА.md",
+    "SCRAPER_RESULTS_REPORT.md"
   ]
 }
