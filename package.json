@@ -81,7 +81,6 @@
     "sync-obsidian-daily": "tsx scripts/daily-sync.ts",
     "obsidian:update": "tsx scripts/daily-sync.ts",
     "web:dashboard": "tsx scripts/create-web-dashboard.ts",
-    "test:telegram": "tsx scripts/test-telegram-notification.ts",
     "test:system": "tsx scripts/test-full-system.ts",
     "server": "tsx src/scripts/start-server.ts",
     "server:dev": "NODE_ENV=development tsx src/scripts/start-server.ts",

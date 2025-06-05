@@ -2,13 +2,14 @@
  * Скрипт для массового парсинга Reels конкурентов за последние 6 месяцев
  *
  * Использование:
- * bun run src/scripts/bulk-scrape-competitors.ts <projectId> <token> [monthsBack] [limitPerCompetitor]
+ * bun run src/scripts/bulk-scrape-competitors.ts <projectId> <token> [monthsBack] [limitPerCompetitor] [minViews]
  *
  * Параметры:
  * - projectId: ID проекта
  * - token: Токен Apify API
  * - monthsBack: (опционально) Количество месяцев назад для парсинга (по умолчанию 6)
  * - limitPerCompetitor: (опционально) Максимальное количество Reels для парсинга на одного конкурента (по умолчанию 50)
+ * - minViews: (опционально) Минимальное количество просмотров (по умолчанию 1000)
  */
 
 import {
@@ -29,7 +30,7 @@ dotenv.config();
 const args = process.argv.slice(2);
 if (args.length < 2) {
   logger.error(
-    "Использование: bun run src/scripts/bulk-scrape-competitors.ts <projectId> <token> [monthsBack] [limitPerCompetitor]"
+    "Использование: bun run src/scripts/bulk-scrape-competitors.ts <projectId> <token> [monthsBack] [limitPerCompetitor] [minViews]"
   );
   process.exit(1);
 }
@@ -39,10 +40,16 @@ const apifyToken = args[1];
 const monthsBack = args[2] ? parseInt(args[2], 10) : 6;
 // Устанавливаем очень большое значение, чтобы получить все доступные Reels
 const limitPerCompetitor = args[3] ? parseInt(args[3], 10) : 1000;
+const minViews = args[4] ? parseInt(args[4], 10) : 1000;
 
-if (isNaN(projectId) || isNaN(monthsBack) || isNaN(limitPerCompetitor)) {
+if (
+  isNaN(projectId) ||
+  isNaN(monthsBack) ||
+  isNaN(limitPerCompetitor) ||
+  isNaN(minViews)
+) {
   logger.error(
-    "Ошибка: projectId, monthsBack и limitPerCompetitor должны быть числами"
+    "Ошибка: projectId, monthsBack, limitPerCompetitor и minViews должны быть числами"
   );
   process.exit(1);
 }
@@ -62,7 +69,7 @@ async function main() {
     `Запуск массового парсинга Reels конкурентов для проекта ${projectId}`
   );
   logger.info(
-    `Параметры: за последние ${monthsBack} месяцев, лимит на конкурента: ${limitPerCompetitor}`
+    `Параметры: за последние ${monthsBack} месяцев, лимит на конкурента: ${limitPerCompetitor}, минимум просмотров: ${minViews}`
   );
   logger.info(`Используется токен Apify: ${apifyToken}`);
 
@@ -140,7 +147,7 @@ async function main() {
           {
             limit: limitPerCompetitor,
             apifyToken,
-            minViews: 1000, // Минимальное количество просмотров
+            minViews: minViews, // Используем параметр из командной строки
             maxAgeDays: monthsBack * 30, // Примерное количество дней за указанное количество месяцев
           }
         );

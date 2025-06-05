@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "05959a61d8d5f9ff",
+        "id": "25f9d54f7b69a950",
         "type": "tabs",
         "children": [
           {
-            "id": "59643179a9132a7a",
+            "id": "f190010b57121263",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
+              "icon": "lucide-file",
+              "title": "Новая вкладка"
             }
           }
         ]
@@ -161,11 +161,23 @@
       "command-palette:Открыть палитру команд": false
     }
   },
-  "active": "59643179a9132a7a",
+  "active": "f190010b57121263",
   "lastOpenFiles": [
+    "src/scripts/mass-scrape-competitors-working.ts",
+    "src/scripts/build-own-instagram-actor.ts",
+    "src/scripts/test-custom-reel-scraper.ts",
+    "src/scripts/test-own-instagram-scraper.ts",
+    "src/scripts/check-apify-plan.ts",
+    "src/scripts/test-instagram-reel-scraper.ts",
+    "src/scripts/bulk-scrape-competitors-v2.ts",
+    "src/scripts/test-post-scraper.ts",
+    "src/scripts/debug-single-competitor.ts",
+    "vaults/coco-age/content-factory/project-coco-age/editable-dashboard.md",
+    "vaults/coco-age/content-factory/project-coco-age",
+    "temp/audio/reel_video_1749055785673.mp3",
+    "SUCCESS_HISTORY.md",
     "DETAILED_APIFY_INSTAGRAM_SCRAPERS_ANALYSIS.md",
     "APIFY_INSTAGRAM_SCRAPERS_RESEARCH.md",
-    "SUCCESS_HISTORY.md",
     "ДИАГНОСТИКА_РЕЗУЛЬТАТ.md",
     "OBSIDIAN_GUIDE.md",
     "DASHBOARD_STATUS.md",

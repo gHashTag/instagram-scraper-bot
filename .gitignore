@@ -52,3 +52,7 @@ drizzle/migrations/*
 drizzle/meta/*
 !drizzle/meta/_journal.json
 .vercel
+
+temp/audio/
+
+temp/videos/

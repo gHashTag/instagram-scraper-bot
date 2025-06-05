@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "🎯 ГЛАВНЫЙ ДАШБОРД.md",
+                "file": "📋 Roadmap & Timeline.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "🎯 ГЛАВНЫЙ ДАШБОРД"
+              "title": "📋 Roadmap & Timeline"
             }
           }
         ],
@@ -194,7 +194,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -213,8 +214,12 @@
   },
   "active": "43f24db826de2643",
   "lastOpenFiles": [
-    "conflict-files-obsidian-git.md",
+    "📋 AI Content Factory - CocoAge Project.md",
+    "📊 ОТЧЕТ ДЛЯ КЛИЕНТА.md",
     "🎯 ГЛАВНЫЙ ДАШБОРД.md",
+    "content-factory/project-coco-age/editable-dashboard.md",
+    "content-factory/project-coco-age",
+    "conflict-files-obsidian-git.md",
     "content-factory/Coco-Age-Analytics/Reports/Executive-Summary.md",
     "content-factory/Coco-Age-Analytics/Hashtags/skincare.md",
     "content-factory/Coco-Age-Analytics/Hashtags/rfmicroneedling.md",
@@ -242,12 +247,8 @@
     "content-factory",
     "📋 Roadmap & Timeline.md",
     "📋 Technical Specification.md",
-    "👥 Team Structure & Roles.md",
-    "📊 Conv.Rules - Content Factory Conversion Framework.md",
-    "🤖 Content Factory Manager Agent - Job Description.md",
     "Scripts/api-client.js",
     "Scripts",
-    "Clippings",
-    "content-factory/🏭-Content-Factory/🔥-Viral-Analysis"
+    "Clippings"
   ]
 }
