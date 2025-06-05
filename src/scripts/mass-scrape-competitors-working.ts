@@ -100,11 +100,11 @@ async function saveReelsToDatabase(
 
   for (const reel of reelsData) {
     try {
-      // Проверяем, существует ли уже такой reel
+      // Проверяем, существует ли уже такой reel по URL
       const existingReel = await db
         .select()
         .from(reelsTable)
-        .where(eq(reelsTable.instagram_id, reel.id))
+        .where(eq(reelsTable.reel_url, reel.url))
         .limit(1);
 
       if (existingReel.length > 0) {
@@ -112,25 +112,22 @@ async function saveReelsToDatabase(
         continue;
       }
 
-      // Сохраняем новый reel
+      // Сохраняем новый reel с правильными именами полей
       await db.insert(reelsTable).values({
         project_id: projectId,
         source_type: "competitor",
         source_identifier: competitorId.toString(),
-        instagram_id: reel.id,
-        shortcode: reel.shortCode,
-        url: reel.url,
-        caption: reel.caption || "",
-        hashtags: reel.hashtags || "",
-        likes_count: reel.likesCount,
-        views_count: reel.videoPlayCount,
-        comments_count: reel.commentsCount,
-        posted_at: new Date(reel.timestamp),
+        reel_url: reel.url,
+        profile_url: `https://instagram.com/${reel.ownerUsername}`,
         author_username: reel.ownerUsername,
-        video_url: reel.videoUrl,
+        description: reel.caption || "",
+        views_count: reel.videoPlayCount,
+        likes_count: reel.likesCount,
+        comments_count: reel.commentsCount,
+        published_at: new Date(reel.timestamp),
         thumbnail_url: reel.displayUrl,
-        duration_seconds: reel.videoDuration,
-        scraped_at: new Date(),
+        video_download_url: reel.videoUrl,
+        raw_data: reel, // Сохраняем все исходные данные для анализа
       });
 
       savedCount++;

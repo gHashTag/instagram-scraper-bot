@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "📋 Roadmap & Timeline.md",
+                "file": "Hashtags/antiaging.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "📋 Roadmap & Timeline"
+              "title": "antiaging"
             }
           }
         ],
@@ -194,8 +194,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -209,14 +208,29 @@
       "markdown-importer:Импорт Markdown-файлов": false,
       "publish:Публикация изменений": false,
       "workspaces:Пространства": false,
-      "zk-prefixer:Создать заметку с уникальным идентификатором": false
+      "zk-prefixer:Создать заметку с уникальным идентификатором": false,
+      "card-board:CardBoard": false
     }
   },
-  "active": "43f24db826de2643",
+  "active": "6c2652fa0e5c01d0",
   "lastOpenFiles": [
-    "📋 AI Content Factory - CocoAge Project.md",
+    "Hashtags/aestheticmedicine.md",
+    "Hashtags/aestheticclinic.md",
+    "Competitors/milena_aesthetic_clinic.md",
+    "Competitors/med_yu_med.md",
+    "Competitors/kayaclinicarabia.md",
+    "Competitors/graise.aesthetics.md",
+    "Competitors/clinicajoelleofficial.md",
+    "🏠 Project Index - Navigation Hub.md",
+    "👥 Team Structure & Roles.md",
+    "content-factory/Coco-Age-Analytics/🥥✨ Coco Age - Центральная карта.md",
     "📊 ОТЧЕТ ДЛЯ КЛИЕНТА.md",
+    "📋 Roadmap & Timeline.md",
+    "Hashtags/beautyclinic.md",
+    "📋 AI Content Factory - CocoAge Project.md",
     "🎯 ГЛАВНЫЙ ДАШБОРД.md",
+    "📅 Контент план.md",
+    "📊 Анализ конкурентов.md",
     "content-factory/project-coco-age/editable-dashboard.md",
     "content-factory/project-coco-age",
     "conflict-files-obsidian-git.md",
@@ -227,26 +241,12 @@
     "content-factory/Coco-Age-Analytics/Hashtags/hydrafacial.md",
     "content-factory/Coco-Age-Analytics/Hashtags/fillers.md",
     "content-factory/Coco-Age-Analytics/Hashtags/cosmetology.md",
-    "content-factory/Coco-Age-Analytics/Hashtags/botox.md",
-    "content-factory/Coco-Age-Analytics/Hashtags/beautyclinic.md",
-    "content-factory/Coco-Age-Analytics/Hashtags/aestheticmedicine.md",
-    "content-factory/Coco-Age-Analytics/Hashtags/aestheticclinic.md",
-    "content-factory/Coco-Age-Analytics/Competitors/ziedasclinic.md",
-    "content-factory/Coco-Age-Analytics/Competitors/milena_aesthetic_clinic.md",
-    "content-factory/Coco-Age-Analytics/Competitors/med_yu_med.md",
-    "content-factory/Coco-Age-Analytics/Competitors/kayaclinicarabia.md",
-    "content-factory/Coco-Age-Analytics/Competitors/graise.aesthetics.md",
-    "content-factory/Coco-Age-Analytics/Competitors/clinicajoelleofficial.md",
-    "content-factory/Coco-Age-Analytics/Analytics/Performance-Overview.md",
-    "content-factory/Coco-Age-Analytics/🥥✨ Coco Age - Центральная карта.md",
     "content-factory/Coco-Age-Analytics/Reports",
     "content-factory/Coco-Age-Analytics/Hashtags",
     "content-factory/Coco-Age-Analytics/Competitors",
     "content-factory/Coco-Age-Analytics/Analytics",
     "content-factory/Coco-Age-Analytics",
     "content-factory",
-    "📋 Roadmap & Timeline.md",
-    "📋 Technical Specification.md",
     "Scripts/api-client.js",
     "Scripts",
     "Clippings"

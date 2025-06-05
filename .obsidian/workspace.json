@@ -11,10 +11,14 @@
             "id": "f190010b57121263",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "SUCCESS_HISTORY.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Новая вкладка"
+              "title": "SUCCESS_HISTORY"
             }
           }
         ]
@@ -163,6 +167,8 @@
   },
   "active": "f190010b57121263",
   "lastOpenFiles": [
+    "vaults/coco-age/📅 Контент план.md",
+    "ГОТОВО_ДЛЯ_КЛИЕНТА.md",
     "src/scripts/mass-scrape-competitors-working.ts",
     "src/scripts/build-own-instagram-actor.ts",
     "src/scripts/test-custom-reel-scraper.ts",
@@ -174,7 +180,6 @@
     "src/scripts/debug-single-competitor.ts",
     "vaults/coco-age/content-factory/project-coco-age/editable-dashboard.md",
     "vaults/coco-age/content-factory/project-coco-age",
-    "temp/audio/reel_video_1749055785673.mp3",
     "SUCCESS_HISTORY.md",
     "DETAILED_APIFY_INSTAGRAM_SCRAPERS_ANALYSIS.md",
     "APIFY_INSTAGRAM_SCRAPERS_RESEARCH.md",
