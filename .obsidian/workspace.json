@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "SUCCESS_HISTORY.md",
+                "file": "vaults/coco-age/🏠 Project Index - Navigation Hub.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "SUCCESS_HISTORY"
+              "title": "🏠 Project Index - Navigation Hub"
             }
           }
         ]
@@ -167,20 +167,28 @@
   },
   "active": "f190010b57121263",
   "lastOpenFiles": [
+    "one-reel-complete-test.ts",
+    "src/scripts/start-server.ts",
+    "src/scripts/run-strategy.ts",
+    "src/scripts/run-migrations.ts",
+    "src/scripts/full-refresh-strategy.ts",
+    "src/scripts/extract-audio-text.ts",
+    "src/scripts/export-videos.ts",
+    "src/scripts/export-reels-to-excel.ts",
+    "src/scripts/export-audio.ts",
+    "src/scripts/diagnose-apify-data.ts",
+    "src/scripts/debug-apify-response.ts",
+    "vaults/coco-age/👥 Team Structure & Roles.md",
     "vaults/coco-age/📅 Контент план.md",
-    "ГОТОВО_ДЛЯ_КЛИЕНТА.md",
-    "src/scripts/mass-scrape-competitors-working.ts",
-    "src/scripts/build-own-instagram-actor.ts",
-    "src/scripts/test-custom-reel-scraper.ts",
-    "src/scripts/test-own-instagram-scraper.ts",
-    "src/scripts/check-apify-plan.ts",
-    "src/scripts/test-instagram-reel-scraper.ts",
-    "src/scripts/bulk-scrape-competitors-v2.ts",
-    "src/scripts/test-post-scraper.ts",
-    "src/scripts/debug-single-competitor.ts",
-    "vaults/coco-age/content-factory/project-coco-age/editable-dashboard.md",
-    "vaults/coco-age/content-factory/project-coco-age",
+    "vaults/coco-age/📊 Conv.Rules - Content Factory Conversion Framework.md",
+    "vaults/coco-age/📊 Анализ конкурентов.md",
+    "vaults/coco-age/📊 ОТЧЕТ ДЛЯ КЛИЕНТА.md",
+    "vaults/coco-age/📋 AI Content Factory - CocoAge Project.md",
+    "vaults/coco-age/📋 Roadmap & Timeline.md",
+    "vaults/coco-age/📋 Technical Specification.md",
     "SUCCESS_HISTORY.md",
+    "ГОТОВО_ДЛЯ_КЛИЕНТА.md",
+    "vaults/coco-age/content-factory/project-coco-age/editable-dashboard.md",
     "DETAILED_APIFY_INSTAGRAM_SCRAPERS_ANALYSIS.md",
     "APIFY_INSTAGRAM_SCRAPERS_RESEARCH.md",
     "ДИАГНОСТИКА_РЕЗУЛЬТАТ.md",
