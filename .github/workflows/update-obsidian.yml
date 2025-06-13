@@ -26,6 +26,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+          clean: true
 
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
@@ -80,12 +81,25 @@ jobs:
           # Настраиваем аутентификацию для push
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
 
+          # Добавляем изменения в staging area перед синхронизацией
+          git add vaults/coco-age/
+
           # Синхронизируемся с remote перед коммитом
           git fetch origin main
-          git rebase origin/main
-
-          # Добавляем только файлы vault
-          git add vaults/coco-age/
+          
+          # Проверяем, есть ли конфликты при merge
+          if git merge-base --is-ancestor HEAD origin/main; then
+            echo "✅ Локальная ветка актуальна, выполняем простой merge"
+            git merge origin/main --no-edit
+          else
+            echo "⚠️ Обнаружены расхождения, выполняем rebase"
+            # Если есть конфликты при rebase, используем merge
+            if ! git rebase origin/main; then
+              echo "🔄 Rebase не удался, используем merge"
+              git rebase --abort
+              git merge origin/main --no-edit
+            fi
+          fi
 
           # Создаем коммит с датой
           COMMIT_DATE=$(date '+%Y-%m-%d %H:%M:%S UTC')
