@@ -13,7 +13,14 @@
     "typecheck": "bun --bun exec tsc --noEmit",
     "db:studio": "bunx drizzle-kit studio --port 3457",
     "db:generate": "bunx drizzle-kit generate",
-    "db:push": "bunx drizzle-kit push"
+    "db:push": "bunx drizzle-kit push",
+    "db:migrate": "bunx drizzle-kit migrate",
+    "meta-muse:init": "bun run src/scripts/meta-muse-init-project.ts",
+    "meta-muse:scrape": "bun run src/scripts/meta-muse-robust-cycle.ts",
+    "meta-muse:check": "bun run src/scripts/meta-muse-check-data.ts",
+    "meta-muse:demo": "bun run src/scripts/meta-muse-demo-cycle.ts",
+    "meta-muse:quick-test": "bun run src/scripts/meta-muse-quick-test.ts",
+    "meta-muse:daily": "bun run src/scripts/meta-muse-daily-runner.ts"
   },
   "keywords": [
     "instagram",
