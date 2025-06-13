@@ -2,47 +2,46 @@ name: 🌐 Deploy Web Dashboard
 
 on:
   push:
-    branches: [ main ]
-    paths: 
-      - 'vaults/coco-age/**'
-      - 'scripts/create-web-dashboard.ts'
-  
+    branches: [main]
+    paths:
+      - "vaults/coco-age/**"
+      - "scripts/create-web-dashboard.ts"
+
   # Запуск после обновления vault
   workflow_run:
     workflows: ["🔄 Update Obsidian Vault Daily"]
     types:
       - completed
-  
+
   # Ручной запуск
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
+      - name: 📦 Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: '20'
-          cache: 'npm'
+          bun-version: latest
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: 🌐 Generate web dashboard
         run: |
           echo "🌐 Генерация веб-дашборда..."
-          npm run web:dashboard
+          bun run web:dashboard
 
       - name: 📋 Prepare deployment
         run: |
           # Создаем директорию для GitHub Pages
           mkdir -p ./public
-          
+
           # Копируем сгенерированные файлы
           if [ -d "./docs/web-dashboard" ]; then
             cp -r ./docs/web-dashboard/* ./public/
@@ -51,10 +50,10 @@ jobs:
             echo "❌ Директория web-dashboard не найдена"
             exit 1
           fi
-          
+
           # Создаем .nojekyll для GitHub Pages
           touch ./public/.nojekyll
-          
+
           # Добавляем CNAME если нужен кастомный домен
           # echo "dashboard.cocoage.com" > ./public/CNAME
 
@@ -80,7 +79,7 @@ jobs:
           force_orphan: true
           commit_message: |
             🌐 Deploy web dashboard - ${{ github.event.head_commit.message }}
-            
+
             📅 Deployed: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
             🔗 Commit: ${{ github.sha }}
             👤 Actor: ${{ github.actor }}

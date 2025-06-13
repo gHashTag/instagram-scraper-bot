@@ -3,15 +3,15 @@ name: 🔄 Update Obsidian Vault Daily
 on:
   schedule:
     # Каждый день в 6:00 UTC (9:00 МСК)
-    - cron: '0 6 * * *'
-  
+    - cron: "0 6 * * *"
+
   # Возможность запуска вручную
   workflow_dispatch:
     inputs:
       project_id:
-        description: 'Project ID to sync (default: 1 for Coco Age)'
+        description: "Project ID to sync (default: 1 for Coco Age)"
         required: false
-        default: '1'
+        default: "1"
 
 jobs:
   update-vault:
@@ -19,7 +19,7 @@ jobs:
     permissions:
       contents: write
       actions: read
-    
+
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
@@ -27,14 +27,13 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
+      - name: 📦 Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: '20'
-          cache: 'npm'
+          bun-version: latest
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: 🔧 Setup environment
         run: |
@@ -46,7 +45,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           echo "🗄️ Выполнение миграций базы данных..."
-          npm run db:migrate
+          bun run db:migrate
 
       - name: 🔄 Update Obsidian vault data
         env:
@@ -55,7 +54,7 @@ jobs:
           OBSIDIAN_VAULT_PATH: ${{ github.workspace }}/vaults/coco-age
         run: |
           echo "🔄 Синхронизация Obsidian vault для проекта ${{ github.event.inputs.project_id || '1' }}..."
-          npm run sync-obsidian ${{ github.event.inputs.project_id || '1' }}
+          bun run sync-obsidian ${{ github.event.inputs.project_id || '1' }}
 
       - name: 📊 Check for changes
         id: changes
@@ -161,7 +160,7 @@ jobs:
           echo "**Дата обновления:** $(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
           echo "**Проект:** Coco Age (ID: ${{ github.event.inputs.project_id || '1' }})" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
             echo "✅ **Статус:** Vault успешно обновлен" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
@@ -172,7 +171,7 @@ jobs:
           else
             echo "ℹ️ **Статус:** Нет изменений для обновления" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🔗 Быстрые ссылки:" >> $GITHUB_STEP_SUMMARY
           echo "- [📊 Центральная карта](./vaults/coco-age/🥥✨%20Coco%20Age%20-%20Центральная%20карта.md)" >> $GITHUB_STEP_SUMMARY

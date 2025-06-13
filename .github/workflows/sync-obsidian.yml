@@ -3,37 +3,36 @@ name: 🧠 Sync Obsidian Vault
 on:
   schedule:
     # Синхронизация каждые 6 часов
-    - cron: '0 */6 * * *'
+    - cron: "0 */6 * * *"
   workflow_dispatch: # Ручной запуск
     inputs:
       force_sync:
-        description: 'Force full sync'
+        description: "Force full sync"
         required: false
-        default: 'false'
+        default: "false"
   push:
     paths:
-      - 'vaults/**'
-      - '.github/workflows/sync-obsidian.yml'
+      - "vaults/**"
+      - ".github/workflows/sync-obsidian.yml"
 
 jobs:
   sync-obsidian:
     runs-on: ubuntu-latest
     name: 🔄 Sync Obsidian Vault
-    
+
     steps:
       - name: 🔄 Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
+      - name: 📦 Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: '20'
-          cache: 'npm'
+          bun-version: latest
 
       - name: 📥 Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: 🔍 Check API Health
         run: |
@@ -44,10 +43,10 @@ jobs:
       - name: 📊 Fetch Fresh Dashboard Data
         run: |
           echo "📊 Fetching fresh dashboard data..."
-          
+
           # Получаем данные с API
           curl -s "https://instagram-scraper-bot.vercel.app/api/dashboard-data" > /tmp/dashboard-data.json
-          
+
           # Проверяем что данные получены
           if [ -s /tmp/dashboard-data.json ]; then
             echo "✅ Dashboard data fetched successfully"
@@ -60,7 +59,7 @@ jobs:
       - name: 🧠 Update Obsidian Dashboard
         run: |
           echo "🧠 Updating Obsidian dashboard..."
-          
+
           # Создаем обновленный дашборд
           cat > "vaults/coco-age/🎯 ГЛАВНЫЙ ДАШБОРД.md" << 'EOF'
           # 🥥✨ ГЛАВНЫЙ ДАШБОРД COCO AGE
@@ -179,10 +178,10 @@ jobs:
       - name: 📊 Create Analytics Pages
         run: |
           echo "📊 Creating analytics pages..."
-          
+
           # Создаем папку для аналитики
           mkdir -p "vaults/coco-age/Analytics"
-          
+
           # Детальная аналитика конкурентов
           cat > "vaults/coco-age/Analytics/📊 Детальная аналитика.md" << 'EOF'
           # 📊 Детальная аналитика конкурентов
@@ -250,12 +249,12 @@ jobs:
       - name: 🔄 Commit and Push Changes
         run: |
           echo "🔄 Committing changes..."
-          
+
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           git add vaults/
-          
+
           if git diff --staged --quiet; then
             echo "📝 No changes to commit"
           else
