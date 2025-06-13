@@ -37,8 +37,22 @@ export interface ScraperBotContext extends TelegrafContext {
   // Возвращаем тип к SceneContextScene, который включает и контекст, и сессию
   scene: Scenes.SceneContextScene<ScraperBotContext, ScraperSceneSessionData>;
   // Изменяем wizard на обязательный для совместимости с WizardScene
-  wizard: Scenes.WizardContextWizard<ScraperBotContext>;
+  wizard: Scenes.WizardContextWizard<ScraperBotContext> & {
+    state: WizardState;
+  };
   match?: RegExpExecArray | null;
+}
+
+// Интерфейс для состояния wizard
+export interface WizardState {
+  [key: string]: any;
+  projectId?: number;
+  projectName?: string;
+  competitors?: Competitor[];
+  hashtags?: Hashtag[];
+  specificField?: any;
+  currentItemId?: number;
+  // Добавляем другие поля по мере необходимости
 }
 
 // Адаптер для хранения данных

@@ -46,12 +46,12 @@ const skipTests = !process.env.OPENAI_API_KEY || !process.env.DATABASE_URL;
 
         // Создаем тестовый Reel
         await adapter.executeQuery(
-          `INSERT INTO reels (instagram_id, url, caption, project_id, source_type, source_id)
+          `INSERT INTO reels (instagram_id, reel_url, description, project_id, source_type, source_identifier)
          VALUES ($1, $2, $3, $4, $5, $6)
-         ON CONFLICT (instagram_id) DO NOTHING`,
+         ON CONFLICT (reel_url) DO NOTHING`,
           [
             testReelId,
-            "https://example.com",
+            `https://example.com/reel/${testReelId}`,
             `Test Reel ${i}`,
             1,
             "test",
@@ -64,9 +64,9 @@ const skipTests = !process.env.OPENAI_API_KEY || !process.env.DATABASE_URL;
           `INSERT INTO transcript_embeddings (reel_id, transcript, embedding)
          VALUES ($1, $2, $3)`,
           [
-            testReelId,
+            `https://example.com/reel/${testReelId}`,
             `This is a test transcript for performance testing ${i}.`,
-            testEmbedding,
+            `[${testEmbedding.join(",")}]`,
           ]
         );
       }
@@ -83,7 +83,7 @@ const skipTests = !process.env.OPENAI_API_KEY || !process.env.DATABASE_URL;
       for (const testReelId of testReelIds) {
         await adapter.executeQuery(
           `DELETE FROM transcript_embeddings WHERE reel_id = $1`,
-          [testReelId]
+          [`https://example.com/reel/${testReelId}`]
         );
 
         // Удаляем тестовые Reels
@@ -113,7 +113,7 @@ const skipTests = !process.env.OPENAI_API_KEY || !process.env.DATABASE_URL;
          FROM transcript_embeddings
          ORDER BY embedding <=> $1
          LIMIT 5`,
-          [queryEmbedding]
+          [`[${queryEmbedding.join(",")}]`]
         );
 
         // Проверяем результат
@@ -147,7 +147,7 @@ const skipTests = !process.env.OPENAI_API_KEY || !process.env.DATABASE_URL;
         // Выполняем поиск похожих расшифровок
         const result = await adapter.executeQuery(
           `SELECT * FROM search_similar_transcripts($1, 0.5, 5)`,
-          [queryEmbedding]
+          [`[${queryEmbedding.join(",")}]`]
         );
 
         // Проверяем результат
