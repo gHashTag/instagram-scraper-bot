@@ -1,5 +1,9 @@
 import { Scenes, Markup } from "telegraf";
-import { ScraperSceneStep, ScraperSceneSessionData, StorageAdapter } from "../types";
+import {
+  ScraperSceneStep,
+  ScraperSceneSessionData,
+  StorageAdapter,
+} from "../types";
 import { ReelsCollection, ReelsFilter } from "../schemas";
 import { ReelsCollectionService } from "../services/reels-collection-service";
 import { logger } from "../logger";
@@ -8,7 +12,6 @@ import { logger } from "../logger";
  * Сцена для работы с коллекциями Reels
  */
 export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> {
-  private storage: StorageAdapter;
   private collectionService: ReelsCollectionService;
 
   /**
@@ -17,7 +20,6 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
    */
   constructor(storage: StorageAdapter) {
     super("reels_collection_scene");
-    this.storage = storage;
     this.collectionService = new ReelsCollectionService(storage);
 
     // Обработчики для сцены
@@ -25,11 +27,20 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
     this.leave(this.onSceneLeave.bind(this));
 
     // Обработчики для шагов сцены
-    this.action(/^collection_list_page_(\d+)$/, this.onCollectionListPage.bind(this));
+    this.action(
+      /^collection_list_page_(\d+)$/,
+      this.onCollectionListPage.bind(this)
+    );
     this.action("create_collection", this.onCreateCollection.bind(this));
     this.action(/^view_collection_(\d+)$/, this.onViewCollection.bind(this));
-    this.action(/^process_collection_(\d+)_(.+)$/, this.onProcessCollection.bind(this));
-    this.action(/^delete_collection_(\d+)$/, this.onDeleteCollection.bind(this));
+    this.action(
+      /^process_collection_(\d+)_(.+)$/,
+      this.onProcessCollection.bind(this)
+    );
+    this.action(
+      /^delete_collection_(\d+)$/,
+      this.onDeleteCollection.bind(this)
+    );
     this.action("back_to_project", this.onBackToProject.bind(this));
     this.action("back_to_collections", this.onBackToCollections.bind(this));
     this.action("confirm_delete", this.onConfirmDelete.bind(this));
@@ -44,10 +55,15 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
    * @param ctx Контекст сцены
    * @param reason Причина очистки состояния (для логирования)
    */
-  private clearSessionState(ctx: Scenes.SceneContext, reason: string = "general"): void {
+  private clearSessionState(
+    ctx: Scenes.SceneContext,
+    reason: string = "general"
+  ): void {
     const session = ctx.scene.session as ScraperSceneSessionData;
 
-    logger.info(`[ReelsCollectionScene] Clearing session state (reason: ${reason})`);
+    logger.info(
+      `[ReelsCollectionScene] Clearing session state (reason: ${reason})`
+    );
 
     // Очищаем данные сессии, связанные с коллекциями
     session.currentCollectionId = undefined;
@@ -73,10 +89,15 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
     state: Record<string, any> = {}
   ): Promise<void> {
     try {
-      logger.info(`[ReelsCollectionScene] Transitioning to ${targetScene} scene (reason: ${reason})`);
+      logger.info(
+        `[ReelsCollectionScene] Transitioning to ${targetScene} scene (reason: ${reason})`
+      );
       await ctx.scene.enter(targetScene, state);
     } catch (error) {
-      logger.error(`[ReelsCollectionScene] Error entering ${targetScene} scene:`, error);
+      logger.error(
+        `[ReelsCollectionScene] Error entering ${targetScene} scene:`,
+        error
+      );
       await ctx.scene.leave();
     }
   }
@@ -110,23 +131,30 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
    * @param ctx Контекст сцены
    * @param page Номер страницы
    */
-  private async showCollectionsList(ctx: Scenes.SceneContext, page: number = 1) {
+  private async showCollectionsList(
+    ctx: Scenes.SceneContext,
+    page: number = 1
+  ) {
     const session = ctx.scene.session as ScraperSceneSessionData;
 
     try {
       // Получаем коллекции для текущего проекта
-      const collections = await this.collectionService.getCollectionsByProjectId(
-        session.currentProjectId || 0
-      );
+      const collections =
+        await this.collectionService.getCollectionsByProjectId(
+          session.currentProjectId || 0
+        );
 
       // Если коллекций нет, отображаем сообщение
       if (collections.length === 0) {
         const keyboard = Markup.inlineKeyboard([
           [Markup.button.callback("➕ Создать коллекцию", "create_collection")],
-          [Markup.button.callback("⬅️ Назад к проекту", "back_to_project")]
+          [Markup.button.callback("⬅️ Назад к проекту", "back_to_project")],
         ]);
 
-        await ctx.reply("У вас пока нет коллекций Reels. Создайте первую коллекцию!", keyboard);
+        await ctx.reply(
+          "У вас пока нет коллекций Reels. Создайте первую коллекцию!",
+          keyboard
+        );
         return;
       }
 
@@ -154,12 +182,12 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
       const buttons = [];
 
       // Кнопки для коллекций
-      pageCollections.forEach(collection => {
+      pageCollections.forEach((collection) => {
         buttons.push([
           Markup.button.callback(
             `👁️ ${collection.name}`,
             `view_collection_${collection.id}`
-          )
+          ),
         ]);
       });
 
@@ -189,22 +217,35 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
       }
 
       // Кнопки действий
-      buttons.push([Markup.button.callback("➕ Создать коллекцию", "create_collection")]);
-      buttons.push([Markup.button.callback("⬅️ Назад к проекту", "back_to_project")]);
+      buttons.push([
+        Markup.button.callback("➕ Создать коллекцию", "create_collection"),
+      ]);
+      buttons.push([
+        Markup.button.callback("⬅️ Назад к проекту", "back_to_project"),
+      ]);
 
       const keyboard = Markup.inlineKeyboard(buttons);
 
       await ctx.reply(message, {
         parse_mode: "Markdown",
-        ...keyboard
+        ...keyboard,
       });
     } catch (error) {
-      logger.error("[ReelsCollectionScene] Ошибка при отображении списка коллекций:", error);
-      await ctx.reply("Произошла ошибка при получении списка коллекций. Пожалуйста, попробуйте позже.");
+      logger.error(
+        "[ReelsCollectionScene] Ошибка при отображении списка коллекций:",
+        error
+      );
+      await ctx.reply(
+        "Произошла ошибка при получении списка коллекций. Пожалуйста, попробуйте позже."
+      );
 
       // В случае ошибки возвращаемся к проекту
       this.clearSessionState(ctx, "collection_list_error");
-      await this.safeSceneTransition(ctx, "project_scene", "collection_list_error");
+      await this.safeSceneTransition(
+        ctx,
+        "project_scene",
+        "collection_list_error"
+      );
     }
   }
 
@@ -244,7 +285,8 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
 
     try {
       // Получаем коллекцию
-      const collection = await this.collectionService.getCollectionById(collectionId);
+      const collection =
+        await this.collectionService.getCollectionById(collectionId);
 
       if (!collection) {
         await ctx.reply("Коллекция не найдена. Возможно, она была удалена.");
@@ -280,11 +322,20 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
       // Кнопки для обработки коллекции
       if (!collection.is_processed) {
         buttons.push([
-          Markup.button.callback("📝 Обработать как текст", `process_collection_${collectionId}_text`),
-          Markup.button.callback("📊 Обработать как CSV", `process_collection_${collectionId}_csv`)
+          Markup.button.callback(
+            "📝 Обработать как текст",
+            `process_collection_${collectionId}_text`
+          ),
+          Markup.button.callback(
+            "📊 Обработать как CSV",
+            `process_collection_${collectionId}_csv`
+          ),
         ]);
         buttons.push([
-          Markup.button.callback("📋 Обработать как JSON", `process_collection_${collectionId}_json`)
+          Markup.button.callback(
+            "📋 Обработать как JSON",
+            `process_collection_${collectionId}_json`
+          ),
         ]);
       } else if (collection.content_data) {
         // Если коллекция уже обработана и есть данные, показываем их
@@ -292,25 +343,46 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
 
         if (collection.content_format === "text") {
           // Для текстового формата показываем первые 500 символов
-          message += "```\n" + collection.content_data.substring(0, 500) + (collection.content_data.length > 500 ? "...\n(сокращено)" : "") + "\n```";
+          message +=
+            "```\n" +
+            collection.content_data.substring(0, 500) +
+            (collection.content_data.length > 500 ? "...\n(сокращено)" : "") +
+            "\n```";
         } else {
-          message += "Данные доступны в формате " + collection.content_format.toUpperCase();
+          message +=
+            "Данные доступны в формате " +
+            collection.content_format.toUpperCase();
         }
       }
 
       // Кнопки действий
-      buttons.push([Markup.button.callback("🗑️ Удалить коллекцию", `delete_collection_${collectionId}`)]);
-      buttons.push([Markup.button.callback("⬅️ Назад к списку коллекций", "back_to_collections")]);
+      buttons.push([
+        Markup.button.callback(
+          "🗑️ Удалить коллекцию",
+          `delete_collection_${collectionId}`
+        ),
+      ]);
+      buttons.push([
+        Markup.button.callback(
+          "⬅️ Назад к списку коллекций",
+          "back_to_collections"
+        ),
+      ]);
 
       const keyboard = Markup.inlineKeyboard(buttons);
 
       await ctx.reply(message, {
         parse_mode: "Markdown",
-        ...keyboard
+        ...keyboard,
       });
     } catch (error) {
-      logger.error("[ReelsCollectionScene] Ошибка при просмотре коллекции:", error);
-      await ctx.reply("Произошла ошибка при получении информации о коллекции. Пожалуйста, попробуйте позже.");
+      logger.error(
+        "[ReelsCollectionScene] Ошибка при просмотре коллекции:",
+        error
+      );
+      await ctx.reply(
+        "Произошла ошибка при получении информации о коллекции. Пожалуйста, попробуйте позже."
+      );
 
       // В случае ошибки возвращаемся к списку коллекций
       await this.showCollectionsList(ctx);
@@ -332,24 +404,36 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
       session.step = ScraperSceneStep.EXPORT_COLLECTION;
 
       // Отправляем сообщение о начале обработки
-      await ctx.reply(`Начинаем обработку коллекции в формате ${format.toUpperCase()}...`);
+      await ctx.reply(
+        `Начинаем обработку коллекции в формате ${format.toUpperCase()}...`
+      );
 
       // Обрабатываем коллекцию
-      const processedCollection = await this.collectionService.processCollection(collectionId, format);
+      const processedCollection =
+        await this.collectionService.processCollection(collectionId, format);
 
       if (!processedCollection) {
-        await ctx.reply("Не удалось обработать коллекцию. Пожалуйста, попробуйте позже.");
+        await ctx.reply(
+          "Не удалось обработать коллекцию. Пожалуйста, попробуйте позже."
+        );
         return;
       }
 
       // Отправляем сообщение об успешной обработке
-      await ctx.reply(`Коллекция успешно обработана в формате ${format.toUpperCase()}!`);
+      await ctx.reply(
+        `Коллекция успешно обработана в формате ${format.toUpperCase()}!`
+      );
 
       // Показываем детали коллекции
       await this.onViewCollection(ctx);
     } catch (error) {
-      logger.error("[ReelsCollectionScene] Ошибка при обработке коллекции:", error);
-      await ctx.reply("Произошла ошибка при обработке коллекции. Пожалуйста, попробуйте позже.");
+      logger.error(
+        "[ReelsCollectionScene] Ошибка при обработке коллекции:",
+        error
+      );
+      await ctx.reply(
+        "Произошла ошибка при обработке коллекции. Пожалуйста, попробуйте позже."
+      );
 
       // В случае ошибки возвращаемся к списку коллекций
       await this.showCollectionsList(ctx);
@@ -367,7 +451,8 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
 
     try {
       // Получаем коллекцию
-      const collection = await this.collectionService.getCollectionById(collectionId);
+      const collection =
+        await this.collectionService.getCollectionById(collectionId);
 
       if (!collection) {
         await ctx.reply("Коллекция не найдена. Возможно, она была удалена.");
@@ -382,14 +467,22 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
       const keyboard = Markup.inlineKeyboard([
         [
           Markup.button.callback("✅ Да, удалить", "confirm_delete"),
-          Markup.button.callback("❌ Нет, отмена", "cancel_delete")
-        ]
+          Markup.button.callback("❌ Нет, отмена", "cancel_delete"),
+        ],
       ]);
 
-      await ctx.reply(`Вы уверены, что хотите удалить коллекцию "${collection.name}"?`, keyboard);
+      await ctx.reply(
+        `Вы уверены, что хотите удалить коллекцию "${collection.name}"?`,
+        keyboard
+      );
     } catch (error) {
-      logger.error("[ReelsCollectionScene] Ошибка при удалении коллекции:", error);
-      await ctx.reply("Произошла ошибка при удалении коллекции. Пожалуйста, попробуйте позже.");
+      logger.error(
+        "[ReelsCollectionScene] Ошибка при удалении коллекции:",
+        error
+      );
+      await ctx.reply(
+        "Произошла ошибка при удалении коллекции. Пожалуйста, попробуйте позже."
+      );
 
       // В случае ошибки возвращаемся к списку коллекций
       await this.showCollectionsList(ctx);
@@ -405,19 +498,28 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
 
     try {
       // Удаляем коллекцию
-      const result = await this.collectionService.deleteCollection(session.currentCollectionId || 0);
+      const result = await this.collectionService.deleteCollection(
+        session.currentCollectionId || 0
+      );
 
       if (result) {
         await ctx.reply("Коллекция успешно удалена!");
       } else {
-        await ctx.reply("Не удалось удалить коллекцию. Пожалуйста, попробуйте позже.");
+        await ctx.reply(
+          "Не удалось удалить коллекцию. Пожалуйста, попробуйте позже."
+        );
       }
 
       // Показываем список коллекций
       await this.showCollectionsList(ctx);
     } catch (error) {
-      logger.error("[ReelsCollectionScene] Ошибка при подтверждении удаления коллекции:", error);
-      await ctx.reply("Произошла ошибка при удалении коллекции. Пожалуйста, попробуйте позже.");
+      logger.error(
+        "[ReelsCollectionScene] Ошибка при подтверждении удаления коллекции:",
+        error
+      );
+      await ctx.reply(
+        "Произошла ошибка при удалении коллекции. Пожалуйста, попробуйте позже."
+      );
 
       // В случае ошибки возвращаемся к списку коллекций
       await this.showCollectionsList(ctx);
@@ -444,7 +546,11 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
     this.clearSessionState(ctx, "back_to_project_clicked");
 
     // Безопасный переход к сцене проекта
-    await this.safeSceneTransition(ctx, "project_scene", "back_to_project_clicked");
+    await this.safeSceneTransition(
+      ctx,
+      "project_scene",
+      "back_to_project_clicked"
+    );
   }
 
   /**
@@ -473,7 +579,9 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
         session.collectionName = text;
 
         // Запрашиваем описание коллекции
-        await ctx.reply("Введите описание для коллекции (или отправьте '-' для пропуска):");
+        await ctx.reply(
+          "Введите описание для коллекции (или отправьте '-' для пропуска):"
+        );
 
         // Переходим к шагу ввода описания
         session.step = ScraperSceneStep.COLLECTION_DETAILS;
@@ -504,8 +612,13 @@ export class ReelsCollectionScene extends Scenes.BaseScene<Scenes.SceneContext> 
             // Показываем список коллекций
             await this.showCollectionsList(ctx);
           } catch (error) {
-            logger.error("[ReelsCollectionScene] Ошибка при создании коллекции:", error);
-            await ctx.reply("Произошла ошибка при создании коллекции. Пожалуйста, попробуйте позже.");
+            logger.error(
+              "[ReelsCollectionScene] Ошибка при создании коллекции:",
+              error
+            );
+            await ctx.reply(
+              "Произошла ошибка при создании коллекции. Пожалуйста, попробуйте позже."
+            );
 
             // В случае ошибки возвращаемся к списку коллекций
             await this.showCollectionsList(ctx);
