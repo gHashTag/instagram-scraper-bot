@@ -193,8 +193,7 @@ export class MetaMuseAutomatedScraper {
    */
   private async savePostToDatabase(
     post: any,
-    hashtag: string,
-    category: string
+    hashtag: string
   ): Promise<number | null> {
     try {
       // Создаем объект для сохранения на основе структуры reelsTable
@@ -326,11 +325,7 @@ export class MetaMuseAutomatedScraper {
 
       // Обработка каждого поста
       for (const post of posts) {
-        const postId = await this.savePostToDatabase(
-          post,
-          hashtag,
-          batch.category
-        );
+        const postId = await this.savePostToDatabase(post, hashtag);
 
         if (postId && post.videoUrl) {
           await this.transcribePost(post, postId);

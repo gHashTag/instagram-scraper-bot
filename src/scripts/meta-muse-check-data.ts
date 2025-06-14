@@ -8,12 +8,7 @@
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { eq, and, count, desc } from "drizzle-orm";
-import {
-  usersTable,
-  projectsTable,
-  hashtagsTable,
-  reelsTable,
-} from "../db/schema";
+import { projectsTable, hashtagsTable, reelsTable } from "../db/schema";
 
 // 🔧 Configuration
 const PROJECT_ID = 2;

@@ -10,9 +10,6 @@
 import { ApifyClient } from "apify-client";
 import { initializeDBConnection, NeonDB } from "../db/neonDB";
 import { reelsTable } from "../db/schema";
-import { eq } from "drizzle-orm";
-import { MetaMuseHashtagStrategy } from "../strategy/meta-muse-hashtag-strategy";
-import { NeonAdapter } from "../adapters/neon-adapter";
 import dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
@@ -35,7 +32,6 @@ interface DemoStats {
 export class MetaMuseDemoScraper {
   private apifyClient: ApifyClient;
   private db: NeonDB;
-  private strategy: MetaMuseHashtagStrategy;
   private stats: DemoStats;
 
   constructor() {

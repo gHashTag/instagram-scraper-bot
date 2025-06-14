@@ -18,8 +18,6 @@ import {
   hashtagsTable,
   reelsTable,
 } from "../db/schema";
-import fs from "fs/promises";
-import path from "path";
 
 // 🔧 Configuration
 const PROJECT_ID = 2;
