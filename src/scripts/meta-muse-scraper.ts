@@ -39,7 +39,7 @@ async function main() {
     console.log("");
 
     // Создание конфигурации для пакетного скрепинга
-    const batchConfig = strategy.createBatchScrapingConfig(config);
+    strategy.createBatchScrapingConfig(config);
     console.log("⚙️ Конфигурация пакетного скрепинга создана");
 
     // Генерация отчета (пока без реального скрепинга)
