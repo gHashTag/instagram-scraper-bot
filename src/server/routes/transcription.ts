@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/reels/:id/transcript", async (req, res) => {
+router.get("/reels/:id/transcript", async (_req, res) => {
   try {
     // const reelId = parseInt(req.params.id, 10);
     // TODO: Получить транскрипцию из базы данных
