@@ -2,7 +2,6 @@ import { Scenes, Markup } from "telegraf";
 import type { ScraperBotContext } from "../types";
 import { ScraperSceneStep } from "../types";
 import { logger } from "../logger";
-import { NotificationSettings } from "../schemas";
 import { registerButtons } from "../utils/button-handler";
 
 /**
@@ -15,7 +14,9 @@ export const notificationScene = new Scenes.BaseScene<ScraperBotContext>(
 /**
  * Обработчик входа в сцену уведомлений
  */
-export async function handleNotificationEnter(ctx: ScraperBotContext): Promise<void> {
+export async function handleNotificationEnter(
+  ctx: ScraperBotContext
+): Promise<void> {
   logger.info("[NotificationScene] handleNotificationEnter triggered");
 
   // Проверяем, что пользователь определен
@@ -116,7 +117,10 @@ export async function handleNotificationEnter(ctx: ScraperBotContext): Promise<v
     // Устанавливаем шаг сцены
     ctx.scene.session.step = ScraperSceneStep.NOTIFICATION_SETTINGS;
   } catch (error) {
-    logger.error("[NotificationScene] Error in handleNotificationEnter:", error);
+    logger.error(
+      "[NotificationScene] Error in handleNotificationEnter:",
+      error
+    );
     await ctx.reply(
       "Произошла ошибка при загрузке настроек уведомлений. Попробуйте еще раз."
     );
@@ -130,7 +134,9 @@ notificationScene.enter(handleNotificationEnter);
 /**
  * Обработчик для включения/отключения уведомлений о новых Reels
  */
-export async function handleToggleNewReelsAction(ctx: ScraperBotContext): Promise<void> {
+export async function handleToggleNewReelsAction(
+  ctx: ScraperBotContext
+): Promise<void> {
   logger.info("[NotificationScene] handleToggleNewReelsAction triggered");
 
   const match = ctx.match as unknown as RegExpExecArray;
@@ -162,7 +168,7 @@ export async function handleToggleNewReelsAction(ctx: ScraperBotContext): Promis
     }
 
     // Обновляем настройки
-    const updatedSettings = await ctx.storage.updateNotificationSettings(user.id, {
+    await ctx.storage.updateNotificationSettings(user.id, {
       new_reels_enabled: action === "on",
     });
 
@@ -174,7 +180,10 @@ export async function handleToggleNewReelsAction(ctx: ScraperBotContext): Promis
     // Возвращаемся к настройкам уведомлений
     await handleNotificationEnter(ctx);
   } catch (error) {
-    logger.error("[NotificationScene] Error in handleToggleNewReelsAction:", error);
+    logger.error(
+      "[NotificationScene] Error in handleToggleNewReelsAction:",
+      error
+    );
     await ctx.reply(
       "Произошла ошибка при обновлении настроек уведомлений. Попробуйте еще раз."
     );
@@ -186,7 +195,9 @@ export async function handleToggleNewReelsAction(ctx: ScraperBotContext): Promis
 /**
  * Обработчик для включения/отключения уведомлений о трендах
  */
-export async function handleToggleTrendsAction(ctx: ScraperBotContext): Promise<void> {
+export async function handleToggleTrendsAction(
+  ctx: ScraperBotContext
+): Promise<void> {
   logger.info("[NotificationScene] handleToggleTrendsAction triggered");
 
   const match = ctx.match as unknown as RegExpExecArray;
@@ -218,7 +229,7 @@ export async function handleToggleTrendsAction(ctx: ScraperBotContext): Promise<
     }
 
     // Обновляем настройки
-    const updatedSettings = await ctx.storage.updateNotificationSettings(user.id, {
+    await ctx.storage.updateNotificationSettings(user.id, {
       trends_enabled: action === "on",
     });
 
@@ -230,7 +241,10 @@ export async function handleToggleTrendsAction(ctx: ScraperBotContext): Promise<
     // Возвращаемся к настройкам уведомлений
     await handleNotificationEnter(ctx);
   } catch (error) {
-    logger.error("[NotificationScene] Error in handleToggleTrendsAction:", error);
+    logger.error(
+      "[NotificationScene] Error in handleToggleTrendsAction:",
+      error
+    );
     await ctx.reply(
       "Произошла ошибка при обновлении настроек уведомлений. Попробуйте еще раз."
     );
@@ -242,7 +256,9 @@ export async function handleToggleTrendsAction(ctx: ScraperBotContext): Promise<
 /**
  * Обработчик для включения/отключения еженедельных отчетов
  */
-export async function handleToggleWeeklyReportAction(ctx: ScraperBotContext): Promise<void> {
+export async function handleToggleWeeklyReportAction(
+  ctx: ScraperBotContext
+): Promise<void> {
   logger.info("[NotificationScene] handleToggleWeeklyReportAction triggered");
 
   const match = ctx.match as unknown as RegExpExecArray;
@@ -274,7 +290,7 @@ export async function handleToggleWeeklyReportAction(ctx: ScraperBotContext): Pr
     }
 
     // Обновляем настройки
-    const updatedSettings = await ctx.storage.updateNotificationSettings(user.id, {
+    await ctx.storage.updateNotificationSettings(user.id, {
       weekly_report_enabled: action === "on",
     });
 
@@ -286,7 +302,10 @@ export async function handleToggleWeeklyReportAction(ctx: ScraperBotContext): Pr
     // Возвращаемся к настройкам уведомлений
     await handleNotificationEnter(ctx);
   } catch (error) {
-    logger.error("[NotificationScene] Error in handleToggleWeeklyReportAction:", error);
+    logger.error(
+      "[NotificationScene] Error in handleToggleWeeklyReportAction:",
+      error
+    );
     await ctx.reply(
       "Произошла ошибка при обновлении настроек уведомлений. Попробуйте еще раз."
     );
@@ -298,7 +317,9 @@ export async function handleToggleWeeklyReportAction(ctx: ScraperBotContext): Pr
 /**
  * Обработчик для возврата в главное меню
  */
-export async function handleBackToMenuAction(ctx: ScraperBotContext): Promise<void> {
+export async function handleBackToMenuAction(
+  ctx: ScraperBotContext
+): Promise<void> {
   logger.info("[NotificationScene] handleBackToMenuAction triggered");
 
   // Отвечаем на callback query
@@ -308,20 +329,17 @@ export async function handleBackToMenuAction(ctx: ScraperBotContext): Promise<vo
   await ctx.scene.leave();
 
   // Отправляем сообщение с главным меню
-  await ctx.reply(
-    "Вы вернулись в главное меню. Выберите действие:",
-    {
-      reply_markup: {
-        keyboard: [
-          ["📊 Проекты", "🔍 Конкуренты"],
-          ["#️⃣ Хэштеги", "🎬 Запустить скрапинг"],
-          ["👀 Просмотр Reels", "📈 Аналитика"],
-          ["🔔 Уведомления", "ℹ️ Помощь"],
-        ],
-        resize_keyboard: true,
-      },
-    }
-  );
+  await ctx.reply("Вы вернулись в главное меню. Выберите действие:", {
+    reply_markup: {
+      keyboard: [
+        ["📊 Проекты", "🔍 Конкуренты"],
+        ["#️⃣ Хэштеги", "🎬 Запустить скрапинг"],
+        ["👀 Просмотр Reels", "📈 Аналитика"],
+        ["🔔 Уведомления", "ℹ️ Помощь"],
+      ],
+      resize_keyboard: true,
+    },
+  });
 }
 
 // Регистрация обработчиков кнопок с использованием централизованного обработчика
@@ -329,27 +347,31 @@ registerButtons(notificationScene, [
   {
     id: /toggle_new_reels_(on|off)/,
     handler: handleToggleNewReelsAction,
-    errorMessage: "Произошла ошибка при изменении настроек уведомлений о новых Reels. Попробуйте еще раз.",
-    verbose: true
+    errorMessage:
+      "Произошла ошибка при изменении настроек уведомлений о новых Reels. Попробуйте еще раз.",
+    verbose: true,
   },
   {
     id: /toggle_trends_(on|off)/,
     handler: handleToggleTrendsAction,
-    errorMessage: "Произошла ошибка при изменении настроек уведомлений о трендах. Попробуйте еще раз.",
-    verbose: true
+    errorMessage:
+      "Произошла ошибка при изменении настроек уведомлений о трендах. Попробуйте еще раз.",
+    verbose: true,
   },
   {
     id: /toggle_weekly_report_(on|off)/,
     handler: handleToggleWeeklyReportAction,
-    errorMessage: "Произошла ошибка при изменении настроек еженедельных отчетов. Попробуйте еще раз.",
-    verbose: true
+    errorMessage:
+      "Произошла ошибка при изменении настроек еженедельных отчетов. Попробуйте еще раз.",
+    verbose: true,
   },
   {
     id: "back_to_menu",
     handler: handleBackToMenuAction,
-    errorMessage: "Произошла ошибка при возврате в главное меню. Попробуйте еще раз.",
-    verbose: true
-  }
+    errorMessage:
+      "Произошла ошибка при возврате в главное меню. Попробуйте еще раз.",
+    verbose: true,
+  },
 ]);
 
 /**
@@ -364,7 +386,14 @@ function formatDays(days: number[]): string {
     return "Ежедневно";
   }
 
-  if (days.length === 5 && days.includes(1) && days.includes(2) && days.includes(3) && days.includes(4) && days.includes(5)) {
+  if (
+    days.length === 5 &&
+    days.includes(1) &&
+    days.includes(2) &&
+    days.includes(3) &&
+    days.includes(4) &&
+    days.includes(5)
+  ) {
     return "По будням";
   }
 
@@ -372,5 +401,5 @@ function formatDays(days: number[]): string {
     return "По выходным";
   }
 
-  return days.map(day => dayNames[day - 1]).join(", ");
+  return days.map((day) => dayNames[day - 1]).join(", ");
 }

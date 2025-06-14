@@ -12,9 +12,7 @@ import projectsMenuScene from "./src/scenes/projects-menu-scene";
 /**
  * Creates and configures the Telegraf stage with available scenes
  */
-export function createScenesStage(
-  storageAdapter: StorageAdapter
-): Scenes.Stage<ScraperBotContext> {
+export function createScenesStage(): Scenes.Stage<ScraperBotContext> {
   const stage = new Scenes.Stage<ScraperBotContext>([
     projectScene,
     projectsMenuScene,
@@ -28,9 +26,7 @@ export function createScenesStage(
  * Setup Instagram Scraper Bot with basic handlers and middleware
  */
 export function setupInstagramScraperBot(
-  bot: Telegraf<ScraperBotContext>,
-  storageAdapter: StorageAdapter,
-  config: InstagramScraperBotConfig
+  bot: Telegraf<ScraperBotContext>
 ): void {
   // Add start command
   bot.command("start", async (ctx) => {

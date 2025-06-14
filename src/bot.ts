@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import { Telegraf, session, Markup } from "telegraf";
+import { Telegraf, session } from "telegraf";
 import { NeonAdapter } from "./adapters/neon-adapter";
 import { setupInstagramScraperBot, createScenesStage } from "../index";
 import { logger, LogLevel, LogType } from "./utils/logger";

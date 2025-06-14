@@ -12,7 +12,6 @@ import {
 } from "../schemas";
 import {
   validateUser,
-  validateProject,
   validateCompetitors,
   validateCompetitor,
 } from "../utils/validation-zod";
