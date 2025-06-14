@@ -2,28 +2,37 @@
  * 🟢 API роуты для хэштегов
  */
 
-import { Router } from 'express';
-import { z } from 'zod';
-import { initializeDBConnection } from '../../db/neonDB';
-import { hashtagsTable, reelsTable } from '../../db/schema';
-import { eq, and, gte, desc, sql } from 'drizzle-orm';
-import { logger } from '../../logger';
+import { Router } from "express";
+import { z } from "zod";
+import { initializeDBConnection } from "../../db/neonDB";
+import { hashtagsTable, reelsTable } from "../../db/schema";
+import { eq, and, desc } from "drizzle-orm";
+import { logger } from "../../logger";
 
 const router = Router();
 const db = initializeDBConnection();
 
 const HashtagsQuerySchema = z.object({
-  active: z.string().optional().transform(val => val === 'true'),
-  page: z.string().optional().transform(val => parseInt(val || '1', 10)),
-  limit: z.string().optional().transform(val => parseInt(val || '20', 10)),
+  active: z
+    .string()
+    .optional()
+    .transform((val) => val === "true"),
+  page: z
+    .string()
+    .optional()
+    .transform((val) => parseInt(val || "1", 10)),
+  limit: z
+    .string()
+    .optional()
+    .transform((val) => parseInt(val || "20", 10)),
 });
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const query = HashtagsQuerySchema.parse(req.query);
-    
+
     let dbQuery = db.select().from(hashtagsTable);
-    
+
     if (query.active !== undefined) {
       dbQuery = dbQuery.where(eq(hashtagsTable.is_active, query.active));
     }
@@ -37,37 +46,36 @@ router.get('/', async (req, res) => {
     res.json({
       success: true,
       data: hashtags,
-      total: hashtags.length
+      total: hashtags.length,
     });
-
   } catch (error) {
-    logger.error('Error fetching hashtags:', error);
-    
+    logger.error("Error fetching hashtags:", error);
+
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid query parameters',
-        details: error.errors
+        error: "Invalid query parameters",
+        details: error.errors,
       });
     }
 
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch hashtags'
+      error: "Failed to fetch hashtags",
     });
   }
 });
 
-router.get('/:tag/reels', async (req, res) => {
+router.get("/:tag/reels", async (req, res) => {
   try {
     const hashtag = req.params.tag;
-    
+
     const reels = await db
       .select()
       .from(reelsTable)
       .where(
         and(
-          eq(reelsTable.source_type, 'hashtag'),
+          eq(reelsTable.source_type, "hashtag"),
           eq(reelsTable.source_name, hashtag)
         )
       )
@@ -77,7 +85,7 @@ router.get('/:tag/reels', async (req, res) => {
     if (reels.length === 0) {
       return res.status(404).json({
         success: false,
-        error: 'Hashtag not found'
+        error: "Hashtag not found",
       });
     }
 
@@ -85,15 +93,14 @@ router.get('/:tag/reels', async (req, res) => {
       success: true,
       data: reels,
       total: reels.length,
-      hashtag: hashtag
+      hashtag: hashtag,
     });
-
   } catch (error) {
-    logger.error('Error fetching hashtag reels:', error);
-    
+    logger.error("Error fetching hashtag reels:", error);
+
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch hashtag reels'
+      error: "Failed to fetch hashtag reels",
     });
   }
 });
