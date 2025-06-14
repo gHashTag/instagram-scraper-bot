@@ -7,11 +7,7 @@ import {
   projectContextMiddleware,
   handleGotoProjects,
 } from "./middleware/project-context-middleware";
-import type {
-  ScraperBotContext,
-  InstagramScraperBotConfig,
-  StorageAdapter,
-} from "./types";
+import type { ScraperBotContext, StorageAdapter } from "./types";
 
 // Переносим объявление storageAdapter в область видимости модуля
 let storageAdapter: NeonAdapter | undefined;
@@ -219,24 +215,15 @@ async function startBot() {
 
     // 6. Создание и регистрация Stage с сценами
     console.log("[DEBUG] Создание Stage со сценами...");
-    const stage = createScenesStage(storageAdapter);
+    const stage = createScenesStage();
     console.log("[DEBUG] Регистрация Stage middleware...");
     bot.use(stage.middleware());
 
     // 7. Настройка обработчиков команд и основного функционала бота
-    // Упрощаем config, оставляем только то, что действительно нужно для setupInstagramScraperBot
-    const config: InstagramScraperBotConfig = {
-      // telegramBotToken: BOT_TOKEN, // BOT_TOKEN уже используется для создания Telegraf
-      apifyToken: process.env.APIFY_TOKEN, // Передаем, может быть undefined, обработается внутри
-      openaiApiKey: process.env.OPENAI_API_KEY, // Передаем, может быть undefined
-      adminUserId: process.env.ADMIN_USER_ID
-        ? parseInt(process.env.ADMIN_USER_ID)
-        : undefined,
-    };
     console.log(
       "[DEBUG] Настройка обработчиков и команд бота (setupInstagramScraperBot)..."
     );
-    setupInstagramScraperBot(bot, storageAdapter, config);
+    setupInstagramScraperBot(bot);
     console.log("[DEBUG] Модуль бота настроен.");
 
     // Регистрация дополнительных глобальных обработчиков (если нужны) ПОСЛЕ stage middleware

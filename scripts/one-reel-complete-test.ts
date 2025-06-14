@@ -169,7 +169,7 @@ async function main() {
         ${reel.videoPlayCount || 0},
         ${reel.likesCount || 0},
         ${reel.commentsCount || 0},
-        ${reel.timestamp ? new Date(reel.timestamp) : new Date()},
+        ${reel.timestamp ? new Date(reel.timestamp as string | number | Date) : new Date()},
         ${reel.displayUrl || ""},
         ${reel.videoUrl || ""},
         ${JSON.stringify(reel)}

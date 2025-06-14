@@ -1,9 +1,5 @@
 import { Telegraf, Scenes } from "telegraf";
-import type {
-  ScraperBotContext,
-  StorageAdapter,
-  InstagramScraperBotConfig,
-} from "./src/types";
+import type { ScraperBotContext } from "./src/types";
 
 // Import available scenes - using a more conservative approach
 import { projectScene } from "./src/scenes/project-scene";
