@@ -1,1 +1,137 @@
- 
+name: 🐭 Meta Muse Daily Automation
+
+on:
+  schedule:
+    # Запуск каждый день в 02:00 UTC (05:00 MSK)
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    # Ручной запуск
+    inputs:
+      force_full_cycle:
+        description: "Force full cycle (ignore recent data)"
+        required: false
+        default: "false"
+        type: boolean
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+jobs:
+  meta-muse-daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180 # 3 часа максимум
+
+    steps:
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: 📦 Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🔍 Environment Check
+        run: |
+          echo "🔍 Проверка переменных окружения..."
+          echo "DATABASE_URL: ${DATABASE_URL:0:20}..."
+          echo "APIFY_TOKEN: ${APIFY_TOKEN:0:10}..."
+          echo "OPENAI_API_KEY: ${OPENAI_API_KEY:0:10}..."
+          echo "TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:0:10}..."
+
+      - name: 🏗️ Build Project
+        run: bun run build
+
+      - name: 🔧 Database Migration
+        run: bun run db:migrate
+        continue-on-error: true
+
+      - name: 🐭 Meta Muse Daily Cycle
+        id: meta_muse
+        run: |
+          echo "🐭 Запуск Meta Muse Daily Automation..."
+
+          # Создаем лог файл
+          LOG_FILE="meta-muse-daily-$(date +%Y%m%d_%H%M%S).log"
+
+          # Запускаем скрипт с логированием
+          bun run meta-muse:daily 2>&1 | tee "$LOG_FILE"
+
+          # Сохраняем статус
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          echo "log_file=$LOG_FILE" >> $GITHUB_OUTPUT
+
+          # Показываем краткую статистику
+          echo "📊 Краткая статистика:"
+          grep -E "(✅|❌|📊|🎯)" "$LOG_FILE" | tail -10 || echo "Нет статистики"
+
+          exit $EXIT_CODE
+
+      - name: 📊 Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meta-muse-logs-${{ github.run_number }}
+          path: meta-muse-daily-*.log
+          retention-days: 7
+
+      - name: 📱 Telegram Success Notification
+        if: success()
+        run: |
+          STATS=$(grep -E "(📊|🎯|✅)" meta-muse-daily-*.log | tail -5 | tr '\n' ' ' || echo "Статистика недоступна")
+
+          MESSAGE="🎉 *Meta Muse Daily - УСПЕХ*
+
+          📅 Дата: $(date '+%Y-%m-%d %H:%M UTC')
+          🤖 GitHub Action: Завершен успешно
+
+          📊 *Результаты:*
+          $STATS
+
+          🔗 [Просмотреть детали](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+          🐭 Meta Muse продолжает собирать качественный контент!"
+
+          curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+            -d chat_id="$TELEGRAM_CHAT_ID" \
+            -d text="$MESSAGE" \
+            -d parse_mode="Markdown" \
+            -d disable_web_page_preview=true
+
+      - name: 📱 Telegram Error Notification
+        if: failure()
+        run: |
+          ERROR_LOG=$(grep -E "(❌|💥|ERROR)" meta-muse-daily-*.log | tail -3 | tr '\n' ' ' || echo "Детали ошибки недоступны")
+
+          MESSAGE="🚨 *Meta Muse Daily - ОШИБКА*
+
+          📅 Дата: $(date '+%Y-%m-%d %H:%M UTC')
+          🤖 GitHub Action: Завершен с ошибкой
+
+          ❌ *Ошибки:*
+          $ERROR_LOG
+
+          🔗 [Диагностика](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+          🔧 Требуется вмешательство администратора"
+
+          curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+            -d chat_id="$TELEGRAM_CHAT_ID" \
+            -d text="$MESSAGE" \
+            -d parse_mode="Markdown" \
+            -d disable_web_page_preview=true
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          echo "🧹 Очистка временных файлов..."
+          # Удаляем большие временные файлы если есть
+          find . -name "*.tmp" -size +10M -delete 2>/dev/null || true
+          echo "✅ Очистка завершена"

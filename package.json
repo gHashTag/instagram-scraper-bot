@@ -20,7 +20,8 @@
     "meta-muse:check": "bun run src/scripts/meta-muse-check-data.ts",
     "meta-muse:demo": "bun run src/scripts/meta-muse-demo-cycle.ts",
     "meta-muse:quick-test": "bun run src/scripts/meta-muse-quick-test.ts",
-    "meta-muse:daily": "bun run src/scripts/meta-muse-daily-runner.ts"
+    "meta-muse:daily": "bun run src/scripts/meta-muse-daily-runner.ts",
+    "sync-obsidian": "bun run src/scripts/sync-obsidian-vault.ts"
   },
   "keywords": [
     "instagram",

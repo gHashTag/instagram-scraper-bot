@@ -1,12 +1,12 @@
 /**
  * 🕉️ OBSIDIAN DASHBOARD MANAGER - Управление дашбордами
- * 
+ *
  * Автоматическое обновление дашбордов с реальными данными
  */
 
-import fs from 'fs';
-import path from 'path';
-import { logger } from './logger';
+import fs from "fs";
+import path from "path";
+import { logger } from "./logger";
 
 interface DashboardData {
   totalPosts: number;
@@ -17,7 +17,7 @@ interface DashboardData {
     tag: string;
     posts: number;
     avgViews: number;
-    trend: 'up' | 'down' | 'stable';
+    trend: "up" | "down" | "stable";
   }>;
   competitors: Array<{
     username: string;
@@ -52,18 +52,28 @@ export class ObsidianDashboardManager {
    * Обновить главный дашборд с реальными данными
    */
   async updateMainDashboard(data: DashboardData): Promise<void> {
-    const timestamp = new Date().toLocaleString('ru-RU');
-    const date = new Date().toISOString().split('T')[0];
+    const timestamp = new Date().toLocaleString("ru-RU");
+    const date = new Date().toISOString().split("T")[0];
 
     let dashboardPath: string;
     let dashboardContent: string;
 
-    if (this.clientName.includes('Эстетическая') || this.clientName.includes('Coco')) {
-      dashboardPath = path.join(this.vaultPath, '🥥✨ ГЛАВНЫЙ ДАШБОРД.md');
+    if (
+      this.clientName.includes("Эстетическая") ||
+      this.clientName.includes("Coco")
+    ) {
+      dashboardPath = path.join(this.vaultPath, "🥥✨ ГЛАВНЫЙ ДАШБОРД.md");
       dashboardContent = this.generateCocoAgeDashboard(data, timestamp, date);
-    } else if (this.clientName.includes('TrendWatching') || this.clientName.includes('AI')) {
-      dashboardPath = path.join(this.vaultPath, '🤖📈 ГЛАВНЫЙ ДАШБОРД.md');
-      dashboardContent = this.generateTrendWatchingDashboard(data, timestamp, date);
+    } else if (
+      this.clientName.includes("TrendWatching") ||
+      this.clientName.includes("AI")
+    ) {
+      dashboardPath = path.join(this.vaultPath, "🤖📈 ГЛАВНЫЙ ДАШБОРД.md");
+      dashboardContent = this.generateTrendWatchingDashboard(
+        data,
+        timestamp,
+        date
+      );
     } else {
       throw new Error(`Неизвестный клиент: ${this.clientName}`);
     }
@@ -85,27 +95,46 @@ export class ObsidianDashboardManager {
    * Обновить страницу конкретного конкурента
    */
   private async updateCompetitorPage(competitor: any): Promise<void> {
-    const competitorPath = path.join(this.vaultPath, 'Competitors', `${competitor.username}.md`);
-    const timestamp = new Date().toLocaleString('ru-RU');
+    const competitorsDir = path.join(this.vaultPath, "Competitors");
+    const competitorPath = path.join(
+      competitorsDir,
+      `${competitor.username}.md`
+    );
+    const timestamp = new Date().toLocaleString("ru-RU");
+
+    // Ensure Competitors directory exists
+    if (!fs.existsSync(competitorsDir)) {
+      fs.mkdirSync(competitorsDir, { recursive: true });
+    }
 
     let content: string;
-    
-    if (this.clientName.includes('Эстетическая') || this.clientName.includes('Coco')) {
+
+    if (
+      this.clientName.includes("Эстетическая") ||
+      this.clientName.includes("Coco")
+    ) {
       content = this.generateCocoAgeCompetitorPage(competitor, timestamp);
     } else {
       content = this.generateTrendWatchingCompetitorPage(competitor, timestamp);
     }
 
     fs.writeFileSync(competitorPath, content);
-    logger.info(`✅ Обновлена страница конкурента: ${competitor.username}`);
+    console.log(`✅ Обновлена страница конкурента: ${competitor.username}`);
   }
 
   /**
    * Генерировать дашборд для Coco Age
    */
-  private generateCocoAgeDashboard(data: DashboardData, timestamp: string, date: string): string {
-    const viralRate = data.totalPosts > 0 ? Math.round((data.viralPosts / data.totalPosts) * 100) : 0;
-    
+  private generateCocoAgeDashboard(
+    data: DashboardData,
+    timestamp: string,
+    date: string
+  ): string {
+    const viralRate =
+      data.totalPosts > 0
+        ? Math.round((data.viralPosts / data.totalPosts) * 100)
+        : 0;
+
     return `# 🥥✨ Coco Age - Главный Дашборд
 
 > **Эстетическая медицина** | Вирусный контент и аналитика конкурентов
@@ -145,14 +174,20 @@ export class ObsidianDashboardManager {
 
 | Конкурент | Посты | Лучший пост | Средние просмотры | Анализ |
 |-----------|-------|-------------|-------------------|--------|
-${data.competitors.map(c => 
-  `| @${c.username} | ${c.posts} | ${c.topPost.views.toLocaleString()} | ${c.avgViews.toLocaleString()} | [[Competitors/${c.username}|📊 Анализ]] |`
-).join('\n')}
+${data.competitors
+  .map(
+    (c) =>
+      `| @${c.username} | ${c.posts} | ${c.topPost.views.toLocaleString()} | ${c.avgViews.toLocaleString()} | [[Competitors/${c.username}|📊 Анализ]] |`
+  )
+  .join("\n")}
 
 **📈 Топ-контент конкурентов за неделю:**
-${data.competitors.map((c, i) => 
-  `- ${['🥇', '🥈', '🥉'][i] || '🏆'} [[Competitors/${c.username}#top-content|@${c.username} - ${c.topPost.views.toLocaleString()} просмотров]]`
-).join('\n')}
+${data.competitors
+  .map(
+    (c, i) =>
+      `- ${["🥇", "🥈", "🥉"][i] || "🏆"} [[Competitors/${c.username}#top-content|@${c.username} - ${c.topPost.views.toLocaleString()} просмотров]]`
+  )
+  .join("\n")}
 
 ---
 
@@ -162,14 +197,21 @@ ${data.competitors.map((c, i) =>
 
 | Хэштег | Посты | Средние просмотры | Тренд | Анализ |
 |--------|-------|-------------------|-------|--------|
-${data.hashtags.map(h => 
-  `| #${h.tag} | ${h.posts} | ${h.avgViews.toLocaleString()} | ${this.getTrendIcon(h.trend)} | [[Hashtags/${h.tag}|📊 Анализ]] |`
-).join('\n')}
+${data.hashtags
+  .map(
+    (h) =>
+      `| #${h.tag} | ${h.posts} | ${h.avgViews.toLocaleString()} | ${this.getTrendIcon(h.trend)} | [[Hashtags/${h.tag}|📊 Анализ]] |`
+  )
+  .join("\n")}
 
 **🔥 Самые вирусные хэштеги:**
-${data.hashtags.slice(0, 3).map((h, i) => 
-  `${i + 1}. ${['🥇', '🥈', '🥉'][i]} #${h.tag} - ${h.avgViews.toLocaleString()}+ средних просмотров`
-).join('\n')}
+${data.hashtags
+  .slice(0, 3)
+  .map(
+    (h, i) =>
+      `${i + 1}. ${["🥇", "🥈", "🥉"][i]} #${h.tag} - ${h.avgViews.toLocaleString()}+ средних просмотров`
+  )
+  .join("\n")}
 
 ---
 
@@ -177,8 +219,8 @@ ${data.hashtags.slice(0, 3).map((h, i) =>
 
 | KPI | Цель | Текущее | Статус |
 |-----|------|---------|--------|
-| Вирусных постов/день | 10 | ${Math.round(data.viralPosts / 7)} | ${data.viralPosts >= 70 ? '🟢' : data.viralPosts >= 35 ? '🟡' : '🔴'} |
-| Средние просмотры | 100K | ${data.avgViews.toLocaleString()} | ${data.avgViews >= 100000 ? '🟢' : data.avgViews >= 50000 ? '🟡' : '🔴'} |
+| Вирусных постов/день | 10 | ${Math.round(data.viralPosts / 7)} | ${data.viralPosts >= 70 ? "🟢" : data.viralPosts >= 35 ? "🟡" : "🔴"} |
+| Средние просмотры | 100K | ${data.avgViews.toLocaleString()} | ${data.avgViews >= 100000 ? "🟢" : data.avgViews >= 50000 ? "🟡" : "🔴"} |
 | Охват конкурентов | 100% | 100% | 🟢 |
 | Обновление данных | Ежедневно | ✅ | 🟢 |
 
@@ -191,10 +233,17 @@ ${data.hashtags.slice(0, 3).map((h, i) =>
   /**
    * Генерировать дашборд для TrendWatching
    */
-  private generateTrendWatchingDashboard(data: DashboardData, timestamp: string, date: string): string {
-    const aiPostsRate = data.totalPosts > 0 ? Math.round((data.viralPosts / data.totalPosts) * 100) : 0;
+  private generateTrendWatchingDashboard(
+    data: DashboardData,
+    timestamp: string,
+    date: string
+  ): string {
+    const aiPostsRate =
+      data.totalPosts > 0
+        ? Math.round((data.viralPosts / data.totalPosts) * 100)
+        : 0;
     const trendsCount = data.trends?.length || 0;
-    
+
     return `# 🤖📈 TrendWatching - Главный Дашборд
 
 > **AI & Tech Тренды** | Анализ конкурентов и трендов технологий
@@ -235,14 +284,20 @@ AI Эффективность: ${aiPostsRate}% качественного кон
 
 | Конкурент | AI Посты | Лучший AI контент | Средние просмотры | Анализ |
 |-----------|----------|-------------------|-------------------|--------|
-${data.competitors.map(c => 
-  `| @${c.username} | ${c.posts} | ${c.topPost.views.toLocaleString()} | ${c.avgViews.toLocaleString()} | [[Competitors/${c.username}|📊 Анализ]] |`
-).join('\n')}
+${data.competitors
+  .map(
+    (c) =>
+      `| @${c.username} | ${c.posts} | ${c.topPost.views.toLocaleString()} | ${c.avgViews.toLocaleString()} | [[Competitors/${c.username}|📊 Анализ]] |`
+  )
+  .join("\n")}
 
 **🎬 Топ AI-контент конкурентов за неделю:**
-${data.competitors.map((c, i) => 
-  `- ${['🥇', '🥈', '🥉'][i] || '🏆'} [[Competitors/${c.username}#viral-content|@${c.username} - ${c.topPost.views.toLocaleString()} просмотров]]`
-).join('\n')}
+${data.competitors
+  .map(
+    (c, i) =>
+      `- ${["🥇", "🥈", "🥉"][i] || "🏆"} [[Competitors/${c.username}#viral-content|@${c.username} - ${c.topPost.views.toLocaleString()} просмотров]]`
+  )
+  .join("\n")}
 
 ---
 
@@ -252,14 +307,21 @@ ${data.competitors.map((c, i) =>
 
 | Хэштег | AI Посты | Средние просмотры | Тренд | AI Категория |
 |--------|----------|-------------------|-------|--------------|
-${data.hashtags.map(h => 
-  `| #${h.tag} | ${h.posts} | ${h.avgViews.toLocaleString()} | ${this.getTrendIcon(h.trend)} | [[Hashtags/${h.tag}|📊 Анализ]] |`
-).join('\n')}
+${data.hashtags
+  .map(
+    (h) =>
+      `| #${h.tag} | ${h.posts} | ${h.avgViews.toLocaleString()} | ${this.getTrendIcon(h.trend)} | [[Hashtags/${h.tag}|📊 Анализ]] |`
+  )
+  .join("\n")}
 
 **🤖 AI Категории по популярности:**
-${data.hashtags.slice(0, 3).map((h, i) => 
-  `${i + 1}. ${['🥇', '🥈', '🥉'][i]} #${h.tag} - ${h.avgViews.toLocaleString()}+ средних просмотров`
-).join('\n')}
+${data.hashtags
+  .slice(0, 3)
+  .map(
+    (h, i) =>
+      `${i + 1}. ${["🥇", "🥈", "🥉"][i]} #${h.tag} - ${h.avgViews.toLocaleString()}+ средних просмотров`
+  )
+  .join("\n")}
 
 ---
 
@@ -267,8 +329,8 @@ ${data.hashtags.slice(0, 3).map((h, i) =>
 
 | KPI | Цель | Текущее | Статус |
 |-----|------|---------|--------|
-| Новых AI трендов/день | 15 | ${Math.round(trendsCount / 7)} | ${trendsCount >= 105 ? '🟢' : trendsCount >= 50 ? '🟡' : '🔴'} |
-| Вирусных AI Reels/день | 8 | ${Math.round(data.viralPosts / 7)} | ${data.viralPosts >= 56 ? '🟢' : data.viralPosts >= 28 ? '🟡' : '🔴'} |
+| Новых AI трендов/день | 15 | ${Math.round(trendsCount / 7)} | ${trendsCount >= 105 ? "🟢" : trendsCount >= 50 ? "🟡" : "🔴"} |
+| Вирусных AI Reels/день | 8 | ${Math.round(data.viralPosts / 7)} | ${data.viralPosts >= 56 ? "🟢" : data.viralPosts >= 28 ? "🟡" : "🔴"} |
 | Охват AI конкурентов | 100% | 100% | 🟢 |
 | Мониторинг сайтов | 10 сайтов | 10 | 🟢 |
 | Обновление данных | Ежедневно | ✅ | 🟢 |
@@ -282,7 +344,10 @@ ${data.hashtags.slice(0, 3).map((h, i) =>
   /**
    * Генерировать страницу конкурента для Coco Age
    */
-  private generateCocoAgeCompetitorPage(competitor: any, timestamp: string): string {
+  private generateCocoAgeCompetitorPage(
+    competitor: any,
+    timestamp: string
+  ): string {
     return `# 🏢 @${competitor.username} - Анализ конкурента
 
 > **Эстетическая медицина** | Собрано постов: ${competitor.posts}
@@ -297,7 +362,7 @@ ${data.hashtags.slice(0, 3).map((h, i) =>
 | 🔥 Лучший пост | ${competitor.topPost.views.toLocaleString()} просмотров | 🔥 |
 | 📈 Средние просмотры | ${competitor.avgViews.toLocaleString()} | 📈 |
 | 💬 Лучшие лайки | ${competitor.topPost.likes.toLocaleString()} | 💬 |
-| 📅 Последнее обновление | ${new Date().toLocaleDateString('ru-RU')} | ✅ |
+| 📅 Последнее обновление | ${new Date().toLocaleDateString("ru-RU")} | ✅ |
 
 ---
 
@@ -328,7 +393,10 @@ ${data.hashtags.slice(0, 3).map((h, i) =>
   /**
    * Генерировать страницу конкурента для TrendWatching
    */
-  private generateTrendWatchingCompetitorPage(competitor: any, timestamp: string): string {
+  private generateTrendWatchingCompetitorPage(
+    competitor: any,
+    timestamp: string
+  ): string {
     return `# 🤖 @${competitor.username} - AI Анализ
 
 > **AI & Tech** | Собрано AI постов: ${competitor.posts}
@@ -343,7 +411,7 @@ ${data.hashtags.slice(0, 3).map((h, i) =>
 | 🔥 Лучший AI пост | ${competitor.topPost.views.toLocaleString()} просмотров | 🔥 |
 | 📈 Средние просмотры | ${competitor.avgViews.toLocaleString()} | 📈 |
 | 💬 Лучшие лайки | ${competitor.topPost.likes.toLocaleString()} | 💬 |
-| 📅 Последнее обновление | ${new Date().toLocaleDateString('ru-RU')} | ✅ |
+| 📅 Последнее обновление | ${new Date().toLocaleDateString("ru-RU")} | ✅ |
 
 ---
 
@@ -376,20 +444,23 @@ AI Категория: Machine Learning
    * Получить иконку тренда
    */
   private getTrendIcon(value: any): string {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       switch (value) {
-        case 'up': return '📈';
-        case 'down': return '📉';
-        default: return '➡️';
+        case "up":
+          return "📈";
+        case "down":
+          return "📉";
+        default:
+          return "➡️";
       }
     }
-    
-    if (typeof value === 'number') {
-      if (value > 1000) return '📈';
-      if (value > 100) return '➡️';
-      return '📉';
+
+    if (typeof value === "number") {
+      if (value > 1000) return "📈";
+      if (value > 100) return "➡️";
+      return "📉";
     }
-    
-    return '➡️';
+
+    return "➡️";
   }
 }
