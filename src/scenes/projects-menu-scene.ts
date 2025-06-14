@@ -1,7 +1,6 @@
 import { Scenes, Markup } from "telegraf";
 import { ScraperBotContext } from "../types";
 import { logger } from "../utils/logger";
-import { Project } from "../schemas";
 import { LogType } from "../utils/logger";
 import { меню } from "./components/projects-menu";
 
@@ -9,33 +8,6 @@ import { меню } from "./components/projects-menu";
 const projectsMenuScene = new Scenes.BaseScene<ScraperBotContext>(
   "projects_menu"
 );
-
-// Функция для генерации клавиатуры списка проектов
-function generateProjectsMenuKeyboard(projects: Project[]) {
-  const buttons = [];
-
-  // Добавляем кнопки для каждого проекта с кнопкой удаления справа
-  for (const project of projects) {
-    buttons.push([
-      Markup.button.callback(
-        `📁 ${project.name}`,
-        `select_project_${project.id}`
-      ),
-      Markup.button.callback("🗑️", `delete_project_${project.id}`),
-    ]);
-  }
-
-  // Добавляем управляющие кнопки
-  buttons.push([
-    Markup.button.callback("➕ Создать новый проект", "create_new_project"),
-  ]);
-
-  buttons.push([
-    Markup.button.callback("⬅️ Назад в главное меню", "back_to_main_menu"),
-  ]);
-
-  return Markup.inlineKeyboard(buttons);
-}
 
 // Обработчик входа в сцену
 projectsMenuScene.enter(async (ctx) => {
