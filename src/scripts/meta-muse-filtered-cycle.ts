@@ -11,7 +11,6 @@ import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { eq, and, isNull, desc } from "drizzle-orm";
 import { ApifyClient } from "apify-client";
-import OpenAI from "openai";
 import {
   usersTable,
   projectsTable,
@@ -40,7 +39,6 @@ const MAX_RETRIES = 2;
 const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql);
 const apifyClient = new ApifyClient({ token: process.env.APIFY_TOKEN! });
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
 // 📊 Statistics tracking
 interface Stats {

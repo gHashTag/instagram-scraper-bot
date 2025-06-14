@@ -13,7 +13,7 @@ import {
   hashtagsTable,
   reelsTable,
 } from "../db/schema";
-import { eq, and, gte, desc } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 

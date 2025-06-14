@@ -19,7 +19,6 @@ import {
   reelsTable,
 } from "../db/schema";
 import { ApifyClient } from "apify-client";
-import OpenAI from "openai";
 import fs from "fs/promises";
 import path from "path";
 
