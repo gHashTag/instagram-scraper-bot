@@ -1,8 +1,8 @@
-import { Scenes, Markup } from "telegraf";
+import { Composer, Scenes, Markup } from "telegraf";
 import type { ScraperBotContext } from "../types";
 import { ScraperSceneStep } from "../types";
-import { logger } from "../logger";
-import { ReelsFilter } from "../schemas";
+import { logger } from "../utils/logger";
+import { reelsService, ReelsFilter } from "../services/reels-service";
 import { formatDate, formatViews } from "./components/reels-keyboard";
 
 /**

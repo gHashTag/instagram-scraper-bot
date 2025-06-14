@@ -66,10 +66,7 @@ router.get('/:tag/reels', async (req, res) => {
       .select()
       .from(reelsTable)
       .where(
-        and(
-          eq(reelsTable.source_type, 'hashtag'),
-          eq(reelsTable.source_name, hashtag)
-        )
+        eq(reelsTable.author_username, hashtag)
       )
       .orderBy(desc(reelsTable.views_count))
       .limit(20);

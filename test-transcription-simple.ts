@@ -40,7 +40,6 @@ async function testOpenAI() {
     console.log("\n🎤 Тестируем Whisper API...");
 
     // Создаем минимальный тестовый файл
-    const fs = require("fs");
     const testAudioData = Buffer.from("test audio data");
 
     // Создаем временный файл
@@ -92,3 +91,18 @@ async function testOpenAI() {
 }
 
 testOpenAI().catch(console.error);
+
+function main() {
+  try {
+    console.log("🔥 Запуск простого теста транскрипции...");
+
+    // Проверяем доступность OpenAI ключа
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error("❌ OPENAI_API_KEY не установлен в .env файле");
+    }
+  } catch (error: any) {
+    console.log("❌ Ошибка при запуске теста:", error.message);
+  }
+}
+
+main();

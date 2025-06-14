@@ -1,7 +1,4 @@
-import { pgTable, foreignKey, unique, serial, text, integer, varchar, timestamp, jsonb, uuid, boolean, bigint } from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
-
-
+import { pgTable, foreignKey, unique, serial, text, integer, varchar, timestamp, jsonb, uuid, boolean, bigint } from "drizzle-orm/pg-core";
 
 export const reels = pgTable("reels", {
 	id: serial().primaryKey().notNull(),

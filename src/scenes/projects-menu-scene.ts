@@ -1,9 +1,11 @@
 import { Scenes, Markup } from "telegraf";
-import { ScraperBotContext } from "../types";
+import type { ScraperBotContext } from "../types";
+import { ScraperSceneStep } from "../types";
 import { logger } from "../utils/logger";
 import { Project } from "../schemas";
 import { LogType } from "../utils/logger";
 import { меню } from "./components/projects-menu";
+import { generateProjectsKeyboard } from "./components/project-keyboard";
 
 // Создаем обычную сцену (не wizard) для меню проектов
 const projectsMenuScene = new Scenes.BaseScene<ScraperBotContext>(

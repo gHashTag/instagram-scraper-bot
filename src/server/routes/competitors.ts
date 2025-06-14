@@ -30,7 +30,7 @@ const CompetitorReelsQuerySchema = z.object({
   minViews: z.string().optional().transform(val => val ? parseInt(val, 10) : undefined),
   maxViews: z.string().optional().transform(val => val ? parseInt(val, 10) : undefined),
   daysBack: z.string().optional().transform(val => val ? parseInt(val, 10) : 30),
-  hasTranscription: z.string().optional().transform(val => val === 'true'),
+  has_transcript: z.string().optional().transform(val => val === 'true'),
   page: z.string().optional().transform(val => parseInt(val || '1', 10)),
   limit: z.string().optional().transform(val => parseInt(val || '20', 10)),
   sortBy: z.enum(['views', 'likes', 'engagement', 'date']).optional().default('views'),
@@ -73,10 +73,7 @@ router.get('/', async (req, res) => {
           })
           .from(reelsTable)
           .where(
-            and(
-              eq(reelsTable.source_type, 'competitor'),
-              eq(reelsTable.source_name, competitor.username)
-            )
+            eq(reelsTable.author_username, competitor.username)
           );
 
         const stat = stats[0];
@@ -152,10 +149,7 @@ router.get('/:id/reels', async (req, res) => {
       .select()
       .from(reelsTable)
       .where(
-        and(
-          eq(reelsTable.source_type, 'competitor'),
-          eq(reelsTable.source_name, competitor[0].username)
-        )
+        eq(reelsTable.author_username, competitor[0].username)
       );
 
     // Применяем фильтры
@@ -175,11 +169,11 @@ router.get('/:id/reels', async (req, res) => {
       filters.push(gte(reelsTable.published_at, dateThreshold));
     }
 
-    if (query.hasTranscription !== undefined) {
-      if (query.hasTranscription) {
-        filters.push(sql`${reelsTable.transcription} IS NOT NULL`);
+    if (query.has_transcript !== undefined) {
+      if (query.has_transcript) {
+        filters.push(sql`${reelsTable.transcript} IS NOT NULL`);
       } else {
-        filters.push(sql`${reelsTable.transcription} IS NULL`);
+        filters.push(sql`${reelsTable.transcript} IS NULL`);
       }
     }
 
@@ -277,16 +271,13 @@ router.get('/:id/stats', async (req, res) => {
         total_likes: sql<number>`sum(${reelsTable.likes_count})`,
         total_comments: sql<number>`sum(${reelsTable.comments_count})`,
         viral_count: sql<number>`count(*) filter (where ${reelsTable.views_count} >= 50000)`,
-        transcribed_count: sql<number>`count(*) filter (where ${reelsTable.transcription} is not null)`,
+        transcribed_count: sql<number>`count(*) filter (where ${reelsTable.transcript} is not null)`,
         latest_post: sql<string>`max(${reelsTable.published_at})`,
         oldest_post: sql<string>`min(${reelsTable.published_at})`
       })
       .from(reelsTable)
       .where(
-        and(
-          eq(reelsTable.source_type, 'competitor'),
-          eq(reelsTable.source_name, competitor[0].username)
-        )
+        eq(reelsTable.author_username, competitor[0].username)
       );
 
     const stat = stats[0];

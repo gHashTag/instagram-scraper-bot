@@ -111,7 +111,7 @@ async function testRealTranscription() {
         // Прерываем после первого успешного теста
         console.log("\n🎉 ТЕСТ УСПЕШНО ЗАВЕРШЕН!");
         return;
-      } catch (error) {
+      } catch (error: any) {
         console.log(`❌ Ошибка обработки reel #${reel.id}:`, error.message);
         continue;
       }

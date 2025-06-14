@@ -1,10 +1,10 @@
-import { Scenes, Markup } from "telegraf";
-import type { ScraperBotContext } from "../types";
-import { ScraperSceneStep } from "../types";
-import { logger } from "../logger";
+import { BaseScene } from "telegraf/scenes";
+import { Markup } from "telegraf";
+import { ScraperBotContext, ScraperSceneSessionData, ScraperSceneStep } from "../types";
+import { logger } from "../utils/logger";
+import { registerButtons } from "../utils/button-handler";
 import { ReelsFilter, ReelContent } from "../schemas";
 import { formatDate, formatViews } from "./components/reels-keyboard";
-import { registerButtons } from "../utils/button-handler";
 
 /**
  * Очищает состояние сессии перед выходом из сцены
@@ -47,9 +47,7 @@ async function safeSceneTransition(
 /**
  * Сцена для аналитики Reels
  */
-export const analyticsScene = new Scenes.BaseScene<ScraperBotContext>(
-  "instagram_scraper_analytics"
-);
+export const analyticsScene = new BaseScene<ScraperBotContext>("instagram_scraper_analytics");
 
 // --- Enter Scene Handler ---
 export async function handleAnalyticsEnter(ctx: ScraperBotContext): Promise<void> {
@@ -405,7 +403,7 @@ export async function handleHashtagsAnalyticsAction(ctx: ScraperBotContext): Pro
         const totalViews = hashtagReels.reduce((sum, reel) => sum + (reel.views || 0), 0);
         const avgViews = totalViews / hashtagReels.length;
 
-        hashtagStats[hashtag.tag_name] = {
+        hashtagStats[hashtag.hashtag] = {
           count: hashtagReels.length,
           totalViews,
           avgViews

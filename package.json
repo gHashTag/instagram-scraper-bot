@@ -36,8 +36,6 @@
     "@notionhq/client": "^3.0.1",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
-    "@types/express-rate-limit": "^6.0.2",
-    "@types/helmet": "^4.0.0",
     "apify-client": "^2.12.3",
     "assemblyai": "^4.12.2",
     "axios": "^1.9.0",

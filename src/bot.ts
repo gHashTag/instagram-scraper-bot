@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import { Telegraf, session, Markup } from "telegraf";
+import { Telegraf, session } from "telegraf";
 import { NeonAdapter } from "./adapters/neon-adapter";
 import { setupInstagramScraperBot, createScenesStage } from "../index";
 import { logger, LogLevel, LogType } from "./utils/logger";
@@ -226,12 +226,10 @@ async function startBot() {
     // 7. Настройка обработчиков команд и основного функционала бота
     // Упрощаем config, оставляем только то, что действительно нужно для setupInstagramScraperBot
     const config: InstagramScraperBotConfig = {
-      // telegramBotToken: BOT_TOKEN, // BOT_TOKEN уже используется для создания Telegraf
-      apifyToken: process.env.APIFY_TOKEN, // Передаем, может быть undefined, обработается внутри
-      openaiApiKey: process.env.OPENAI_API_KEY, // Передаем, может быть undefined
-      adminUserId: process.env.ADMIN_USER_ID
-        ? parseInt(process.env.ADMIN_USER_ID)
-        : undefined,
+      telegramBotToken: process.env.TELEGRAM_BOT_TOKEN || "",
+      apifyToken: process.env.APIFY_TOKEN,
+      openaiApiKey: process.env.OPENAI_API_KEY,
+      adminUserId: process.env.ADMIN_USER_ID ? parseInt(process.env.ADMIN_USER_ID, 10) : undefined,
     };
     console.log(
       "[DEBUG] Настройка обработчиков и команд бота (setupInstagramScraperBot)..."

@@ -1,8 +1,7 @@
 import { Scenes, Markup } from "telegraf";
 import type { ScraperBotContext } from "../types";
 import { ScraperSceneStep } from "../types";
-import { logger } from "../logger";
-import { NotificationSettings } from "../schemas";
+import { logger } from "../utils/logger";
 import { registerButtons } from "../utils/button-handler";
 
 /**

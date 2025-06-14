@@ -1,5 +1,5 @@
 import { Scenes, Markup } from "telegraf";
-import { ScraperSceneStep, ScraperSceneSessionData, StorageAdapter } from "../types";
+import { ScraperSceneSessionData, StorageAdapter } from "../types";
 import { logger } from "../logger";
 import { EmbeddingsService } from "../services/embeddings-service";
 import { ChatbotService } from "../services/chatbot-service";
@@ -9,7 +9,6 @@ import { registerButtons } from "../utils/button-handler";
  * Сцена для чат-бота, работающего с расшифровками видео
  */
 export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
-  private storage: StorageAdapter;
   private embeddingsService: EmbeddingsService;
   private chatbotService: ChatbotService;
 
@@ -20,7 +19,6 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
    */
   constructor(storage: StorageAdapter, apiKey?: string) {
     super("chatbot_scene");
-    this.storage = storage;
     this.embeddingsService = new EmbeddingsService(storage, apiKey);
     this.chatbotService = new ChatbotService(storage, this.embeddingsService, apiKey);
 

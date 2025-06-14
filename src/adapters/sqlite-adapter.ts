@@ -198,6 +198,30 @@ export class SqliteAdapter implements StorageAdapter {
   }
 
   /**
+   * Удаление проекта
+   * @param projectId ID проекта
+   */
+  async deleteProject(projectId: number): Promise<boolean> {
+    const db = this.ensureConnection();
+
+    try {
+      const query = db.prepare(`
+        UPDATE Projects 
+        SET is_active = 0 
+        WHERE id = ?
+      `);
+
+      const result = query.run(projectId);
+      return result.changes > 0;
+    } catch (error) {
+      console.error("Ошибка при удалении проекта в SQLite:", error);
+      throw new Error(
+        `Ошибка при удалении проекта: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  /**
    * Получение списка конкурентов для проекта
    * @param projectId ID проекта
    * @param activeOnly Только активные (по умолчанию true)

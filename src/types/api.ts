@@ -122,19 +122,13 @@ export interface ScrapeHashtagsResponse {
 export interface ReelResponse {
   id: number;
   reel_url: string;
-  video_url?: string;
+  author_username: string;
+  description: string;
   views_count: number;
   likes_count: number;
   comments_count: number;
-  description: string | null;
   published_at: string;
-  author_username: string;
-  author_full_name?: string;
-  transcription?: string | null;
-  transcription_language?: string | null;
-  transcribed_at?: string | null;
-  source_type: 'competitor' | 'hashtag';
-  source_name: string;
+  transcribed_at: string | null;
   engagement_rate: number;
   is_viral: boolean;
 }

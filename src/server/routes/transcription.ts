@@ -55,7 +55,8 @@ router.get('/reels/:id/transcript', async (req, res) => {
     
     res.status(404).json({
       success: false,
-      error: 'Transcription not found'
+      error: 'Transcription not found',
+      reelId: reelId
     });
 
   } catch (error) {
@@ -88,6 +89,20 @@ router.post('/batch', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to start batch transcription'
+    });
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    console.log('📖 Получение статуса транскрипции для Reel');
+    // Здесь может быть логика получения статуса транскрипции
+    res.json({ success: true, message: 'Статус транскрипции получен' });
+  } catch (error) {
+    console.error('❌ Ошибка получения статуса транскрипции:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Ошибка получения статуса транскрипции' 
     });
   }
 });

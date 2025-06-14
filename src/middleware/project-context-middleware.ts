@@ -3,7 +3,7 @@
  * Добавляет информацию о выбранном проекте в контекст каждого запроса
  */
 
-import { Context, MiddlewareFn } from "telegraf";
+import { MiddlewareFn } from "telegraf";
 import { projectContextService } from "../services/project-context-service";
 import { logger } from "../utils/logger";
 import { ScraperBotContext } from "../types";

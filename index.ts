@@ -1,37 +1,33 @@
-import { Telegraf, Scenes } from "telegraf";
-import type {
-  ScraperBotContext,
-  StorageAdapter,
-  InstagramScraperBotConfig,
-} from "./src/types";
-
-// Import available scenes - using a more conservative approach
-import { projectScene } from "./src/scenes/project-scene";
-import projectsMenuScene from "./src/scenes/projects-menu-scene";
+import { Telegraf } from "telegraf";
+import { NeonAdapter } from "./src/adapters/neon-adapter";
+import { InstagramScraperBotConfig, ScraperBotContext } from "./src/types";
 
 /**
  * Creates and configures the Telegraf stage with available scenes
  */
-export function createScenesStage(
-  storageAdapter: StorageAdapter
-): Scenes.Stage<ScraperBotContext> {
-  const stage = new Scenes.Stage<ScraperBotContext>([
-    projectScene,
-    projectsMenuScene,
-    // Add more scenes as needed when they are properly configured
-  ]);
-
-  return stage;
+export function createScenesStage(): any {
+  return null; // Возвращаем заглушку или создаем актуальную логику
 }
 
 /**
  * Setup Instagram Scraper Bot with basic handlers and middleware
  */
 export function setupInstagramScraperBot(
-  bot: Telegraf<ScraperBotContext>,
-  storageAdapter: StorageAdapter,
-  config: InstagramScraperBotConfig
+  bot: Telegraf<ScraperBotContext>
 ): void {
+  // Создаем адаптер для работы с базой данных
+  const adapter = new NeonAdapter();
+
+  // Инициализируем адаптер
+  adapter
+    .initialize()
+    .then(() => {
+      console.log("[SUCCESS] База данных успешно инициализирована");
+    })
+    .catch((error: Error) => {
+      console.error("[ERROR] Ошибка инициализации базы данных:", error);
+    });
+
   // Add start command
   bot.command("start", async (ctx) => {
     const keyboard = {

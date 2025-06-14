@@ -36,10 +36,11 @@
     "noUncheckedIndexedAccess": false,
     "noImplicitOverride": true,
     "types": ["node"],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
 
     "noEmit": true,
     "isolatedModules": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "src/types/**/*.d.ts"],
   "exclude": ["node_modules", "src/modules/digitalAvatarBody"]
 }
