@@ -56,7 +56,7 @@ jobs:
           echo "🔄 Синхронизация Obsidian vault для проекта ${{ github.event.inputs.project_id || '1' }}..."
           bun run sync-obsidian ${{ github.event.inputs.project_id || '1' }}
 
-            - name: 📊 Check for changes
+      - name: 📊 Check for changes
         id: changes
         run: |
           if git diff --quiet HEAD -- vaults/coco-age/; then
@@ -201,4 +201,6 @@ jobs:
               -d "parse_mode=Markdown" \
               -d "disable_web_page_preview=true"
             echo "📱 Уведомление об ошибке отправлено в Telegram"
+          else
+            echo "⚠️ TELEGRAM_BOT_TOKEN не настроен для уведомлений об ошибках"
           fi
