@@ -79,11 +79,7 @@ jobs:
           # Настраиваем аутентификацию для push
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
 
-          # Синхронизируемся с remote перед коммитом
-          git fetch origin main
-          git rebase origin/main
-
-          # Добавляем только файлы vault
+          # Добавляем только файлы vault (сначала добавляем, потом синхронизируемся)
           git add vaults/coco-age/
 
           # Создаем коммит с датой
@@ -98,8 +94,24 @@ jobs:
 
           🤖 Автоматическое обновление через GitHub Actions"
 
-          # Пушим изменения
-          git push origin main
+          # Безопасный push с проверкой конфликтов
+          git fetch origin main
+
+          # Проверяем, есть ли конфликты
+          if git merge-base --is-ancestor HEAD origin/main; then
+            echo "✅ Нет конфликтов, выполняем push"
+            git push origin main
+          else
+            echo "⚠️ Обнаружены изменения в remote, пытаемся rebase"
+            if git rebase origin/main; then
+              echo "✅ Rebase успешен, выполняем push"
+              git push origin main
+            else
+              echo "❌ Rebase не удался, используем force push с lease"
+              git rebase --abort
+              git push --force-with-lease origin main
+            fi
+          fi
 
       - name: 📱 Send Telegram notification
         if: always()
