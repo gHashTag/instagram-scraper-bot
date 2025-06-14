@@ -61,11 +61,9 @@ export interface ScrapingReport {
 }
 
 export class MetaMuseHashtagStrategy {
-  private adapter: NeonAdapter;
   private projectId: number;
 
-  constructor(adapter: NeonAdapter, projectId: number) {
-    this.adapter = adapter;
+  constructor(_adapter: NeonAdapter, projectId: number) {
     this.projectId = projectId;
   }
 

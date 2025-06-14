@@ -50,8 +50,7 @@ router.post("/", async (req, res) => {
 
 router.get("/reels/:id/transcript", async (req, res) => {
   try {
-    const _reelId = parseInt(req.params.id, 10);
-
+    // const reelId = parseInt(req.params.id, 10);
     // TODO: Получить транскрипцию из базы данных
 
     res.status(404).json({
