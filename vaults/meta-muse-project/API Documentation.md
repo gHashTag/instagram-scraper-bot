@@ -1,4 +1,25 @@
-# 📚 API Documentation
+# 📚 API Documentation - Meta Muse
+
+> **🎯 Проект:** Meta Muse AI-инфлюенсер | **Project ID:** 2  
+> **📅 Обновлено:** 2025-01-XX | **Статус:** ✅ АКТИВНО
+
+---
+
+## 🔗 **НАВИГАЦИЯ ПО ДОКУМЕНТАЦИИ**
+
+### 📚 **Meta Muse документы:**
+
+- [📋 Usage Instructions](./Usage%20Instructions.md) - Инструкции по использованию
+- [🧪 Test Results](./Test%20Results.md) - Результаты тестирования
+- [🔙 Вернуться к vault index](../README.md) - Главная навигация
+
+### 🔧 **Связанные технические файлы:**
+
+- `src/scripts/meta-muse-robust-cycle.ts` - Основной парсер
+- `src/scripts/meta-muse-daily-runner.ts` - Wrapper скрипт
+- `.github/workflows/meta-muse-daily.yml` - GitHub Action
+
+---
 
 ## 🔧 **MetaMuseHashtagStrategy Class**
 

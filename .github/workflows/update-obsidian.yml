@@ -59,14 +59,14 @@ jobs:
           echo "🗄️ Безопасная проверка миграций базы данных..."
           bash scripts/check-db-migrations.sh
 
-      - name: 🔄 Update Obsidian vault data
+      - name: 🔄 Update LIVE DATA with real database content
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OBSIDIAN_VAULT_PATH: ${{ github.workspace }}/vaults/coco-age
         run: |
-          echo "🔄 Синхронизация Obsidian vault для проекта ${{ github.event.inputs.project_id || '1' }}..."
-          bun run sync-obsidian ${{ github.event.inputs.project_id || '1' }}
+          echo "🔄 Обновление LIVE_DATA.md с реальными данными из базы для проекта ${{ github.event.inputs.project_id || '1' }}..."
+          npm run update-live-data ${{ github.event.inputs.project_id || '1' }}
 
       - name: 📊 Check for changes
         id: changes

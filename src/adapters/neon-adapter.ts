@@ -484,6 +484,7 @@ export class NeonAdapter implements StorageAdapter {
           res.rows[0].created_at instanceof Date
             ? res.rows[0].created_at.toISOString()
             : String(res.rows[0].created_at),
+        is_active: res.rows[0].is_active !== undefined ? res.rows[0].is_active : true,
         is_bot: res.rows[0].is_bot || false,
         language_code: res.rows[0].language_code || null,
       };
@@ -1359,6 +1360,7 @@ export class NeonAdapter implements StorageAdapter {
             res.rows[0].created_at instanceof Date
               ? res.rows[0].created_at.toISOString()
               : String(res.rows[0].created_at),
+          is_active: res.rows[0].is_active !== undefined ? res.rows[0].is_active : true,
           is_bot: res.rows[0].is_bot || false,
           language_code: res.rows[0].language_code || null,
         };
