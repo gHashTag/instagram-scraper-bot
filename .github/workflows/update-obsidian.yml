@@ -1,9 +1,9 @@
-name: 🔄 Update Obsidian Vault Daily
+name: 🧠 Sync Obsidian Vault
 
 on:
   schedule:
-    # Каждый день в 6:00 UTC (9:00 МСК)
-    - cron: "0 6 * * *"
+    # Каждые 6 часов для частых обновлений
+    - cron: "0 */6 * * *"
 
   # Возможность запуска вручную
   workflow_dispatch:
@@ -12,6 +12,18 @@ on:
         description: "Project ID to sync (default: 1 for Coco Age)"
         required: false
         default: "1"
+      force_full_sync:
+        description: "Force full data regeneration"
+        required: false
+        default: "false"
+
+  # Автозапуск при изменении vaults или workflow файлов
+  push:
+    paths:
+      - "vaults/**"
+      - ".github/workflows/update-obsidian.yml"
+      - "src/obsidian-dashboard-manager.ts"
+      - "src/scripts/sync-obsidian-vault.ts"
 
 jobs:
   update-vault:
