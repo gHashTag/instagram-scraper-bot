@@ -168,7 +168,7 @@ export function createApp(config?: Partial<ServerConfig>): express.Application {
   // ===== ERROR HANDLING =====
 
   // 404 handler
-  app.use("*", (req, res) => {
+  app.use((req, res) => {
     res.status(404).json({
       success: false,
       error: "Endpoint not found",
@@ -244,8 +244,14 @@ export function startServer(
   return server;
 }
 
-// Запуск сервера если файл запущен напрямую
-if (require.main === module) {
+// Запуск сервера если файл запущен напрямую (ES module version)
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+if (process.argv[1] === __filename) {
   const port = parseInt(process.env.PORT || "3001", 10);
   startServer(port);
 }

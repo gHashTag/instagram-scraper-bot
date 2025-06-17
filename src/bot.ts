@@ -8,9 +8,11 @@ import {
   handleGotoProjects,
 } from "./middleware/project-context-middleware";
 import type { ScraperBotContext, StorageAdapter } from "./types";
+import { createApp } from "./server/app";
 
 // Переносим объявление storageAdapter в область видимости модуля
 let storageAdapter: NeonAdapter | undefined;
+let httpServer: any = undefined;
 
 async function ensureUserMiddleware(
   ctx: ScraperBotContext,
@@ -118,7 +120,11 @@ async function ensureUserMiddleware(
 }
 
 async function startBot() {
+  // Загружаем переменные окружения из .env файла
   dotenv.config();
+
+  // Также пробуем загрузить из .env.development для локальной разработки
+  dotenv.config({ path: '.env.development', override: false });
   logger.configure({
     logToConsole: true,
     minLevel: LogLevel.DEBUG,
@@ -308,9 +314,17 @@ async function startBot() {
     //     console.error('❌ Ошибка при установке команд в меню бота:', err);
     //   });
 
+    // Запуск HTTP сервера для health check (Railway требует HTTP endpoint)
+    const port = parseInt(process.env.PORT || "3000", 10);
+    const app = createApp();
+    httpServer = app.listen(port, "0.0.0.0", () => {
+      console.log(`🌐 HTTP сервер запущен на порту ${port} для Railway health check`);
+    });
+
     console.log("🚀 Запуск бота (bot.launch)...");
     await bot.launch();
     console.log("✅ Бот успешно запущен и ожидает обновлений!");
+    console.log(`📡 Health check доступен на: http://localhost:${port}/health`);
   } catch (error) {
     console.error(
       "❌ КРИТИЧЕСКАЯ ОШИБКА при запуске или инициализации бота:",
@@ -333,8 +347,19 @@ async function startBot() {
 // Глобальный обработчик для корректного завершения
 const stopBot = async (signal: string) => {
   console.log(`👋 Получен сигнал ${signal}. Завершение работы бота...`);
-  // Telegraf bot.stop() вызывается автоматически для SIGINT/SIGTERM, если bot.launch() был вызван
-  // bot.stop(signal);
+
+  // Закрываем HTTP сервер
+  if (httpServer) {
+    try {
+      httpServer.close(() => {
+        console.log("🌐 HTTP сервер успешно закрыт.");
+      });
+    } catch (error) {
+      console.error("❌ Ошибка при закрытии HTTP сервера:", error);
+    }
+  }
+
+  // Закрываем соединение с базой данных
   if (storageAdapter) {
     try {
       await storageAdapter.close();

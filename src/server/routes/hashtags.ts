@@ -10,7 +10,15 @@ import { eq, and, desc } from "drizzle-orm";
 import { logger } from "../../logger";
 
 const router = Router();
-const db = initializeDBConnection();
+
+// Ленивая инициализация БД
+let db: ReturnType<typeof initializeDBConnection> | null = null;
+function getDB() {
+  if (!db) {
+    db = initializeDBConnection();
+  }
+  return db;
+}
 
 const HashtagsQuerySchema = z.object({
   active: z
@@ -31,7 +39,7 @@ router.get("/", async (req, res) => {
   try {
     const query = HashtagsQuerySchema.parse(req.query);
 
-    let dbQuery = db.select().from(hashtagsTable);
+    let dbQuery = getDB().select().from(hashtagsTable);
 
     if (query.active !== undefined) {
       dbQuery = dbQuery.where(eq(hashtagsTable.is_active, query.active));

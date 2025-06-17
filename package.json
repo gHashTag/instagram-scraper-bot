@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "bun run src/bot.ts",
-    "start": "bun run src/bot.ts",
+    "start": "node --import tsx/esm src/bot.ts",
+    "start:bun": "bun run src/bot.ts",
+    "build": "tsc --noEmit && echo 'Build completed'",
     "refresh:viral": "bun run src/scripts/refresh-strategy.ts viral",
     "refresh:full": "bun run src/scripts/refresh-strategy.ts",
     "diagnose:openai": "bun run scripts/test-openai-setup.ts",
     "test:complete": "bun run scripts/one-reel-complete-test.ts",
-    "typecheck": "bun --bun exec tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "db:studio": "bunx drizzle-kit studio --port 3457",
     "db:generate": "bunx drizzle-kit generate",
     "db:push": "bunx drizzle-kit push",
@@ -21,7 +23,16 @@
     "meta-muse:demo": "bun run src/scripts/meta-muse-demo-cycle.ts",
     "meta-muse:quick-test": "bun run src/scripts/meta-muse-quick-test.ts",
     "meta-muse:daily": "bun run src/scripts/meta-muse-daily-runner.ts",
-    "sync-obsidian": "bun run src/scripts/sync-obsidian-vault.ts"
+    "sync-obsidian": "bun run src/scripts/sync-obsidian-vault.ts",
+    "strategy": "node --import tsx/esm src/scripts/strategy-manager.ts",
+    "strategy:clients": "npm run strategy clients",
+    "strategy:switch": "npm run strategy switch",
+    "strategy:run": "npm run strategy run",
+    "strategy:run-all": "npm run strategy run-all",
+    "railway:check": "node scripts/check-railway-readiness.js",
+    "railway:setup": "bash scripts/setup-railway.sh",
+    "railway:deploy": "railway up",
+    "railway:logs": "railway logs --tail 100"
   },
   "keywords": [
     "instagram",
@@ -72,6 +83,10 @@
     "dotenv-cli": "^8.0.0",
     "input": "^1.0.1",
     "telegram": "^2.19.10",
-    "tsx": "^4.19.4"
+    "tsx": "^4.19.4",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
