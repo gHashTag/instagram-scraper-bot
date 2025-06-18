@@ -1,5 +1,5 @@
-import { initializeDBConnection } from "./src/db/neonDB";
-import { transcribeAudio } from "./src/utils/transcription-utils";
+import { initializeDBConnection } from "../src/db/neonDB";
+import { transcribeAudio } from "../src/utils/transcription-utils";
 import * as fs from "fs";
 import * as path from "path";
 import { exec } from "child_process";
