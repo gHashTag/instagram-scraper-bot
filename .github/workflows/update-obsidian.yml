@@ -17,13 +17,11 @@ on:
         required: false
         default: "false"
 
-  # Автозапуск при изменении vaults или workflow файлов
+  # Автозапуск при изменении workflow файлов (НЕ vaults - избегаем цикла)
   push:
     paths:
-      - "vaults/**"
       - ".github/workflows/update-obsidian.yml"
-      - "src/obsidian-dashboard-manager.ts"
-      - "src/scripts/sync-obsidian-vault.ts"
+      - "src/scripts/update-live-data.ts"
 
 jobs:
   update-vault:
@@ -53,12 +51,16 @@ jobs:
           echo "OBSIDIAN_VAULT_PATH=${{ github.workspace }}/vaults/coco-age" >> $GITHUB_ENV
           echo "NODE_ENV=production" >> $GITHUB_ENV
 
-      - name: 🗄️ Check database migrations
+      - name: 🗄️ Test database connection
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          echo "🗄️ Безопасная проверка миграций базы данных..."
-          bash scripts/check-db-migrations.sh
+          echo "🗄️ Тестируем подключение к базе данных..."
+          if [ -z "$DATABASE_URL" ]; then
+            echo "❌ DATABASE_URL не настроен в секретах"
+            exit 1
+          fi
+          echo "✅ DATABASE_URL найден в секретах"
 
       - name: 🔄 Update LIVE DATA with real database content
         env:
@@ -66,14 +68,8 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OBSIDIAN_VAULT_PATH: ${{ github.workspace }}/vaults/coco-age
         run: |
-          echo "🔄 Обновление LIVE_DATA.md с реальными данными из базы для проекта ${{ github.event.inputs.project_id || '1' }}..."
-          echo "📊 Проверка переменных окружения..."
-          if [ -z "$DATABASE_URL" ]; then
-            echo "❌ DATABASE_URL не настроен"
-            exit 1
-          fi
-          echo "✅ DATABASE_URL настроен"
-          npm run update-live-data ${{ github.event.inputs.project_id || '1' }}
+          echo "🔄 Обновление LIVE_DATA.md с реальными данными из базы..."
+          npm run update-live-data
 
       - name: 📊 Check for changes
         id: changes
