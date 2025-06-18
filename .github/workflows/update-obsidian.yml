@@ -49,8 +49,8 @@ jobs:
           git add vaults/
           if ! git diff --staged --quiet; then
             git commit -m "🤖 AUTO: Updated live data $(date '+%Y-%m-%d %H:%M UTC')"
-            git pull --rebase origin main || git rebase --abort
-            git push
+            git pull --rebase origin main || true
+            git push --force-with-lease
           else
             echo "📝 Нет изменений для коммита"
           fi
