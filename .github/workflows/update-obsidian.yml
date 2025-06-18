@@ -67,6 +67,12 @@ jobs:
           OBSIDIAN_VAULT_PATH: ${{ github.workspace }}/vaults/coco-age
         run: |
           echo "🔄 Обновление LIVE_DATA.md с реальными данными из базы для проекта ${{ github.event.inputs.project_id || '1' }}..."
+          echo "📊 Проверка переменных окружения..."
+          if [ -z "$DATABASE_URL" ]; then
+            echo "❌ DATABASE_URL не настроен"
+            exit 1
+          fi
+          echo "✅ DATABASE_URL настроен"
           npm run update-live-data ${{ github.event.inputs.project_id || '1' }}
 
       - name: 📊 Check for changes
@@ -111,7 +117,11 @@ jobs:
           TELEGRAM_CHAT_ID: "144022504"
         run: |
           # Определяем статус обновления
-          if [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
+          if [ "${{ job.status }}" == "failure" ]; then
+            STATUS="❌ Ошибка обновления"
+            EMOJI="🚨"
+            MESSAGE_TYPE="error"
+          elif [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
             STATUS="✅ Успешно обновлен"
             EMOJI="🔄"
             MESSAGE_TYPE="success"
@@ -138,9 +148,9 @@ jobs:
           • Размер: $VAULT_SIZE
 
           🔗 *Быстрые ссылки:*
-          • [LIVE DATA](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/📊%20LIVE_DATA.md)
-          • [Центральная карта](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/🥥✨%20Coco%20Age%20-%20Центральная%20карта.md)
-          • [Планирование](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/📊%20Планирование%20контента.md)
+          • [LIVE DATA](https://github.com/gHashTag/instagram-scraper-bot/blob/main/vaults/coco-age/📊%20LIVE_DATA.md)
+          • [Аномалии](https://github.com/gHashTag/instagram-scraper-bot/blob/main/vaults/coco-age/🚨%20АНОМАЛИИ%20И%20ВИРУСНЫЕ%20ТРЕНДЫ.md)
+          • [Дашборд](https://github.com/gHashTag/instagram-scraper-bot/blob/main/vaults/coco-age/🔍%20ДАШБОРД%20МОНИТОРИНГА%20СИСТЕМЫ.md)
 
           🤖 Автообновление через GitHub Actions"
 
@@ -183,38 +193,8 @@ jobs:
           echo "- [👥 Конкуренты](./vaults/coco-age/👥%20Конкуренты.md)" >> $GITHUB_STEP_SUMMARY
           echo "- [🏷️ Хэштеги](./vaults/coco-age/🏷️%20Хэштеги.md)" >> $GITHUB_STEP_SUMMARY
 
-      - name: 🚨 Notify on failure
+      - name: 🚨 Log failure
         if: failure()
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: "144022504"
         run: |
           echo "❌ Ошибка при обновлении Obsidian vault" >> $GITHUB_STEP_SUMMARY
           echo "Проверьте логи для диагностики проблемы." >> $GITHUB_STEP_SUMMARY
-
-          # Отправляем уведомление об ошибке в Telegram
-          ERROR_MESSAGE="🚨 *Ошибка обновления Coco Age Vault*
-
-          📅 *Дата:* $(date '+%d.%m.%Y %H:%M') UTC
-          ❌ *Статус:* Обновление не удалось
-          🎯 *Проект:* Coco Age
-
-          🔍 *Действия:*
-          • Проверьте логи в GitHub Actions
-          • Убедитесь в доступности базы данных
-          • Проверьте переменные окружения
-
-          🔗 [Посмотреть логи](https://github.com/gHashTag/instagram-scraper/actions)
-
-          🤖 Автоматическое уведомление об ошибке"
-
-          if [ -n "$TELEGRAM_BOT_TOKEN" ]; then
-            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
-              -d "chat_id=$TELEGRAM_CHAT_ID" \
-              -d "text=$ERROR_MESSAGE" \
-              -d "parse_mode=Markdown" \
-              -d "disable_web_page_preview=true"
-            echo "📱 Уведомление об ошибке отправлено в Telegram"
-          else
-            echo "⚠️ TELEGRAM_BOT_TOKEN не настроен для уведомлений об ошибках"
-          fi
