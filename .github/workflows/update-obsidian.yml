@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       project_id:
-        description: 'Project ID to update (1=Coco Age, 2=Meta Muse, 0=All)'
+        description: "Project ID to update (leave empty for all projects)"
         required: false
-        default: '0'
+        default: "1"
         type: string
 
 env:
@@ -20,9 +20,6 @@ env:
 jobs:
   update-obsidian:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        project_id: ${{ github.event.inputs.project_id == '0' || github.event.inputs.project_id == '' ? '[1, 2]' : format('[{0}]', github.event.inputs.project_id) }}
     timeout-minutes: 60
 
     steps:
@@ -51,10 +48,28 @@ jobs:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-      - name: 📊 Run Live Data Update
-        run: npm run update-live-data ${{ matrix.project_id }}
+      - name: 📊 Update Live Data for All Projects
+        run: |
+          # Если указан конкретный project_id - обновляем только его
+          if [ -n "${{ github.event.inputs.project_id }}" ]; then
+            echo "🎯 Обновление проекта: ${{ github.event.inputs.project_id }}"
+            npm run update-live-data ${{ github.event.inputs.project_id }}
+          else
+            echo "🗂️ Обновление всех активных проектов..."
+            
+            # Обновляем Project 1 (Coco Age)
+            echo "📊 Обновление Project 1 (Coco Age)..."
+            npm run update-live-data 1 || echo "⚠️ Ошибка обновления Project 1"
+            
+            # Обновляем Project 2 (Meta Muse)  
+            echo "📊 Обновление Project 2 (Meta Muse)..."
+            npm run update-live-data 2 || echo "⚠️ Ошибка обновления Project 2"
+            
+            echo "✅ Обновление всех проектов завершено"
+          fi
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OBSIDIAN_VAULT_PATH: ""
 
       - name: 📤 Commit and Push Changes
         run: |
@@ -62,14 +77,21 @@ jobs:
           git config --local user.name "GitHub Action"
           git add vaults/
           if ! git diff --staged --quiet; then
-            git commit -m "🤖 AUTO: Updated live data for Project ${{ matrix.project_id }} - $(date '+%Y-%m-%d %H:%M UTC')"
+            # Определяем сообщение коммита
+            if [ -n "${{ github.event.inputs.project_id }}" ]; then
+              COMMIT_MSG="🤖 AUTO: Updated live data for Project ${{ github.event.inputs.project_id }} - $(date '+%Y-%m-%d %H:%M UTC')"
+            else
+              COMMIT_MSG="🤖 AUTO: Updated live data for all projects - $(date '+%Y-%m-%d %H:%M UTC')"
+            fi
+            
+            git commit -m "$COMMIT_MSG"
             
             # Простая стратегия: получаем remote и форсируем наш коммит
             git fetch origin main
             git reset --hard HEAD~1  # Откатываем наш коммит
             git pull origin main     # Получаем последние изменения
             git add vaults/          # Добавляем наши файлы поверх
-            git commit -m "🤖 AUTO: Updated live data for Project ${{ matrix.project_id }} - $(date '+%Y-%m-%d %H:%M UTC')" || true
+            git commit -m "$COMMIT_MSG" || true
             git push origin main
           else
             echo "📝 Нет изменений для коммита"
