@@ -2,8 +2,8 @@ name: 🧠 Sync Obsidian Vault
 
 on:
   schedule:
-    # Каждые 6 часов для частых обновлений
-    - cron: "0 */6 * * *"
+    # Каждый день в 9:00 МСК (6:00 UTC)
+    - cron: "0 6 * * *"
 
   # Возможность запуска вручную
   workflow_dispatch:
@@ -39,13 +39,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: 📦 Setup Bun
-        uses: oven-sh/setup-bun@v1
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: "20"
+          cache: "npm"
 
       - name: 📦 Install dependencies
-        run: bun install --frozen-lockfile
+        run: npm ci
 
       - name: 🔧 Setup environment
         run: |
@@ -127,18 +128,19 @@ jobs:
           # Формируем сообщение
           MESSAGE="$EMOJI *Coco Age Vault Update*
 
-          📅 *Дата:* $(date '+%d.%m.%Y %H:%M') UTC
+          📅 *Дата:* $(date '+%d.%m.%Y %H:%M') UTC ($(date -d '+3 hours' '+%H:%M') МСК)
           🎯 *Проект:* Coco Age (ID: ${{ github.event.inputs.project_id || '1' }})
           📊 *Статус:* $STATUS
+          ⏰ *Расписание:* Ежедневно в 9:00 МСК
 
           📁 *Статистика vault:*
           • Файлов: $TOTAL_FILES
           • Размер: $VAULT_SIZE
 
           🔗 *Быстрые ссылки:*
+          • [LIVE DATA](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/📊%20LIVE_DATA.md)
           • [Центральная карта](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/🥥✨%20Coco%20Age%20-%20Центральная%20карта.md)
           • [Планирование](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/📊%20Планирование%20контента.md)
-          • [Конкуренты](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/👥%20Конкуренты.md)
 
           🤖 Автообновление через GitHub Actions"
 

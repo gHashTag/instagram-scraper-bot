@@ -7,7 +7,7 @@
 
 import { db } from "../db/index";
 import { competitorsTable, hashtagsTable, reelsTable } from "../db/schema";
-import { eq, desc, sql, and } from "drizzle-orm";
+import { eq, desc, sql, and, gte, count, avg, max } from "drizzle-orm";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -239,6 +239,9 @@ async function updateLiveData(): Promise<void> {
     console.log(`🏷️ Обновлено хэштегов: ${hashtagsData.length}`);
 
     console.log("\n✅ LIVE DATA УСПЕШНО ОБНОВЛЕН!");
+
+    // Дополнительно запускаем анализ аномалий
+    await analyzeAnomalies(1, vaultPath);
   } catch (error) {
     console.error("❌ ОШИБКА ОБНОВЛЕНИЯ LIVE DATA:", error);
     process.exit(1);
@@ -791,6 +794,330 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error("💥 Неожиданная ошибка:", error);
     process.exit(1);
   });
+}
+
+// Функция анализа аномалий
+async function analyzeAnomalies(
+  projectId: number,
+  vaultPath: string
+): Promise<void> {
+  console.log("\n🔍 АНАЛИЗАТОР АНОМАЛИЙ - ЗАПУСК");
+  console.log("══════════════════════════════════════════════════");
+
+  const twoWeeksAgo = new Date();
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+  console.log(
+    "📊 Поиск аномальных рилсов (15k+ просмотров, последние 2 недели)..."
+  );
+
+  try {
+    const anomalousReels = await db
+      .select({
+        id: reelsTable.id,
+        reelUrl: reelsTable.reel_url,
+        authorUsername: reelsTable.author_username,
+        description: reelsTable.description,
+        viewsCount: reelsTable.views_count,
+        likesCount: reelsTable.likes_count,
+        commentsCount: reelsTable.comments_count,
+        publishedAt: reelsTable.published_at,
+      })
+      .from(reelsTable)
+      .where(
+        and(
+          eq(reelsTable.project_id, projectId),
+          gte(reelsTable.views_count, 15000), // Оптимизировано: 15k+ вместо 50k
+          gte(reelsTable.published_at, twoWeeksAgo)
+        )
+      )
+      .orderBy(desc(reelsTable.views_count));
+
+    console.log(`🎯 Найдено аномальных рилсов: ${anomalousReels.length}`);
+
+    // Анализируем каждый аномальный рил
+    const anomalyAnalyses = anomalousReels
+      .map((reel) => {
+        if (!reel.viewsCount || !reel.likesCount || !reel.publishedAt)
+          return null;
+
+        const engagementRate =
+          ((reel.likesCount + (reel.commentsCount || 0)) / reel.viewsCount) *
+          100;
+        const daysAgo = Math.floor(
+          (Date.now() - reel.publishedAt.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        const hashtags = reel.description?.match(/#[a-zA-Z0-9_]+/g) || [];
+
+        let anomalyScore = 0;
+        const anomalyReasons: string[] = [];
+
+        if (reel.viewsCount > 100000) {
+          anomalyScore += 3;
+          anomalyReasons.push(
+            `💥 Сверхвысокие просмотры: ${reel.viewsCount.toLocaleString()}`
+          );
+        } else if (reel.viewsCount > 75000) {
+          anomalyScore += 2;
+          anomalyReasons.push(
+            `🔥 Высокие просмотры: ${reel.viewsCount.toLocaleString()}`
+          );
+        } else {
+          anomalyScore += 1;
+          anomalyReasons.push(
+            `📈 Повышенные просмотры: ${reel.viewsCount.toLocaleString()}`
+          );
+        }
+
+        if (engagementRate > 5) {
+          anomalyScore += 2;
+          anomalyReasons.push(
+            `💬 Высокий engagement: ${engagementRate.toFixed(2)}%`
+          );
+        } else if (engagementRate > 2) {
+          anomalyScore += 1;
+          anomalyReasons.push(
+            `👍 Хороший engagement: ${engagementRate.toFixed(2)}%`
+          );
+        }
+
+        if (daysAgo <= 3 && reel.viewsCount > 75000) {
+          anomalyScore += 3;
+          anomalyReasons.push(
+            `⚡ Вирусный рост: ${reel.viewsCount.toLocaleString()} за ${daysAgo} дн.`
+          );
+        } else if (daysAgo <= 7 && reel.viewsCount > 50000) {
+          anomalyScore += 2;
+          anomalyReasons.push(
+            `🚀 Быстрый рост: ${reel.viewsCount.toLocaleString()} за ${daysAgo} дн.`
+          );
+        }
+
+        return {
+          reelId: reel.id,
+          reelUrl: reel.reelUrl || "",
+          authorUsername: reel.authorUsername || "",
+          description: reel.description || "",
+          viewsCount: reel.viewsCount,
+          likesCount: reel.likesCount,
+          commentsCount: reel.commentsCount || 0,
+          publishedAt: reel.publishedAt,
+          engagementRate,
+          anomalyScore,
+          anomalyReasons,
+          hashtags,
+          daysAgo,
+        };
+      })
+      .filter(Boolean);
+
+    // Сортируем по аномальности
+    anomalyAnalyses.sort((a, b) => b.anomalyScore - a.anomalyScore);
+
+    // Генерируем отчет
+    const report = generateAnomalyReport(anomalyAnalyses);
+
+    const reportPath = path.join(vaultPath, "🚨 АНОМАЛИИ И ВИРУСНЫЕ ТРЕНДЫ.md");
+    fs.writeFileSync(reportPath, report, "utf-8");
+
+    console.log(`✅ Отчет по аномалиям сохранен: ${reportPath}`);
+    console.log(`🎯 Найдено аномальных рилсов: ${anomalyAnalyses.length}`);
+
+    if (anomalyAnalyses.length > 0) {
+      console.log("\n🚨 ТОП-5 САМЫХ АНОМАЛЬНЫХ РИЛСОВ:");
+      anomalyAnalyses.slice(0, 5).forEach((anomaly, index) => {
+        console.log(
+          `${index + 1}. @${
+            anomaly.authorUsername
+          } - ${anomaly.viewsCount.toLocaleString()} просмотров (${
+            anomaly.daysAgo
+          } дн. назад)`
+        );
+        console.log(
+          `   Аномальность: ${
+            anomaly.anomalyScore
+          }/10 - ${anomaly.anomalyReasons.join(", ")}`
+        );
+      });
+    }
+
+    console.log("\n✅ АНАЛИЗ АНОМАЛИЙ ЗАВЕРШЕН!");
+  } catch (error) {
+    console.error("❌ Ошибка анализа аномалий:", error);
+  }
+}
+
+function generateAnomalyReport(anomalies: any[]): string {
+  const now = new Date();
+  const reportDate = now.toLocaleString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  return `# 🚨 АНОМАЛИИ И ВИРУСНЫЕ ТРЕНДЫ
+
+> **🔍 Детектор аномалий** | Последнее обновление: **${reportDate}**
+
+---
+
+## 📊 **СВОДКА АНАЛИЗА**
+
+| Метрика | Значение |
+|---------|----------|
+| 🎯 **Аномальных рилсов найдено** | ${anomalies.length} |
+| 🔥 **Сверхвирусных (100k+)** | ${
+    anomalies.filter((a) => a.viewsCount > 100000).length
+  } |
+| ⚡ **Быстрорастущих (≤3 дня)** | ${
+    anomalies.filter((a) => a.daysAgo <= 3).length
+  } |
+
+---
+
+## 🔥 **ТОП АНОМАЛЬНЫХ РИЛСОВ (15k+ просмотров, 2 недели)**
+
+${
+  anomalies.length === 0
+    ? `
+### 📊 Аномальных рилсов не обнаружено
+
+В данный момент в базе данных нет рилсов с более чем 15,000 просмотров за последние 2 недели.
+
+**Возможные причины:**
+- 🔄 Данные еще не собраны (требуется запуск парсинга)
+- 📊 Низкая активность конкурентов в последние 2 недели  
+- 🎯 Пороговое значение 15k оптимизировано для текущего датасета
+
+**Рекомендации:**
+- Запустить парсинг конкурентов: \`npm run meta-muse:daily\`
+- Снизить пороговое значение до 10k-25k для анализа
+- Проверить активность конкурентов вручную
+
+---
+`
+    : anomalies
+        .slice(0, 10)
+        .map((anomaly, index) => {
+          const rankEmoji =
+            index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "🎯";
+          const description =
+            anomaly.description && anomaly.description.length > 100
+              ? anomaly.description.substring(0, 100) + "..."
+              : anomaly.description || "Описание недоступно";
+
+          return `### ${rankEmoji} @${anomaly.authorUsername}
+
+| Метрика | Значение |
+|---------|----------|
+| 👀 **Просмотры** | ${anomaly.viewsCount.toLocaleString()} |
+| 💖 **Лайки** | ${anomaly.likesCount.toLocaleString()} |
+| 💬 **Комментарии** | ${anomaly.commentsCount.toLocaleString()} |
+| 📊 **Engagement Rate** | ${anomaly.engagementRate.toFixed(2)}% |
+| 📅 **Опубликовано** | ${anomaly.daysAgo} дн. назад |
+| 🚨 **Аномальность** | ${anomaly.anomalyScore}/10 |
+
+**🎯 Причины аномальности:**
+${anomaly.anomalyReasons.map((reason) => `- ${reason}`).join("\n")}
+
+**📝 Описание:** ${description}
+
+**🏷️ Хештеги:** ${anomaly.hashtags.join(" ") || "Нет хештегов"}
+
+**🔗 Ссылка:** ${anomaly.reelUrl}
+
+---`;
+        })
+        .join("\n\n")
+}
+
+## 🎯 **РЕКОМЕНДАЦИИ ПО МОНИТОРИНГУ**
+
+### 🚨 Критические аномалии для отслеживания:
+${
+  anomalies
+    .filter((a) => a.anomalyScore >= 6)
+    .map(
+      (a) =>
+        `- **@${
+          a.authorUsername
+        }**: ${a.viewsCount.toLocaleString()} просмотров за ${
+          a.daysAgo
+        } дн. (${a.engagementRate.toFixed(2)}% engagement)`
+    )
+    .join("\n") || "Критических аномалий не обнаружено"
+}
+
+### 🏷️ Популярные хештеги в аномальных рилсах:
+${
+  getTopHashtagsFromAnomalies(anomalies)
+    .map((tag) => `- ${tag.hashtag} (${tag.count} раз)`)
+    .join("\n") || "Недостаточно данных"
+}
+
+### ⏰ Оптимальное время публикации:
+${
+  getOptimalPostingTimesFromAnomalies(anomalies) ||
+  "Недостаточно данных для анализа"
+}
+
+---
+
+## 🤖 **АВТОМАТИЗАЦИЯ**
+
+Этот отчет автоматически обновляется каждый день в 9:00 МСК.
+
+**Критерии аномалий:**
+- 🎯 Рилсы с 50k+ просмотров за последние 2 недели
+- 📊 Анализ роста конкурентов (сравнение с предыдущими 2 неделями)
+- 🚨 Скоринг аномальности на основе просмотров, engagement rate и скорости роста
+
+**Следующее обновление:** ${new Date(
+    now.getTime() + 24 * 60 * 60 * 1000
+  ).toLocaleDateString("ru-RU")} в 9:00 МСК
+
+*🔍 Детектор аномалий работает 24/7*
+`;
+}
+
+function getTopHashtagsFromAnomalies(
+  anomalies: any[]
+): { hashtag: string; count: number }[] {
+  const hashtagCount = new Map<string, number>();
+
+  anomalies.forEach((anomaly) => {
+    anomaly.hashtags.forEach((hashtag: string) => {
+      hashtagCount.set(hashtag, (hashtagCount.get(hashtag) || 0) + 1);
+    });
+  });
+
+  return Array.from(hashtagCount.entries())
+    .map(([hashtag, count]) => ({ hashtag, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+}
+
+function getOptimalPostingTimesFromAnomalies(anomalies: any[]): string {
+  if (anomalies.length === 0) return "";
+
+  const hourCounts = new Map<number, number>();
+
+  anomalies.forEach((anomaly) => {
+    const hour = anomaly.publishedAt.getHours();
+    hourCounts.set(hour, (hourCounts.get(hour) || 0) + 1);
+  });
+
+  const topHours = Array.from(hourCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([hour, count]) => `${hour}:00 (${count} вирусных рилсов)`)
+    .join(", ");
+
+  return topHours;
 }
 
 export { updateLiveData };

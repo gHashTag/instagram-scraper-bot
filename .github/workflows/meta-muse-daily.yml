@@ -1,4 +1,4 @@
-name: 🐭 Meta Muse Daily Automation
+name: Meta Muse Daily Automation
 
 on:
   schedule:
@@ -29,13 +29,14 @@ jobs:
       - name: 🔄 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 🟢 Setup Bun
-        uses: oven-sh/setup-bun@v1
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: "20"
+          cache: "npm"
 
       - name: 📦 Install Dependencies
-        run: bun install --frozen-lockfile
+        run: npm ci
 
       - name: 🔍 Environment Check
         run: |
@@ -46,10 +47,10 @@ jobs:
           echo "TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:0:10}..."
 
       - name: 🏗️ Build Project
-        run: bun run build
+        run: npm run build
 
       - name: 🔧 Database Migration
-        run: bun run db:migrate
+        run: npm run db:migrate
         continue-on-error: true
 
       - name: 🐭 Meta Muse Daily Cycle
@@ -61,7 +62,7 @@ jobs:
           LOG_FILE="meta-muse-daily-$(date +%Y%m%d_%H%M%S).log"
 
           # Запускаем скрипт с логированием
-          bun run meta-muse:daily 2>&1 | tee "$LOG_FILE"
+          npm run meta-muse:daily 2>&1 | tee "$LOG_FILE"
 
           # Сохраняем статус
           EXIT_CODE=${PIPESTATUS[0]}
