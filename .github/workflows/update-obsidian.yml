@@ -49,8 +49,14 @@ jobs:
           git add vaults/
           if ! git diff --staged --quiet; then
             git commit -m "🤖 AUTO: Updated live data $(date '+%Y-%m-%d %H:%M UTC')"
-            git pull --rebase origin main || true
-            git push --force-with-lease
+            
+            # Простая стратегия: получаем remote и форсируем наш коммит
+            git fetch origin main
+            git reset --hard HEAD~1  # Откатываем наш коммит
+            git pull origin main     # Получаем последние изменения
+            git add vaults/          # Добавляем наши файлы поверх
+            git commit -m "🤖 AUTO: Updated live data $(date '+%Y-%m-%d %H:%M UTC')" || true
+            git push origin main
           else
             echo "📝 Нет изменений для коммита"
           fi
