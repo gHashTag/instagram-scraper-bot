@@ -30,43 +30,22 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm ci
 
-      - name: 🏗️ Build Project
-        run: npm run build
-
       - name: 🔧 Database Migration
         run: npm run db:migrate
-        continue-on-error: true
 
-      - name: 🕷️ Run Instagram Parsing (Viral Content)
-        id: parsing
-        run: |
-          echo "🕷️ Запуск парсинга вирусного контента..."
-          npm run refresh:viral
-          echo "✅ Парсинг завершен"
+      - name: 🕷️ Parse Instagram Data
+        run: npm run refresh:viral
 
-      - name: 📊 Update Live Data
-        id: update_data
-        run: |
-          echo "📊 Обновление live data из базы данных..."
-          npm run update-live-data
-          echo "✅ Live data обновлен"
+      - name: 📊 Update Live Data Reports
+        run: npm run update-live-data
 
       - name: 📤 Commit and Push Changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-
-          # Добавляем все изменения в vault
           git add vaults/
-
-          # Проверяем есть ли изменения
-          if git diff --staged --quiet; then
-            echo "📝 Нет изменений для коммита"
-          else
-            git commit -m "🤖 Auto-update: Live data $(date '+%Y-%m-%d %H:%M UTC')"
-            git push
-            echo "✅ Изменения отправлены в репозиторий"
-          fi
+          git diff --staged --quiet || git commit -m "🤖 AUTO: Updated live data $(date '+%Y-%m-%d %H:%M UTC')"
+          git push
 
       - name: 📊 Summary
         run: |
