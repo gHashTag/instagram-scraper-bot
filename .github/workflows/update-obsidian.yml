@@ -30,9 +30,6 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm ci
 
-      - name: 🔧 Database Migration
-        run: npm run db:migrate
-
       - name: 🕷️ Parse Instagram Data
         run: npm run refresh:viral
 
@@ -48,8 +45,4 @@ jobs:
           git push
 
       - name: 📊 Summary
-        run: |
-          echo "🎉 ПОЛНЫЙ ЦИКЛ ЗАВЕРШЕН!"
-          echo "✅ Парсинг Instagram выполнен"
-          echo "✅ Live data обновлен"
-          echo "✅ Obsidian vault синхронизирован"
+        run: echo "✅ Парсинг и обновление данных завершены успешно!"
