@@ -5,7 +5,12 @@ on:
     # Запуск каждый день в 9:00 MSK (06:00 UTC)
     - cron: "0 6 * * *"
   workflow_dispatch:
-    # Ручной запуск
+    inputs:
+      project_id:
+        description: 'Project ID to update (1=Coco Age, 2=Meta Muse, 0=All)'
+        required: false
+        default: '0'
+        type: string
 
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -15,13 +20,16 @@ env:
 jobs:
   update-obsidian:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project_id: ${{ github.event.inputs.project_id == '0' || github.event.inputs.project_id == '' ? '[1, 2]' : format('[{0}]', github.event.inputs.project_id) }}
     timeout-minutes: 60
 
     steps:
       - name: 🔄 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
+      - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -36,11 +44,17 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm ci
 
-      - name: 🕷️ Parse Instagram Data
+      - name: 🕷️ Parse Instagram (High-Viral Content)
         run: npm run refresh:viral
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-      - name: 📊 Update Live Data Reports
-        run: npm run update-live-data
+      - name: 📊 Run Live Data Update
+        run: npm run update-live-data ${{ matrix.project_id }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: 📤 Commit and Push Changes
         run: |
@@ -48,14 +62,14 @@ jobs:
           git config --local user.name "GitHub Action"
           git add vaults/
           if ! git diff --staged --quiet; then
-            git commit -m "🤖 AUTO: Updated live data $(date '+%Y-%m-%d %H:%M UTC')"
+            git commit -m "🤖 AUTO: Updated live data for Project ${{ matrix.project_id }} - $(date '+%Y-%m-%d %H:%M UTC')"
             
             # Простая стратегия: получаем remote и форсируем наш коммит
             git fetch origin main
             git reset --hard HEAD~1  # Откатываем наш коммит
             git pull origin main     # Получаем последние изменения
             git add vaults/          # Добавляем наши файлы поверх
-            git commit -m "🤖 AUTO: Updated live data $(date '+%Y-%m-%d %H:%M UTC')" || true
+            git commit -m "🤖 AUTO: Updated live data for Project ${{ matrix.project_id }} - $(date '+%Y-%m-%d %H:%M UTC')" || true
             git push origin main
           else
             echo "📝 Нет изменений для коммита"

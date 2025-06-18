@@ -16,6 +16,13 @@ const PROJECT_ID = parseInt(process.argv[2] || "1"); // Default to project 1 (Co
 const VAULT_BASE_PATH =
   process.env.OBSIDIAN_VAULT_PATH || path.join(process.cwd(), "vaults");
 
+// 🗂️ PROJECT TO VAULT MAPPING
+const PROJECT_VAULT_MAP: Record<number, string> = {
+  1: "coco-age",
+  2: "meta-muse-project",
+  // Добавить новые проекты здесь
+};
+
 interface CompetitorData {
   username: string;
   fullName: string;
@@ -52,11 +59,21 @@ async function updateLiveData(): Promise<void> {
   console.log("🔄 Update LIVE DATA - ЗАПУСК");
   console.log("═".repeat(50));
 
-  const vaultPath = VAULT_BASE_PATH.endsWith("coco-age")
-    ? VAULT_BASE_PATH
-    : path.join(VAULT_BASE_PATH, "coco-age");
+  // Определяем vault по project_id
+  const vaultName = PROJECT_VAULT_MAP[PROJECT_ID];
+  if (!vaultName) {
+    throw new Error(
+      `❌ Неизвестный PROJECT_ID: ${PROJECT_ID}. Доступные: ${Object.keys(
+        PROJECT_VAULT_MAP
+      ).join(", ")}`
+    );
+  }
+
+  const vaultPath = path.join(VAULT_BASE_PATH, vaultName);
   const liveDataPath = path.join(vaultPath, "📊 LIVE_DATA.md");
 
+  console.log(`🗂️ Project ID: ${PROJECT_ID}`);
+  console.log(`📁 Vault Name: ${vaultName}`);
   console.log(`📁 Vault Path: ${vaultPath}`);
   console.log(`📄 Live Data Path: ${liveDataPath}`);
 
