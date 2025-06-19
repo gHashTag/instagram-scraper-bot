@@ -14,7 +14,10 @@ import * as path from "path";
 // 🔧 Configuration
 const PROJECT_ID = parseInt(process.argv[2] || "1"); // Default to project 1 (Coco Age)
 const VAULT_BASE_PATH =
-  process.env.OBSIDIAN_VAULT_PATH || path.join(process.cwd(), "vaults");
+  process.env.OBSIDIAN_VAULT_PATH &&
+  process.env.OBSIDIAN_VAULT_PATH.trim() !== ""
+    ? process.env.OBSIDIAN_VAULT_PATH
+    : path.join(process.cwd(), "vaults");
 
 // 🗂️ PROJECT TO VAULT MAPPING
 const PROJECT_VAULT_MAP: Record<number, string> = {
