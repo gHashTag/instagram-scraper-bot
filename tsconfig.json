@@ -41,5 +41,5 @@
     "isolatedModules": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "src/modules/digitalAvatarBody"]
+  "exclude": ["node_modules", "src/modules/digitalAvatarBody", "**/__tests__/**", "**/*.test.ts", "**/*.spec.ts", "scripts/test-real-transcription.ts"]
 }

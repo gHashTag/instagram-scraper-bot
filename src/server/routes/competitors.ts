@@ -16,7 +16,15 @@ import { logger } from '../../logger';
 import { ApiResponse, CompetitorResponse, ReelResponse } from '../../types/api';
 
 const router = Router();
-const db = initializeDBConnection();
+
+// Ленивая инициализация БД
+let db: ReturnType<typeof initializeDBConnection> | null = null;
+function getDB() {
+  if (!db) {
+    db = initializeDBConnection();
+  }
+  return db;
+}
 
 // ===== ВАЛИДАЦИЯ =====
 
@@ -47,7 +55,7 @@ router.get('/', async (req, res) => {
   try {
     const query = CompetitorsQuerySchema.parse(req.query);
     
-    let dbQuery = db.select().from(competitorsTable);
+    let dbQuery = getDB().select().from(competitorsTable);
     
     // Фильтр по активности
     if (query.active !== undefined) {
@@ -64,7 +72,7 @@ router.get('/', async (req, res) => {
     // Получаем статистику для каждого конкурента
     const competitorsWithStats = await Promise.all(
       competitors.map(async (competitor) => {
-        const stats = await db
+        const stats = await getDB()
           .select({
             total_reels: sql<number>`count(*)`,
             avg_views: sql<number>`avg(${reelsTable.views_count})`,
@@ -134,7 +142,7 @@ router.get('/:id/reels', async (req, res) => {
     const query = CompetitorReelsQuerySchema.parse(req.query);
 
     // Проверяем существование конкурента
-    const competitor = await db
+    const competitor = await getDB()
       .select()
       .from(competitorsTable)
       .where(eq(competitorsTable.id, competitorId))
@@ -148,7 +156,7 @@ router.get('/:id/reels', async (req, res) => {
     }
 
     // Строим запрос для reels
-    let reelsQuery = db
+    let reelsQuery = getDB()
       .select()
       .from(reelsTable)
       .where(
@@ -254,7 +262,7 @@ router.get('/:id/stats', async (req, res) => {
     const competitorId = parseInt(req.params.id, 10);
 
     // Проверяем существование конкурента
-    const competitor = await db
+    const competitor = await getDB()
       .select()
       .from(competitorsTable)
       .where(eq(competitorsTable.id, competitorId))
@@ -268,7 +276,7 @@ router.get('/:id/stats', async (req, res) => {
     }
 
     // Получаем детальную статистику
-    const stats = await db
+    const stats = await getDB()
       .select({
         total_reels: sql<number>`count(*)`,
         avg_views: sql<number>`avg(${reelsTable.views_count})`,

@@ -1,0 +1,15 @@
+[Unit]
+Description=Meta Muse Instagram Scraper Service
+After=network.target
+
+[Service]
+Type=oneshot
+User=node
+WorkingDirectory=/Users/playra/instagram-scraper-bot
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/bun run /Users/playra/instagram-scraper-bot/src/scripts/meta-muse-automated-scraper.ts
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

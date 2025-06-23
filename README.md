@@ -140,6 +140,7 @@ vaults/
 - **ORM:** Drizzle
 - **Отчеты:** Obsidian Markdown
 - **Архитектура:** Мультиклиентская система стратегий
+- **Деплой:** Railway.app (готов к продакшену)
 
 ## 📞 Диагностика и поддержка
 
@@ -156,6 +157,12 @@ npm run analyze-views    # Анализ просмотров vs лайков
 
 # Работающие скрипты
 npm run scrape-hashtags-working  # Рабочий скрапинг хэштегов
+
+# Railway деплой
+npm run railway:check    # Проверка готовности к деплою
+npm run railway:setup    # Автоматическая настройка Railway
+npm run railway:deploy   # Деплой на Railway
+npm run railway:logs     # Просмотр логов Railway
 ```
 
 ## 🎯 Режимы работы
@@ -292,6 +299,49 @@ npm run strategy run-all
 
 # Результат: обновятся все дашборды и отчеты
 ```
+
+## 🚂 Деплой на Railway
+
+> **✅ ПРОЕКТ ГОТОВ К ДЕПЛОЮ!** Все файлы настроены, код обновлен.
+
+### 🚀 Быстрый деплой
+
+```bash
+# 1. Проверка готовности (все ✅)
+npm run railway:check
+
+# 2. Автоматическая настройка
+npm run railway:setup
+
+# 3. Деплой
+npm run railway:deploy
+```
+
+### ⚙️ Ручная настройка
+
+1. **Создайте проект на [railway.app](https://railway.app)**
+2. **Подключите GitHub репозиторий**
+3. **Добавьте PostgreSQL базу данных**
+4. **Настройте переменные окружения:**
+   ```env
+   BOT_TOKEN=your_telegram_bot_token
+   DATABASE_URL=postgresql://... (автоматически)
+   APIFY_TOKEN=your_apify_token
+   OPENAI_API_KEY=your_openai_key
+   NODE_ENV=production
+   ```
+5. **Задеплойте проект**
+
+### 📊 Мониторинг
+
+- **Health Check:** `https://your-app.railway.app/health`
+- **Логи:** `npm run railway:logs`
+- **Метрики:** Railway Dashboard
+- **Автоматические деплои:** при push в main
+
+### 📚 Подробная документация
+
+См. [docs/RAILWAY_DEPLOYMENT.md](docs/RAILWAY_DEPLOYMENT.md) для полного руководства.
 
 ---
 

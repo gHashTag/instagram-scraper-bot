@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "05959a61d8d5f9ff",
+        "id": "25f9d54f7b69a950",
         "type": "tabs",
         "children": [
           {
-            "id": "59643179a9132a7a",
+            "id": "f190010b57121263",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
+              "type": "markdown",
+              "state": {
+                "file": "vaults/coco-age/🏠 Project Index - Navigation Hub.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "🏠 Project Index - Navigation Hub"
             }
           }
         ]
@@ -161,11 +165,32 @@
       "command-palette:Открыть палитру команд": false
     }
   },
-  "active": "59643179a9132a7a",
+  "active": "f190010b57121263",
   "lastOpenFiles": [
+    "one-reel-complete-test.ts",
+    "src/scripts/start-server.ts",
+    "src/scripts/run-strategy.ts",
+    "src/scripts/run-migrations.ts",
+    "src/scripts/full-refresh-strategy.ts",
+    "src/scripts/extract-audio-text.ts",
+    "src/scripts/export-videos.ts",
+    "src/scripts/export-reels-to-excel.ts",
+    "src/scripts/export-audio.ts",
+    "src/scripts/diagnose-apify-data.ts",
+    "src/scripts/debug-apify-response.ts",
+    "vaults/coco-age/👥 Team Structure & Roles.md",
+    "vaults/coco-age/📅 Контент план.md",
+    "vaults/coco-age/📊 Conv.Rules - Content Factory Conversion Framework.md",
+    "vaults/coco-age/📊 Анализ конкурентов.md",
+    "vaults/coco-age/📊 ОТЧЕТ ДЛЯ КЛИЕНТА.md",
+    "vaults/coco-age/📋 AI Content Factory - CocoAge Project.md",
+    "vaults/coco-age/📋 Roadmap & Timeline.md",
+    "vaults/coco-age/📋 Technical Specification.md",
+    "SUCCESS_HISTORY.md",
+    "ГОТОВО_ДЛЯ_КЛИЕНТА.md",
+    "vaults/coco-age/content-factory/project-coco-age/editable-dashboard.md",
     "DETAILED_APIFY_INSTAGRAM_SCRAPERS_ANALYSIS.md",
     "APIFY_INSTAGRAM_SCRAPERS_RESEARCH.md",
-    "SUCCESS_HISTORY.md",
     "ДИАГНОСТИКА_РЕЗУЛЬТАТ.md",
     "OBSIDIAN_GUIDE.md",
     "DASHBOARD_STATUS.md",

@@ -2,12 +2,11 @@
  * Instagram Strategy - Единственный источник правды для скрапинга
  */
 
-import { 
-  InstagramScrapingConfig, 
-  ScrapingMode, 
-  InstagramPost, 
-  ScrapingResult,
-  SCRAPING_MODE_CONFIGS 
+import {
+  InstagramScrapingConfig,
+  ScrapingMode,
+  InstagramPost,
+  SCRAPING_MODE_CONFIGS,
 } from "../types/instagram-strategy";
 
 export class InstagramStrategy {
@@ -34,7 +33,10 @@ export class InstagramStrategy {
     }
 
     // Проверяем источники
-    if (config.sources.hashtags.length === 0 && config.sources.competitors.length === 0) {
+    if (
+      config.sources.hashtags.length === 0 &&
+      config.sources.competitors.length === 0
+    ) {
       throw new Error("At least one source must be specified");
     }
   }
@@ -50,7 +52,7 @@ export class InstagramStrategy {
    * Применить фильтры к постам
    */
   applyFilters(posts: InstagramPost[]): InstagramPost[] {
-    return posts.filter(post => {
+    return posts.filter((post) => {
       // Фильтр по просмотрам
       if (!this.passesViewsFilter(post)) {
         return false;
@@ -118,7 +120,10 @@ export class InstagramStrategy {
   /**
    * Получить оптимальный скрапер
    */
-  getOptimalScraper(sourceType: "hashtag" | "competitor", useFallback = false): string {
+  getOptimalScraper(
+    _sourceType: "hashtag" | "competitor",
+    useFallback = false
+  ): string {
     if (useFallback) {
       if (this.config.scrapers.fallback.length === 0) {
         throw new Error("No fallback scrapers available");
@@ -144,37 +149,37 @@ export class InstagramStrategy {
    * Создать стратегию из режима
    */
   static fromMode(
-    mode: ScrapingMode, 
-    sources: { hashtags: string[], competitors: string[] },
+    mode: ScrapingMode,
+    sources: { hashtags: string[]; competitors: string[] },
     overrides?: Partial<InstagramScrapingConfig>
   ): InstagramStrategy {
     const baseConfig = this.getModeConfig(mode);
-    
+
     const config: InstagramScrapingConfig = {
       mode,
       filters: {
         minViews: baseConfig.filters?.minViews || 1000,
         maxAgeDays: baseConfig.filters?.maxAgeDays || 30,
         requireRealViews: baseConfig.filters?.requireRealViews || false,
-        ...overrides?.filters
+        ...overrides?.filters,
       },
       limits: {
         totalLimit: baseConfig.limits?.totalLimit || 1000,
         perSourceLimit: baseConfig.limits?.perSourceLimit || 100,
-        ...overrides?.limits
+        ...overrides?.limits,
       },
       scrapers: {
         primary: "apify/instagram-scraper",
         fallback: ["apify/instagram-reel-scraper"],
-        ...overrides?.scrapers
+        ...overrides?.scrapers,
       },
       sources,
       options: {
         saveIntermediateResults: true,
         logLevel: "info",
         exportToExcel: true,
-        ...overrides?.options
-      }
+        ...overrides?.options,
+      },
     };
 
     return new InstagramStrategy(config);
@@ -184,7 +189,7 @@ export class InstagramStrategy {
    * Создать стратегию для вирусного контента
    */
   static createViralStrategy(
-    hashtags: string[], 
+    hashtags: string[],
     competitors: string[] = []
   ): InstagramStrategy {
     return this.fromMode("viral", { hashtags, competitors });
@@ -194,7 +199,7 @@ export class InstagramStrategy {
    * Создать стратегию для популярного контента
    */
   static createPopularStrategy(
-    hashtags: string[], 
+    hashtags: string[],
     competitors: string[] = []
   ): InstagramStrategy {
     return this.fromMode("popular", { hashtags, competitors });
@@ -204,7 +209,7 @@ export class InstagramStrategy {
    * Создать тестовую стратегию
    */
   static createTestStrategy(
-    hashtags: string[], 
+    hashtags: string[],
     competitors: string[] = []
   ): InstagramStrategy {
     return this.fromMode("test", { hashtags, competitors });

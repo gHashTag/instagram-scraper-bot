@@ -1,12 +1,11 @@
 /**
  * 🕉️ STRATEGY MANAGER - Единственный источник правды
- * 
+ *
  * Простое управление Instagram стратегией через JSON конфигурацию
  */
 
-import fs from 'fs';
-import path from 'path';
-import { logger } from './logger';
+import fs from "fs";
+import { logger } from "./logger";
 
 // Типы для конфигурации
 interface HashtagConfig {
@@ -120,7 +119,7 @@ export class StrategyManager {
   private configPath: string;
   private config: StrategyConfig;
 
-  constructor(configPath = './config/instagram-strategy.json') {
+  constructor(configPath = "./config/instagram-strategy.json") {
     this.configPath = configPath;
     this.config = this.loadConfig();
   }
@@ -130,7 +129,7 @@ export class StrategyManager {
    */
   private loadConfig(): StrategyConfig {
     try {
-      const configFile = fs.readFileSync(this.configPath, 'utf8');
+      const configFile = fs.readFileSync(this.configPath, "utf8");
       return JSON.parse(configFile);
     } catch (error) {
       throw new Error(`Ошибка загрузки конфигурации: ${error.message}`);
@@ -143,7 +142,7 @@ export class StrategyManager {
   saveConfig(): this {
     try {
       fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 2));
-      logger.info('✅ Конфигурация сохранена');
+      logger.info("✅ Конфигурация сохранена");
     } catch (error) {
       throw new Error(`Ошибка сохранения конфигурации: ${error.message}`);
     }
@@ -166,7 +165,7 @@ export class StrategyManager {
     }
 
     const preset = this.config.presets[presetName];
-    
+
     // Применяем настройки пресета
     this.config.scraping.mode = presetName;
     this.config.scraping.minViews = preset.minViews;
@@ -194,7 +193,9 @@ export class StrategyManager {
     if (perSource) {
       this.config.scraping.perSourceLimit = perSource;
     }
-    logger.info(`✅ Лимиты: ${total} общий, ${perSource || 'без изменений'} на источник`);
+    logger.info(
+      `✅ Лимиты: ${total} общий, ${perSource || "без изменений"} на источник`
+    );
     return this;
   }
 
@@ -203,14 +204,16 @@ export class StrategyManager {
    */
   addHashtag(tag: string, priority = 3, limit = 50): this {
     const hashtag: HashtagConfig = {
-      tag: tag.replace('#', ''),
+      tag: tag.replace("#", ""),
       priority,
-      limit
+      limit,
     };
-    
+
     // Проверяем, есть ли уже такой хэштег
-    const existingIndex = this.config.sources.hashtags.findIndex(h => h.tag === hashtag.tag);
-    
+    const existingIndex = this.config.sources.hashtags.findIndex(
+      (h) => h.tag === hashtag.tag
+    );
+
     if (existingIndex >= 0) {
       this.config.sources.hashtags[existingIndex] = hashtag;
       logger.info(`✅ Обновлен хэштег: #${hashtag.tag}`);
@@ -218,7 +221,7 @@ export class StrategyManager {
       this.config.sources.hashtags.push(hashtag);
       logger.info(`✅ Добавлен хэштег: #${hashtag.tag}`);
     }
-    
+
     return this;
   }
 
@@ -226,8 +229,10 @@ export class StrategyManager {
    * Удалить хэштег
    */
   removeHashtag(tag: string): this {
-    const cleanTag = tag.replace('#', '');
-    this.config.sources.hashtags = this.config.sources.hashtags.filter(h => h.tag !== cleanTag);
+    const cleanTag = tag.replace("#", "");
+    this.config.sources.hashtags = this.config.sources.hashtags.filter(
+      (h) => h.tag !== cleanTag
+    );
     logger.info(`✅ Удален хэштег: #${cleanTag}`);
     return this;
   }
@@ -235,17 +240,19 @@ export class StrategyManager {
   /**
    * Добавить конкурента
    */
-  addCompetitor(username: string, priority = 3, limit = 30, notes = ''): this {
+  addCompetitor(username: string, priority = 3, limit = 30, notes = ""): this {
     const competitor: CompetitorConfig = {
-      username: username.replace('@', ''),
+      username: username.replace("@", ""),
       priority,
       limit,
-      notes
+      notes,
     };
-    
+
     // Проверяем, есть ли уже такой конкурент
-    const existingIndex = this.config.sources.competitors.findIndex(c => c.username === competitor.username);
-    
+    const existingIndex = this.config.sources.competitors.findIndex(
+      (c) => c.username === competitor.username
+    );
+
     if (existingIndex >= 0) {
       this.config.sources.competitors[existingIndex] = competitor;
       logger.info(`✅ Обновлен конкурент: @${competitor.username}`);
@@ -253,7 +260,7 @@ export class StrategyManager {
       this.config.sources.competitors.push(competitor);
       logger.info(`✅ Добавлен конкурент: @${competitor.username}`);
     }
-    
+
     return this;
   }
 
@@ -261,8 +268,10 @@ export class StrategyManager {
    * Удалить конкурента
    */
   removeCompetitor(username: string): this {
-    const cleanUsername = username.replace('@', '');
-    this.config.sources.competitors = this.config.sources.competitors.filter(c => c.username !== cleanUsername);
+    const cleanUsername = username.replace("@", "");
+    this.config.sources.competitors = this.config.sources.competitors.filter(
+      (c) => c.username !== cleanUsername
+    );
     logger.info(`✅ Удален конкурент: @${cleanUsername}`);
     return this;
   }
@@ -276,8 +285,10 @@ export class StrategyManager {
     } else {
       this.config.output.excel.enabled = enabled;
     }
-    
-    logger.info(`✅ Excel экспорт: ${this.config.output.excel.enabled ? 'включен' : 'выключен'}`);
+
+    logger.info(
+      `✅ Excel экспорт: ${this.config.output.excel.enabled ? "включен" : "выключен"}`
+    );
     return this;
   }
 
@@ -286,12 +297,15 @@ export class StrategyManager {
    */
   toggleObsidian(enabled?: boolean): this {
     if (enabled === undefined) {
-      this.config.output.obsidian.enabled = !this.config.output.obsidian.enabled;
+      this.config.output.obsidian.enabled =
+        !this.config.output.obsidian.enabled;
     } else {
       this.config.output.obsidian.enabled = enabled;
     }
-    
-    logger.info(`✅ Obsidian синхронизация: ${this.config.output.obsidian.enabled ? 'включена' : 'выключена'}`);
+
+    logger.info(
+      `✅ Obsidian синхронизация: ${this.config.output.obsidian.enabled ? "включена" : "выключена"}`
+    );
     return this;
   }
 
@@ -300,12 +314,15 @@ export class StrategyManager {
    */
   toggleTelegram(enabled?: boolean): this {
     if (enabled === undefined) {
-      this.config.output.notifications.telegram.enabled = !this.config.output.notifications.telegram.enabled;
+      this.config.output.notifications.telegram.enabled =
+        !this.config.output.notifications.telegram.enabled;
     } else {
       this.config.output.notifications.telegram.enabled = enabled;
     }
-    
-    logger.info(`✅ Telegram уведомления: ${this.config.output.notifications.telegram.enabled ? 'включены' : 'выключены'}`);
+
+    logger.info(
+      `✅ Telegram уведомления: ${this.config.output.notifications.telegram.enabled ? "включены" : "выключены"}`
+    );
     return this;
   }
 
@@ -313,69 +330,90 @@ export class StrategyManager {
    * Получить список всех хэштегов
    */
   getHashtags(): string[] {
-    return this.config.sources.hashtags.map(h => `#${h.tag} (приоритет: ${h.priority}, лимит: ${h.limit})`);
+    return this.config.sources.hashtags.map(
+      (h) => `#${h.tag} (приоритет: ${h.priority}, лимит: ${h.limit})`
+    );
   }
 
   /**
    * Получить список всех конкурентов
    */
   getCompetitors(): string[] {
-    return this.config.sources.competitors.map(c => `@${c.username} (приоритет: ${c.priority}, лимит: ${c.limit})`);
+    return this.config.sources.competitors.map(
+      (c) => `@${c.username} (приоритет: ${c.priority}, лимит: ${c.limit})`
+    );
   }
 
   /**
    * Показать текущие настройки
    */
   showStatus(): this {
-    logger.info('\n🕉️ ТЕКУЩАЯ СТРАТЕГИЯ:');
+    logger.info("\n🕉️ ТЕКУЩАЯ СТРАТЕГИЯ:");
     logger.info(`📝 Название: ${this.config.strategy.name}`);
     logger.info(`🎯 Режим: ${this.config.scraping.mode}`);
-    logger.info(`👁️ Мин. просмотры: ${this.config.scraping.minViews.toLocaleString()}`);
+    logger.info(
+      `👁️ Мин. просмотры: ${this.config.scraping.minViews.toLocaleString()}`
+    );
     logger.info(`📅 Макс. возраст: ${this.config.scraping.maxAgeDays} дней`);
-    logger.info(`✅ Только реальные просмотры: ${this.config.scraping.onlyRealViews ? 'да' : 'нет'}`);
-    logger.info(`🔢 Лимиты: ${this.config.scraping.totalLimit} общий, ${this.config.scraping.perSourceLimit} на источник`);
-    
-    logger.info('\n🏷️ ХЭШТЕГИ:');
-    this.getHashtags().forEach(tag => logger.info(`  ${tag}`));
-    
-    logger.info('\n🏢 КОНКУРЕНТЫ:');
-    this.getCompetitors().forEach(comp => logger.info(`  ${comp}`));
-    
-    logger.info('\n📊 ЭКСПОРТ:');
-    logger.info(`  📄 Excel: ${this.config.output.excel.enabled ? '✅' : '❌'}`);
-    logger.info(`  📝 Obsidian: ${this.config.output.obsidian.enabled ? '✅' : '❌'}`);
-    logger.info(`  📱 Telegram: ${this.config.output.notifications.telegram.enabled ? '✅' : '❌'}`);
-    
+    logger.info(
+      `✅ Только реальные просмотры: ${this.config.scraping.onlyRealViews ? "да" : "нет"}`
+    );
+    logger.info(
+      `🔢 Лимиты: ${this.config.scraping.totalLimit} общий, ${this.config.scraping.perSourceLimit} на источник`
+    );
+
+    logger.info("\n🏷️ ХЭШТЕГИ:");
+    this.getHashtags().forEach((tag) => logger.info(`  ${tag}`));
+
+    logger.info("\n🏢 КОНКУРЕНТЫ:");
+    this.getCompetitors().forEach((comp) => logger.info(`  ${comp}`));
+
+    logger.info("\n📊 ЭКСПОРТ:");
+    logger.info(
+      `  📄 Excel: ${this.config.output.excel.enabled ? "✅" : "❌"}`
+    );
+    logger.info(
+      `  📝 Obsidian: ${this.config.output.obsidian.enabled ? "✅" : "❌"}`
+    );
+    logger.info(
+      `  📱 Telegram: ${this.config.output.notifications.telegram.enabled ? "✅" : "❌"}`
+    );
+
     return this;
   }
 
   /**
    * Быстрая настройка для маркетолога
    */
-  quickSetup(preset: string, hashtags: string[] = [], competitors: string[] = [], minViews?: number): this {
-    logger.info('\n🚀 БЫСТРАЯ НАСТРОЙКА СТРАТЕГИИ...');
-    
+  quickSetup(
+    preset: string,
+    hashtags: string[] = [],
+    competitors: string[] = [],
+    minViews?: number
+  ): this {
+    logger.info("\n🚀 БЫСТРАЯ НАСТРОЙКА СТРАТЕГИИ...");
+
     // Применяем пресет
     this.applyPreset(preset);
-    
+
     // Очищаем старые источники
     this.config.sources.hashtags = [];
     this.config.sources.competitors = [];
-    
+
     // Добавляем новые хэштеги
-    hashtags.forEach(tag => this.addHashtag(tag));
-    
+    hashtags.forEach((tag) => this.addHashtag(tag));
+
     // Добавляем новых конкурентов
-    competitors.forEach(comp => this.addCompetitor(comp));
-    
+    competitors.forEach((comp) => this.addCompetitor(comp));
+
     // Устанавливаем кастомные просмотры
     if (minViews) {
       this.setMinViews(minViews);
     }
-    
-    logger.info('\n✅ БЫСТРАЯ НАСТРОЙКА ЗАВЕРШЕНА!');
+
+    logger.info("\n✅ БЫСТРАЯ НАСТРОЙКА ЗАВЕРШЕНА!");
     this.showStatus();
-    
+
     return this;
   }
 }

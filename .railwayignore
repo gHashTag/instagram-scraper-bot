@@ -1,0 +1,146 @@
+# Railway ignore file - исключаем ненужные файлы из деплоя
+
+# Development files
+.env.local
+.env.development
+*.log
+logs/
+temp/
+tmp/
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+
+# Build artifacts
+dist/
+build/
+out/
+
+# Dependencies (будут установлены на Railway)
+node_modules/
+.pnp
+.pnp.js
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation (не нужно в продакшене)
+docs/
+*.md
+!README.md
+
+# Local development
+railway-webhook/
+automation/
+scripts/local-*
+scripts/dev-*
+
+# Obsidian vaults (большие файлы)
+vaults/
+content-factory/
+
+# Exports and reports
+exports/
+reports/
+*.xlsx
+*.csv
+
+# Cache
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+
+# Vercel (конфликтует с Railway)
+.vercel/
+vercel.json
+
+# Bun specific (Railway использует Node.js)
+bun.lockb
+
+# Large media files
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+*.mkv
+*.m4v
+*.3gp
+*.3g2
+*.rm
+*.swf
+*.vob
+
+# Audio files
+*.mp3
+*.wav
+*.flac
+*.aac
+*.ogg
+*.wma
+*.m4a
+
+# Image files (если не нужны)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.svg
+*.ico
+*.webp
+
+# Archive files
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+*.bz2
+*.xz
+
+# Database files (используем внешнюю БД)
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Config files для других платформ
+docker-compose.yml
+Dockerfile.dev
+.dockerignore
+
+# GitHub Actions (не нужны на Railway)
+.github/
+
+# Meta files
+.cursor/

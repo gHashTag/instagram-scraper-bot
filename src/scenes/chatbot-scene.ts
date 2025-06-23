@@ -1,5 +1,5 @@
 import { Scenes, Markup } from "telegraf";
-import { ScraperSceneStep, ScraperSceneSessionData, StorageAdapter } from "../types";
+import { ScraperSceneSessionData, StorageAdapter } from "../types";
 import { logger } from "../logger";
 import { EmbeddingsService } from "../services/embeddings-service";
 import { ChatbotService } from "../services/chatbot-service";
@@ -9,7 +9,6 @@ import { registerButtons } from "../utils/button-handler";
  * Сцена для чат-бота, работающего с расшифровками видео
  */
 export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
-  private storage: StorageAdapter;
   private embeddingsService: EmbeddingsService;
   private chatbotService: ChatbotService;
 
@@ -20,9 +19,12 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
    */
   constructor(storage: StorageAdapter, apiKey?: string) {
     super("chatbot_scene");
-    this.storage = storage;
     this.embeddingsService = new EmbeddingsService(storage, apiKey);
-    this.chatbotService = new ChatbotService(storage, this.embeddingsService, apiKey);
+    this.chatbotService = new ChatbotService(
+      storage,
+      this.embeddingsService,
+      apiKey
+    );
 
     // Обработчики для сцены
     this.enter(this.onSceneEnter.bind(this));
@@ -33,27 +35,31 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
       {
         id: /^chat_with_reel_(\d+)$/,
         handler: this.onChatWithReel.bind(this),
-        errorMessage: "Произошла ошибка при начале чата с видео. Попробуйте еще раз.",
-        verbose: true
+        errorMessage:
+          "Произошла ошибка при начале чата с видео. Попробуйте еще раз.",
+        verbose: true,
       },
       {
         id: "clear_chat_history",
         handler: this.onClearChatHistory.bind(this),
-        errorMessage: "Произошла ошибка при очистке истории чата. Попробуйте еще раз.",
-        verbose: true
+        errorMessage:
+          "Произошла ошибка при очистке истории чата. Попробуйте еще раз.",
+        verbose: true,
       },
       {
         id: "back_to_reel",
         handler: this.onBackToReel.bind(this),
-        errorMessage: "Произошла ошибка при возврате к видео. Попробуйте еще раз.",
-        verbose: true
+        errorMessage:
+          "Произошла ошибка при возврате к видео. Попробуйте еще раз.",
+        verbose: true,
       },
       {
         id: "back_to_reels",
         handler: this.onBackToReels.bind(this),
-        errorMessage: "Произошла ошибка при возврате к списку видео. Попробуйте еще раз.",
-        verbose: true
-      }
+        errorMessage:
+          "Произошла ошибка при возврате к списку видео. Попробуйте еще раз.",
+        verbose: true,
+      },
     ]);
 
     // Обработчики для ввода текста
@@ -125,7 +131,9 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
 
       for (const reel of reels.rows) {
         const caption = reel.caption
-          ? (reel.caption.length > 30 ? reel.caption.substring(0, 30) + "..." : reel.caption)
+          ? reel.caption.length > 30
+            ? reel.caption.substring(0, 30) + "..."
+            : reel.caption
           : "Без описания";
 
         buttons.push([
@@ -148,8 +156,13 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
         ...keyboard,
       });
     } catch (error) {
-      logger.error("[ChatbotScene] Error showing reels with transcripts:", error);
-      await ctx.reply("Произошла ошибка при получении списка Reels с расшифровками.");
+      logger.error(
+        "[ChatbotScene] Error showing reels with transcripts:",
+        error
+      );
+      await ctx.reply(
+        "Произошла ошибка при получении списка Reels с расшифровками."
+      );
     } finally {
       await ctx.storage.close();
     }
@@ -187,7 +200,8 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
       }
 
       // Проверяем, есть ли эмбеддинг для этого Reel
-      const embedding = await this.embeddingsService.getEmbeddingByReelId(reelId);
+      const embedding =
+        await this.embeddingsService.getEmbeddingByReelId(reelId);
 
       if (!embedding) {
         // Если эмбеддинга нет, создаем его
@@ -217,7 +231,12 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
 
       // Формируем клавиатуру
       const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback("🗑️ Очистить историю чата", "clear_chat_history")],
+        [
+          Markup.button.callback(
+            "🗑️ Очистить историю чата",
+            "clear_chat_history"
+          ),
+        ],
         [Markup.button.callback("🔙 К списку Reels", "back_to_reels")],
       ]);
 
@@ -258,7 +277,10 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
 
     try {
       const userId = ctx.from?.id.toString() || "";
-      const success = await this.chatbotService.clearChatHistory(userId, session.currentReelId);
+      const success = await this.chatbotService.clearChatHistory(
+        userId,
+        session.currentReelId
+      );
 
       if (success) {
         await ctx.answerCbQuery("История чата очищена.");
@@ -345,7 +367,12 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
         await ctx.reply(response, {
           parse_mode: "Markdown",
           ...Markup.inlineKeyboard([
-            [Markup.button.callback("🗑️ Очистить историю чата", "clear_chat_history")],
+            [
+              Markup.button.callback(
+                "🗑️ Очистить историю чата",
+                "clear_chat_history"
+              ),
+            ],
             [Markup.button.callback("🔙 К списку Reels", "back_to_reels")],
           ]),
         });
@@ -359,7 +386,9 @@ export class ChatbotScene extends Scenes.BaseScene<Scenes.SceneContext> {
       }
     } catch (error) {
       logger.error("[ChatbotScene] Error generating response:", error);
-      await ctx.reply("Произошла ошибка при генерации ответа. Пожалуйста, попробуйте еще раз.");
+      await ctx.reply(
+        "Произошла ошибка при генерации ответа. Пожалуйста, попробуйте еще раз."
+      );
     }
   }
 }

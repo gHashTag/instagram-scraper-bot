@@ -1,29 +1,22 @@
 import { relations } from "drizzle-orm/relations";
-import { projects, hashtags, parsingRuns, users, competitors, reels, transcriptEmbeddings, chatHistory } from "./schema";
+import { projects, reels, users, competitors, hashtags, parsingRuns } from "./schema";
 
-export const hashtagsRelations = relations(hashtags, ({one}) => ({
+export const reelsRelations = relations(reels, ({one}) => ({
 	project: one(projects, {
-		fields: [hashtags.projectId],
+		fields: [reels.projectId],
 		references: [projects.id]
 	}),
 }));
 
 export const projectsRelations = relations(projects, ({one, many}) => ({
-	hashtags: many(hashtags),
-	parsingRuns: many(parsingRuns),
+	reels: many(reels),
 	user: one(users, {
 		fields: [projects.userId],
 		references: [users.id]
 	}),
 	competitors: many(competitors),
-	reels: many(reels),
-}));
-
-export const parsingRunsRelations = relations(parsingRuns, ({one}) => ({
-	project: one(projects, {
-		fields: [parsingRuns.projectId],
-		references: [projects.id]
-	}),
+	hashtags: many(hashtags),
+	parsingRuns: many(parsingRuns),
 }));
 
 export const usersRelations = relations(users, ({many}) => ({
@@ -37,25 +30,16 @@ export const competitorsRelations = relations(competitors, ({one}) => ({
 	}),
 }));
 
-export const reelsRelations = relations(reels, ({one, many}) => ({
+export const hashtagsRelations = relations(hashtags, ({one}) => ({
 	project: one(projects, {
-		fields: [reels.projectId],
+		fields: [hashtags.projectId],
 		references: [projects.id]
 	}),
-	transcriptEmbeddings: many(transcriptEmbeddings),
-	chatHistories: many(chatHistory),
 }));
 
-export const transcriptEmbeddingsRelations = relations(transcriptEmbeddings, ({one}) => ({
-	reel: one(reels, {
-		fields: [transcriptEmbeddings.reelId],
-		references: [reels.reelUrl]
-	}),
-}));
-
-export const chatHistoryRelations = relations(chatHistory, ({one}) => ({
-	reel: one(reels, {
-		fields: [chatHistory.reelId],
-		references: [reels.reelUrl]
+export const parsingRunsRelations = relations(parsingRuns, ({one}) => ({
+	project: one(projects, {
+		fields: [parsingRuns.projectId],
+		references: [projects.id]
 	}),
 }));

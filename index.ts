@@ -1,217 +1,66 @@
-/**
- * Модуль Instagram Scraper Bot для Telegram
- *
- * Предоставляет функциональность для скрапинга Instagram Reels
- * в нише эстетической медицины через интерфейс Telegram бота.
- */
-
 import { Telegraf, Scenes } from "telegraf";
-import { competitorScene } from "./src/scenes/competitor-scene";
-import {
-  competitorWizardScene,
-  setupCompetitorWizard,
-} from "./src/scenes/competitor-wizard-scene";
+import type { ScraperBotContext } from "./src/types";
+
+// Import available scenes - using a more conservative approach
 import { projectScene } from "./src/scenes/project-scene";
-import {
-  projectWizardScene,
-  setupProjectWizard,
-} from "./src/scenes/project-wizard-scene";
-import { hashtagScene } from "./src/scenes/hashtag-scene";
-import {
-  hashtagWizardScene,
-  setupHashtagWizard,
-} from "./src/scenes/hashtag-wizard-scene";
-import { scrapingScene } from "./src/scenes/scraping-scene";
-import {
-  scrapingWizardScene,
-  setupScrapingWizard,
-} from "./src/scenes/scraping-wizard-scene";
-import { reelsScene } from "./src/scenes/reels-scene";
-import {
-  reelsWizardScene,
-  setupReelsWizard,
-} from "./src/scenes/reels-wizard-scene";
-import { analyticsScene } from "./src/scenes/analytics-scene";
-import {
-  analyticsWizardScene,
-  setupAnalyticsWizard,
-} from "./src/scenes/analytics-wizard-scene";
-import { notificationScene } from "./src/scenes/notification-scene";
-import {
-  notificationWizardScene,
-  setupNotificationWizard,
-} from "./src/scenes/notification-wizard-scene";
-import {
-  ReelsCollectionWizardScene,
-  setupReelsCollectionWizard,
-} from "./src/scenes/reels-collection-wizard-scene";
-import {
-  ChatbotWizardScene,
-  setupChatbotWizard,
-} from "./src/scenes/chatbot-wizard-scene";
-import { TranscribeUrlScene } from "./src/scenes/transcribe-url-scene";
-import { setupTranscribeUrlWizard } from "./src/scenes/transcribe-url-wizard-scene";
 import projectsMenuScene from "./src/scenes/projects-menu-scene";
-import type {
-  StorageAdapter,
-  ScraperBotContext,
-  InstagramScraperBotConfig,
-  // Project, // Закомментировано: не используется напрямую в этом файле, только реэкспортируется
-  // Competitor, // Закомментировано: не используется напрямую в этом файле, только реэкспортируется
-  // Hashtag, // Закомментировано: не используется напрямую в этом файле, только реэкспортируется
-  // ReelContent, // Закомментировано: не используется напрямую в этом файле, только реэкспортируется
-} from "@/types";
-// import type { MiddlewareFn } from "telegraf/types" // Закомментировано
-// import type { ScraperBotContext } from "./types_telegraf" // Закомментировано
-
-// import {
-//   type StorageAdapter,
-//   type User,
-//   type Project,
-//   type Competitor,
-// } from "@/types" // Закомментировано
-
-// import {
-//   createNeonStorageAdapter,
-//   initializeNeonStorage,
-//   createMultitenantNeonStorageAdapter,
-// } from "@/storage" // Закомментировано
-
-// import { logger } from "./logger" // Закомментировано
-
-// Экспортируем типы
-export type {
-  StorageAdapter,
-  ScraperBotContext,
-  // Project, // Закомментировано: не используется напрямую в этом файле, только реэкспортируется
-  // Competitor, // Закомментировано: не используется напрямую в этом файле, только реэкспортируется
-  // Hashtag, // Закомментировано: не используется напрямую в этом файле, только реэкспортируется
-  // ReelContent as Reel, // Закомментировано: не используется напрямую в этом файле, только реэкспортируется
-  InstagramScraperBotConfig,
-} from "@/types";
-
-// Экспорт функций хранилища
-// export * from "@/storage" // Закомментировано
-
-// Экспорт функций скрапера
-// export * from "@/agent" // Закомментировано временно
 
 /**
- * Создание stage с сценами
- *
- * @param storageAdapter Адаптер хранилища данных
- * @returns Stage с настроенными сценами
+ * Creates and configures the Telegraf stage with available scenes
  */
-export function createScenesStage(storageAdapter: StorageAdapter) {
-  // Инициализируем сцены
+export function createScenesStage(): Scenes.Stage<ScraperBotContext> {
   const stage = new Scenes.Stage<ScraperBotContext>([
     projectScene,
-    projectWizardScene, // Добавляем новую визард-сцену для проектов
-    competitorScene,
-    competitorWizardScene, // Добавляем новую визард-сцену для конкурентов
-    hashtagScene,
-    hashtagWizardScene, // Добавляем новую визард-сцену для хештегов
-    scrapingScene,
-    scrapingWizardScene, // Добавляем новую визард-сцену для скрапинга
-    reelsScene,
-    reelsWizardScene, // Добавляем новую визард-сцену для просмотра Reels
-    analyticsScene,
-    analyticsWizardScene, // Добавляем новую визард-сцену для аналитики
-    notificationScene,
-    notificationWizardScene, // Добавляем новую визард-сцену для уведомлений
-    new ReelsCollectionWizardScene(storageAdapter), // Добавляем новую визард-сцену для коллекций Reels
-    new ChatbotWizardScene(storageAdapter, process.env.OPENAI_API_KEY || ""), // Добавляем новую визард-сцену для чат-бота
-    new TranscribeUrlScene(storageAdapter), // Добавляем новую сцену для транскрибации URL
     projectsMenuScene,
+    // Add more scenes as needed when they are properly configured
   ]);
 
   return stage;
 }
 
 /**
- * Настройка модуля Instagram Scraper Bot
- *
- * @param bot Экземпляр Telegraf бота
- * @param storageAdapter Адаптер хранилища данных
- * @param config Конфигурация модуля
- * @returns Объект с API модуля
+ * Setup Instagram Scraper Bot with basic handlers and middleware
  */
 export function setupInstagramScraperBot(
-  bot: Telegraf<ScraperBotContext>, // Используем импортированный ScraperBotContext
-  storageAdapter: StorageAdapter,
-  config: InstagramScraperBotConfig
-) {
-  // Добавляем middleware для доступа к хранилищу и конфигурации
-  bot.use((ctx: ScraperBotContext, next) => {
-    // Явно типизируем ctx
-    ctx.storage = storageAdapter;
-    ctx.scraperConfig = config;
-    return next();
+  bot: Telegraf<ScraperBotContext>
+): void {
+  // Add start command
+  bot.command("start", async (ctx) => {
+    const keyboard = {
+      reply_markup: {
+        keyboard: [
+          [{ text: "📊 Проекты" }],
+          [{ text: "🔍 Поиск" }, { text: "📈 Аналитика" }],
+          [{ text: "⚙️ Настройки" }],
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: false,
+      },
+    };
+
+    await ctx.reply(
+      "Добро пожаловать в Instagram Scraper Bot! 🚀\n\n" +
+        "Выберите раздел для работы:",
+      keyboard
+    );
   });
 
-  // Настраиваем обработчики для wizard-сцен
-  setupProjectWizard(bot);
-  setupCompetitorWizard(bot);
-  setupHashtagWizard(bot);
-  setupScrapingWizard(bot);
-  setupReelsWizard(bot);
-  setupAnalyticsWizard(bot);
-  setupNotificationWizard(bot);
-  setupReelsCollectionWizard(bot);
-  setupChatbotWizard(bot);
-  setupTranscribeUrlWizard(bot);
+  // Add help command
+  bot.command("help", async (ctx) => {
+    await ctx.reply(
+      "🤖 Instagram Scraper Bot - Справка\n\n" +
+        "Доступные команды:\n" +
+        "/start - Главное меню\n" +
+        "/help - Эта справка\n" +
+        "/projects - Управление проектами\n\n" +
+        "Используйте кнопки меню для навигации."
+    );
+  });
 
-  // Регистрируем обработчики команд
-  bot.command("projects", (ctx) => ctx.scene.enter("projects_menu"));
-  bot.command("competitors", (ctx) => ctx.scene.enter("competitor_wizard"));
-  bot.command("hashtags", (ctx) => ctx.scene.enter("hashtag_wizard"));
-  bot.command("scrape", (ctx) => ctx.scene.enter("scraping_wizard"));
-  bot.command("reels", (ctx) => ctx.scene.enter("reels_wizard"));
-  bot.command("analytics", (ctx) => ctx.scene.enter("analytics_wizard"));
-  bot.command("notifications", (ctx) => ctx.scene.enter("notification_wizard"));
-  bot.command("collections", (ctx) =>
-    ctx.scene.enter("reels_collection_wizard")
-  );
-  bot.command("chatbot", (ctx) => ctx.scene.enter("chatbot_wizard"));
+  // Add projects command
+  bot.command("projects", async (ctx) => {
+    await ctx.scene.enter("projects_menu");
+  });
 
-  // Обработчики текстовых сообщений для меню убраны - теперь обрабатываются в bot.ts после добавления stage middleware
-
-  // Возвращаем API модуля
-  return {
-    // Методы для входа в сцены
-    enterProjectScene: () => "project_wizard",
-    enterCompetitorScene: () => "competitor_wizard",
-    enterHashtagScene: () => "hashtag_wizard",
-    enterScrapingScene: () => "scraping_wizard",
-    enterReelsScene: () => "reels_wizard",
-    enterAnalyticsScene: () => "analytics_wizard",
-    enterNotificationScene: () => "notification_wizard",
-    enterReelsCollectionScene: () => "reels_collection_wizard",
-    enterChatbotScene: () => "chatbot_wizard",
-
-    // Получение кнопок для меню
-    getMenuButtons: () => [["📊 Проекты"], ["ℹ️ Помощь"]],
-
-    // Получение команд для регистрации в Telegram
-    getCommands: () => [
-      { command: "start", description: "Запустить бота" },
-      { command: "help", description: "Показать справку" },
-      { command: "projects", description: "Управление проектами" },
-      { command: "competitors", description: "Управление конкурентами" },
-      { command: "hashtags", description: "Управление хэштегами" },
-      { command: "scrape", description: "Запустить скрапинг" },
-      { command: "reels", description: "Просмотр Reels" },
-      { command: "analytics", description: "Аналитика данных" },
-      { command: "notifications", description: "Настройка уведомлений" },
-      { command: "collections", description: "Коллекции Reels" },
-      { command: "chatbot", description: "Чат-бот для общения с видео" },
-      { command: "transcribe", description: "Транскрибировать видео по URL" },
-    ],
-  };
+  console.log("✅ Instagram Scraper Bot setup completed");
 }
-
-// Установка обработчика ошибок
-// bot.catch((err: any, ctx: ScraperBotContext) => {
-//   logger.error(`Ooops, encountered an error for ${ctx.updateType}`, err);
-//   ctx.reply("Упс, что-то пошло не так. Попробуйте еще раз позже.");
-// });

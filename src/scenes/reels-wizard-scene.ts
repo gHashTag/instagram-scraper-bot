@@ -6,7 +6,6 @@ import { ReelsFilter } from "../schemas";
 import {
   createReelsListKeyboard,
   createReelDetailsKeyboard,
-  createReelsFilterKeyboard,
   formatDate,
   formatViews,
 } from "./components/reels-keyboard";
@@ -16,9 +15,14 @@ import {
  * @param ctx Контекст Telegraf
  * @param reason Причина очистки состояния (для логирования)
  */
-function clearSessionState(ctx: ScraperBotContext, reason: string = "general"): void {
+function clearSessionState(
+  ctx: ScraperBotContext,
+  reason: string = "general"
+): void {
   if (ctx.scene.session) {
-    logger.info(`[ReelsWizard] Clearing session state before leaving (reason: ${reason})`);
+    logger.info(
+      `[ReelsWizard] Clearing session state before leaving (reason: ${reason})`
+    );
     ctx.scene.session.reelsFilter = undefined;
     ctx.scene.session.reelsPage = 1;
     ctx.scene.session.currentReelId = undefined;
@@ -43,7 +47,9 @@ async function safeSceneTransition(
   reason: string = "general"
 ): Promise<void> {
   try {
-    logger.info(`[ReelsWizard] Transitioning to ${targetScene} scene (reason: ${reason})`);
+    logger.info(
+      `[ReelsWizard] Transitioning to ${targetScene} scene (reason: ${reason})`
+    );
     await ctx.scene.enter(targetScene);
   } catch (error) {
     logger.error(`[ReelsWizard] Error entering ${targetScene} scene:`, error);
@@ -60,7 +66,10 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
   // Шаг 1: Отображение списка Reels
   async (ctx) => {
     logger.info(`[ReelsWizard] Шаг 1: Отображение списка Reels`);
-    logger.debug(`[ReelsWizard] Содержимое ctx.wizard.state:`, ctx.wizard.state);
+    logger.debug(
+      `[ReelsWizard] Содержимое ctx.wizard.state:`,
+      ctx.wizard.state
+    );
 
     if (!ctx.from) {
       logger.error("[ReelsWizard] ctx.from is undefined");
@@ -88,7 +97,10 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
     }
 
     // Получаем sourceType и sourceId из параметров или из сессии или из wizard.state
-    const state = ctx.scene.state as { sourceType?: "competitor" | "hashtag"; sourceId?: string | number };
+    const state = ctx.scene.state as {
+      sourceType?: "competitor" | "hashtag";
+      sourceId?: string | number;
+    };
     let sourceType = state.sourceType || ctx.scene.session.currentSourceType;
     let sourceId = state.sourceId || ctx.scene.session.currentSourceId;
 
@@ -126,9 +138,7 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
 
       if (!project) {
         logger.error(`[ReelsWizard] Project with ID ${projectId} not found`);
-        await ctx.reply(
-          "Проект не найден. Возможно, он был удален."
-        );
+        await ctx.reply("Проект не найден. Возможно, он был удален.");
         clearSessionState(ctx, "project_not_found");
         await safeSceneTransition(ctx, "project_wizard", "project_not_found");
         return;
@@ -141,7 +151,8 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
       const filter: ReelsFilter = ctx.scene.session.reelsFilter || {
         projectId,
         limit: ctx.scene.session.reelsPerPage,
-        offset: (ctx.scene.session.reelsPage - 1) * ctx.scene.session.reelsPerPage,
+        offset:
+          (ctx.scene.session.reelsPage - 1) * ctx.scene.session.reelsPerPage,
         orderBy: "published_at",
         orderDirection: "DESC",
       };
@@ -177,8 +188,9 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
       if (sourceType && sourceId) {
         if (sourceType === "competitor") {
           // Получаем информацию о конкуренте
-          const competitors = await ctx.storage.getCompetitorAccounts(projectId);
-          const competitor = competitors.find(c => c.id === Number(sourceId));
+          const competitors =
+            await ctx.storage.getCompetitorAccounts(projectId);
+          const competitor = competitors.find((c) => c.id === Number(sourceId));
 
           if (competitor) {
             title += `\n👤 Конкурент: *${competitor.username}*`;
@@ -186,7 +198,7 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
         } else if (sourceType === "hashtag") {
           // Получаем информацию о хештеге
           const hashtags = await ctx.storage.getHashtagsByProjectId(projectId);
-          const hashtag = hashtags?.find(h => h.id === Number(sourceId));
+          const hashtag = hashtags?.find((h) => h.id === Number(sourceId));
 
           if (hashtag) {
             title += `\n#️⃣ Хештег: *#${hashtag.hashtag}*`;
@@ -198,14 +210,15 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
       let message = `${title}\n\n`;
 
       if (reels.length === 0) {
-        message += "⚠️ Нет доступных Reels. Попробуйте запустить скрапинг или изменить фильтры.";
+        message +=
+          "⚠️ Нет доступных Reels. Попробуйте запустить скрапинг или изменить фильтры.";
 
         await ctx.reply(message, {
           parse_mode: "Markdown",
           ...Markup.inlineKeyboard([
             [Markup.button.callback("▶️ Запустить скрапинг", `scrape_project`)],
-            [Markup.button.callback("🔙 Назад к проекту", `back_to_project`)]
-          ])
+            [Markup.button.callback("🔙 Назад к проекту", `back_to_project`)],
+          ]),
         });
 
         return;
@@ -225,7 +238,7 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
           totalPages,
           sourceType as "competitor" | "hashtag" | undefined,
           sourceId
-        )
+        ),
       });
     } catch (error) {
       logger.error("[ReelsWizard] Error in step 1:", error);
@@ -245,13 +258,18 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
   // Шаг 2: Отображение детальной информации о Reel
   async (ctx) => {
     logger.info(`[ReelsWizard] Шаг 2: Отображение детальной информации о Reel`);
-    logger.debug(`[ReelsWizard] Содержимое ctx.wizard.state:`, ctx.wizard.state);
+    logger.debug(
+      `[ReelsWizard] Содержимое ctx.wizard.state:`,
+      ctx.wizard.state
+    );
 
     const { projectId, reelId } = ctx.wizard.state;
 
     if (!projectId || !reelId) {
       logger.error("[ReelsWizard] Project ID or Reel ID is undefined");
-      await ctx.reply("Ошибка: не удалось определить проект или Reel. Начните сначала.");
+      await ctx.reply(
+        "Ошибка: не удалось определить проект или Reel. Начните сначала."
+      );
       clearSessionState(ctx, "missing_ids_step_2");
       return ctx.wizard.selectStep(0);
     }
@@ -266,7 +284,7 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
       } else {
         // Если метод не реализован, получаем Reel из общего списка
         const reels = await ctx.storage.getReels({ projectId });
-        reel = reels.find(r => r.instagram_id === reelId) || null;
+        reel = reels.find((r) => r.instagram_id === reelId) || null;
       }
 
       if (!reel) {
@@ -282,7 +300,7 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
       } else if (reel.source_type === "hashtag") {
         // Получаем информацию о хештеге
         const hashtags = await ctx.storage.getHashtagsByProjectId(projectId);
-        const hashtag = hashtags?.find(h => h.id === Number(reel.source_id));
+        const hashtag = hashtags?.find((h) => h.id === Number(reel.source_id));
 
         if (hashtag) {
           sourceInfo = `#️⃣ Хештег: *#${hashtag.hashtag}*`;
@@ -326,9 +344,10 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
             if (reel.transcript) {
               message += "\n\n*Фрагмент расшифровки:*\n";
               // Показываем только первые 100 символов расшифровки
-              const previewText = reel.transcript.length > 100
-                ? reel.transcript.substring(0, 100) + "..."
-                : reel.transcript;
+              const previewText =
+                reel.transcript.length > 100
+                  ? reel.transcript.substring(0, 100) + "..."
+                  : reel.transcript;
               message += previewText;
             }
             break;
@@ -350,7 +369,7 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
             projectId,
             ctx.wizard.state.sourceType,
             ctx.wizard.state.sourceId
-          )
+          ),
         });
       } else {
         await ctx.reply(message, {
@@ -360,7 +379,7 @@ export const reelsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
             projectId,
             ctx.wizard.state.sourceType,
             ctx.wizard.state.sourceId
-          )
+          ),
         });
       }
     } catch (error) {
@@ -408,7 +427,9 @@ reelsWizardScene.action(/reel_details_(\d+)_(.+)/, async (ctx) => {
   const reelId = ctx.match[2];
 
   if (isNaN(projectId) || !reelId) {
-    logger.warn("[ReelsWizard] Invalid project ID or reel ID from action match");
+    logger.warn(
+      "[ReelsWizard] Invalid project ID or reel ID from action match"
+    );
     await ctx.reply("Ошибка: неверные параметры.");
     return ctx.wizard.selectStep(0);
   }
@@ -424,38 +445,41 @@ reelsWizardScene.action(/reel_details_(\d+)_(.+)/, async (ctx) => {
   return ctx.wizard.selectStep(1);
 });
 
-reelsWizardScene.action(/reels_page_(\d+)_(\d+)(?:_(.+)_(.+))?/, async (ctx) => {
-  logger.info(`[ReelsWizard] Обработчик кнопки 'reels_page' вызван`);
-  await ctx.answerCbQuery();
+reelsWizardScene.action(
+  /reels_page_(\d+)_(\d+)(?:_(.+)_(.+))?/,
+  async (ctx) => {
+    logger.info(`[ReelsWizard] Обработчик кнопки 'reels_page' вызван`);
+    await ctx.answerCbQuery();
 
-  const projectId = parseInt(ctx.match[1], 10);
-  const page = parseInt(ctx.match[2], 10);
-  const sourceType = ctx.match[3] as "competitor" | "hashtag" | undefined;
-  const sourceId = ctx.match[4];
+    const projectId = parseInt(ctx.match[1], 10);
+    const page = parseInt(ctx.match[2], 10);
+    const sourceType = ctx.match[3] as "competitor" | "hashtag" | undefined;
+    const sourceId = ctx.match[4];
 
-  if (isNaN(projectId) || isNaN(page)) {
-    logger.warn("[ReelsWizard] Invalid project ID or page from action match");
-    await ctx.reply("Ошибка: неверные параметры.");
+    if (isNaN(projectId) || isNaN(page)) {
+      logger.warn("[ReelsWizard] Invalid project ID or page from action match");
+      await ctx.reply("Ошибка: неверные параметры.");
+      return ctx.wizard.selectStep(0);
+    }
+
+    // Сохраняем параметры в wizard.state и в сессии
+    ctx.wizard.state.projectId = projectId;
+    ctx.scene.session.currentProjectId = projectId;
+    ctx.scene.session.reelsPage = page;
+
+    if (sourceType) {
+      ctx.wizard.state.sourceType = sourceType;
+      ctx.scene.session.currentSourceType = sourceType;
+    }
+    if (sourceId) {
+      ctx.wizard.state.sourceId = sourceId;
+      ctx.scene.session.currentSourceId = sourceId;
+    }
+
+    // Возвращаемся к шагу отображения списка Reels
     return ctx.wizard.selectStep(0);
   }
-
-  // Сохраняем параметры в wizard.state и в сессии
-  ctx.wizard.state.projectId = projectId;
-  ctx.scene.session.currentProjectId = projectId;
-  ctx.scene.session.reelsPage = page;
-
-  if (sourceType) {
-    ctx.wizard.state.sourceType = sourceType;
-    ctx.scene.session.currentSourceType = sourceType;
-  }
-  if (sourceId) {
-    ctx.wizard.state.sourceId = sourceId;
-    ctx.scene.session.currentSourceId = sourceId;
-  }
-
-  // Возвращаемся к шагу отображения списка Reels
-  return ctx.wizard.selectStep(0);
-});
+);
 
 reelsWizardScene.action(/reels_list_(\d+)(?:_(.+)_(.+))?/, async (ctx) => {
   logger.info(`[ReelsWizard] Обработчик кнопки 'reels_list' вызван`);
@@ -510,15 +534,15 @@ reelsWizardScene.action(/analytics_enter_(\d+)/, async (ctx) => {
 
 // Добавляем обработчик для команды /reels
 export function setupReelsWizard(bot: any) {
-  bot.command('reels', async (ctx: any) => {
+  bot.command("reels", async (ctx: any) => {
     logger.info("[ReelsWizard] Command /reels triggered");
-    await ctx.scene.enter('reels_wizard');
+    await ctx.scene.enter("reels_wizard");
   });
 
   // Добавляем обработчик для кнопки "Просмотр Reels" в главном меню
-  bot.hears('👀 Просмотр Reels', async (ctx: any) => {
+  bot.hears("👀 Просмотр Reels", async (ctx: any) => {
     logger.info("[ReelsWizard] Button '👀 Просмотр Reels' clicked");
-    await ctx.scene.enter('reels_wizard');
+    await ctx.scene.enter("reels_wizard");
   });
 }
 

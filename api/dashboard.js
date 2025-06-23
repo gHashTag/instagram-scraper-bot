@@ -1,25 +1,27 @@
 /**
  * 🎯 Клиентский дашборд для Instagram стратегии
- * 
+ *
  * Публичный дашборд с автообновлением каждые 24 часа
  */
 
-const express = require('express');
+import express from "express";
 const app = express();
 
 // Middleware
-app.use(express.static('public'));
-app.set('view engine', 'ejs');
+app.use(express.static("public"));
+app.set("view engine", "ejs");
 
 // Mock данные (позже заменим на реальные из API)
 const getDashboardData = () => {
   const now = new Date();
-  const lastUpdate = new Date(now.getTime() - Math.random() * 24 * 60 * 60 * 1000);
-  
+  const lastUpdate = new Date(
+    now.getTime() - Math.random() * 24 * 60 * 60 * 1000
+  );
+
   return {
     lastUpdate: lastUpdate.toISOString(),
     nextUpdate: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
-    
+
     // Общая статистика
     overview: {
       totalCompetitors: 6,
@@ -27,199 +29,206 @@ const getDashboardData = () => {
       totalReels: 156,
       viralContent: 23,
       avgEngagement: 4.8,
-      topPerformer: '@clinicajoelleofficial'
+      topPerformer: "@clinicajoelleofficial",
     },
-    
+
     // Конкуренты
     competitors: [
       {
-        username: 'clinicajoelleofficial',
-        fullName: 'Clinica Joelle Official',
-        profileUrl: 'https://instagram.com/clinicajoelleofficial',
+        username: "clinicajoelleofficial",
+        fullName: "Clinica Joelle Official",
+        profileUrl: "https://instagram.com/clinicajoelleofficial",
         stats: {
           totalReels: 25,
           avgViews: 87500,
           maxViews: 250000,
           engagementRate: 4.5,
           viralRate: 32,
-          growthRate: 15.2
+          growthRate: 15.2,
         },
         topContent: [
           {
-            url: 'https://instagram.com/p/ABC123',
+            url: "https://instagram.com/p/ABC123",
             views: 250000,
             likes: 18500,
-            description: 'Amazing botox transformation! Results speak for themselves 💫',
-            publishedAt: '2025-05-30T10:00:00Z'
+            description:
+              "Amazing botox transformation! Results speak for themselves 💫",
+            publishedAt: "2025-05-30T10:00:00Z",
           },
           {
-            url: 'https://instagram.com/p/DEF456', 
+            url: "https://instagram.com/p/DEF456",
             views: 189000,
             likes: 14200,
-            description: 'Lip filler procedure step by step 👄 Professional results',
-            publishedAt: '2025-05-28T14:30:00Z'
-          }
-        ]
+            description:
+              "Lip filler procedure step by step 👄 Professional results",
+            publishedAt: "2025-05-28T14:30:00Z",
+          },
+        ],
       },
       {
-        username: 'kayaclinicarabia',
-        fullName: 'Kaya Clinic Arabia',
-        profileUrl: 'https://instagram.com/kayaclinicarabia',
+        username: "kayaclinicarabia",
+        fullName: "Kaya Clinic Arabia",
+        profileUrl: "https://instagram.com/kayaclinicarabia",
         stats: {
           totalReels: 18,
           avgViews: 65000,
           maxViews: 180000,
           engagementRate: 3.8,
           viralRate: 22,
-          growthRate: 8.7
+          growthRate: 8.7,
         },
         topContent: [
           {
-            url: 'https://instagram.com/p/GHI789',
+            url: "https://instagram.com/p/GHI789",
             views: 180000,
             likes: 12800,
-            description: 'Hydrafacial treatment results ✨ Glowing skin guaranteed',
-            publishedAt: '2025-05-29T16:15:00Z'
-          }
-        ]
+            description:
+              "Hydrafacial treatment results ✨ Glowing skin guaranteed",
+            publishedAt: "2025-05-29T16:15:00Z",
+          },
+        ],
       },
       {
-        username: 'ziedasclinic',
+        username: "ziedasclinic",
         fullName: "Zieda's Clinic",
-        profileUrl: 'https://instagram.com/ziedasclinic',
+        profileUrl: "https://instagram.com/ziedasclinic",
         stats: {
           totalReels: 12,
           avgViews: 45000,
           maxViews: 120000,
           engagementRate: 3.2,
           viralRate: 17,
-          growthRate: 5.3
+          growthRate: 5.3,
         },
         topContent: [
           {
-            url: 'https://instagram.com/p/JKL012',
+            url: "https://instagram.com/p/JKL012",
             views: 120000,
             likes: 8900,
-            description: 'RF microneedling before and after 🌟 Skin rejuvenation',
-            publishedAt: '2025-05-27T12:45:00Z'
-          }
-        ]
-      }
+            description:
+              "RF microneedling before and after 🌟 Skin rejuvenation",
+            publishedAt: "2025-05-27T12:45:00Z",
+          },
+        ],
+      },
     ],
-    
+
     // Хэштеги
     hashtags: [
       {
-        name: 'aestheticmedicine',
+        name: "aestheticmedicine",
         stats: {
           totalReels: 45,
           avgViews: 95000,
           maxViews: 350000,
           engagementRate: 5.2,
           trendingScore: 8.5,
-          competitionLevel: 'medium'
+          competitionLevel: "medium",
         },
-        performance: 'excellent',
-        recommendation: 'Продолжать использовать как основной хэштег'
+        performance: "excellent",
+        recommendation: "Продолжать использовать как основной хэштег",
       },
       {
-        name: 'botox',
+        name: "botox",
         stats: {
           totalReels: 38,
           avgViews: 110000,
           maxViews: 420000,
           engagementRate: 6.1,
           trendingScore: 9.2,
-          competitionLevel: 'high'
+          competitionLevel: "high",
         },
-        performance: 'excellent',
-        recommendation: 'Очень эффективен, использовать в топ-контенте'
+        performance: "excellent",
+        recommendation: "Очень эффективен, использовать в топ-контенте",
       },
       {
-        name: 'fillers',
+        name: "fillers",
         stats: {
           totalReels: 32,
           avgViews: 85000,
           maxViews: 280000,
           engagementRate: 4.8,
           trendingScore: 7.8,
-          competitionLevel: 'medium'
+          competitionLevel: "medium",
         },
-        performance: 'good',
-        recommendation: 'Хороший потенциал, увеличить использование'
+        performance: "good",
+        recommendation: "Хороший потенциал, увеличить использование",
       },
       {
-        name: 'hydrafacial',
+        name: "hydrafacial",
         stats: {
           totalReels: 28,
           avgViews: 72000,
           maxViews: 195000,
           engagementRate: 4.2,
           trendingScore: 7.1,
-          competitionLevel: 'low'
+          competitionLevel: "low",
         },
-        performance: 'good',
-        recommendation: 'Низкая конкуренция, хорошая возможность'
-      }
+        performance: "good",
+        recommendation: "Низкая конкуренция, хорошая возможность",
+      },
     ],
-    
+
     // Вирусный контент
     viralContent: [
       {
-        author: '@clinicajoelleofficial',
-        url: 'https://instagram.com/p/ABC123',
+        author: "@clinicajoelleofficial",
+        url: "https://instagram.com/p/ABC123",
         views: 250000,
         likes: 18500,
         comments: 420,
-        description: 'Amazing botox transformation! Results speak for themselves 💫',
-        hashtags: ['#botox', '#aestheticmedicine', '#transformation'],
-        publishedAt: '2025-05-30T10:00:00Z',
+        description:
+          "Amazing botox transformation! Results speak for themselves 💫",
+        hashtags: ["#botox", "#aestheticmedicine", "#transformation"],
+        publishedAt: "2025-05-30T10:00:00Z",
         engagementRate: 7.5,
-        viralScore: 9.2
+        viralScore: 9.2,
       },
       {
-        author: '@kayaclinicarabia',
-        url: 'https://instagram.com/p/GHI789',
+        author: "@kayaclinicarabia",
+        url: "https://instagram.com/p/GHI789",
         views: 180000,
         likes: 12800,
         comments: 310,
-        description: 'Hydrafacial treatment results ✨ Glowing skin guaranteed',
-        hashtags: ['#hydrafacial', '#skincare', '#glowingskin'],
-        publishedAt: '2025-05-29T16:15:00Z',
+        description: "Hydrafacial treatment results ✨ Glowing skin guaranteed",
+        hashtags: ["#hydrafacial", "#skincare", "#glowingskin"],
+        publishedAt: "2025-05-29T16:15:00Z",
         engagementRate: 7.3,
-        viralScore: 8.7
-      }
+        viralScore: 8.7,
+      },
     ],
-    
+
     // Рекомендации
     recommendations: [
       {
-        type: 'hashtag',
-        title: 'Увеличить использование #botox',
-        description: 'Хэштег показывает отличные результаты с engagement rate 6.1%',
-        priority: 'high',
-        impact: 'Потенциальное увеличение охвата на 25%'
+        type: "hashtag",
+        title: "Увеличить использование #botox",
+        description:
+          "Хэштег показывает отличные результаты с engagement rate 6.1%",
+        priority: "high",
+        impact: "Потенциальное увеличение охвата на 25%",
       },
       {
-        type: 'content',
-        title: 'Создать больше transformation контента',
-        description: 'Посты с результатами до/после показывают лучший engagement',
-        priority: 'high',
-        impact: 'Увеличение вирусности на 40%'
+        type: "content",
+        title: "Создать больше transformation контента",
+        description:
+          "Посты с результатами до/после показывают лучший engagement",
+        priority: "high",
+        impact: "Увеличение вирусности на 40%",
       },
       {
-        type: 'timing',
-        title: 'Оптимальное время публикации',
-        description: 'Лучшие результаты в 16:00-18:00 и 20:00-22:00',
-        priority: 'medium',
-        impact: 'Увеличение охвата на 15%'
-      }
-    ]
+        type: "timing",
+        title: "Оптимальное время публикации",
+        description: "Лучшие результаты в 16:00-18:00 и 20:00-22:00",
+        priority: "medium",
+        impact: "Увеличение охвата на 15%",
+      },
+    ],
   };
 };
 
 // Мобильная версия дашборда
-app.get('/mobile', (req, res) => {
+app.get("/mobile", (req, res) => {
   const data = getDashboardData();
 
   res.send(`
@@ -294,7 +303,7 @@ app.get('/mobile', (req, res) => {
     <div class="header">
         <h1>🥥 Coco Age</h1>
         <p>Instagram Strategy</p>
-        <small>Обновлено: ${new Date(data.lastUpdate).toLocaleDateString('ru-RU')}</small>
+        <small>Обновлено: ${new Date(data.lastUpdate).toLocaleDateString("ru-RU")}</small>
     </div>
 
     <div class="stats-grid">
@@ -318,7 +327,10 @@ app.get('/mobile', (req, res) => {
 
     <div class="section">
         <h2>🏢 Топ конкуренты</h2>
-        ${data.competitors.slice(0, 3).map(comp => `
+        ${data.competitors
+          .slice(0, 3)
+          .map(
+            (comp) => `
             <div class="competitor-card">
                 <h3>@${comp.username}</h3>
                 <div style="display: flex; justify-content: space-between; margin-top: 10px;">
@@ -327,12 +339,17 @@ app.get('/mobile', (req, res) => {
                     <span>${comp.stats.engagementRate}% eng</span>
                 </div>
             </div>
-        `).join('')}
+        `
+          )
+          .join("")}
     </div>
 
     <div class="section">
         <h2>🏷️ Топ хэштеги</h2>
-        ${data.hashtags.slice(0, 4).map(tag => `
+        ${data.hashtags
+          .slice(0, 4)
+          .map(
+            (tag) => `
             <div class="hashtag-card">
                 <h3>#${tag.name}</h3>
                 <div style="display: flex; justify-content: space-between; margin-top: 10px;">
@@ -340,12 +357,17 @@ app.get('/mobile', (req, res) => {
                     <span>${tag.stats.trendingScore}/10 score</span>
                 </div>
             </div>
-        `).join('')}
+        `
+          )
+          .join("")}
     </div>
 
     <div class="section">
         <h2>🔥 Вирусный контент</h2>
-        ${data.viralContent.slice(0, 2).map(content => `
+        ${data.viralContent
+          .slice(0, 2)
+          .map(
+            (content) => `
             <div style="border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 15px; background: #f0fff4;">
                 <strong>${content.author}</strong><br>
                 <small>${content.description.substring(0, 80)}...</small><br>
@@ -355,7 +377,9 @@ app.get('/mobile', (req, res) => {
                     </span>
                 </div>
             </div>
-        `).join('')}
+        `
+          )
+          .join("")}
     </div>
 
     <script>
@@ -367,9 +391,9 @@ app.get('/mobile', (req, res) => {
 });
 
 // Главная страница дашборда
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   const data = getDashboardData();
-  
+
   res.send(`
 <!DOCTYPE html>
 <html lang="ru">
@@ -542,8 +566,8 @@ app.get('/', (req, res) => {
             <h1>🥥 Coco Age Instagram Strategy</h1>
             <p>Аналитический дашборд эффективности Instagram стратегии</p>
             <div class="update-info">
-                <strong>Последнее обновление:</strong> ${new Date(data.lastUpdate).toLocaleString('ru-RU')}<br>
-                <strong>Следующее обновление:</strong> ${new Date(data.nextUpdate).toLocaleString('ru-RU')}
+                <strong>Последнее обновление:</strong> ${new Date(data.lastUpdate).toLocaleString("ru-RU")}<br>
+                <strong>Следующее обновление:</strong> ${new Date(data.nextUpdate).toLocaleString("ru-RU")}
             </div>
         </div>
 
@@ -579,7 +603,9 @@ app.get('/', (req, res) => {
         <div class="section">
             <h2>🏢 Анализ конкурентов</h2>
             <div class="competitor-grid">
-                ${data.competitors.map(comp => `
+                ${data.competitors
+                  .map(
+                    (comp) => `
                     <div class="competitor-card">
                         <div class="competitor-header">
                             <div class="competitor-avatar">${comp.username.charAt(0).toUpperCase()}</div>
@@ -604,15 +630,22 @@ app.get('/', (req, res) => {
                         </div>
                         <div style="background: white; padding: 10px; border-radius: 8px;">
                             <strong>Топ контент:</strong><br>
-                            ${comp.topContent.slice(0, 1).map(content => `
+                            ${comp.topContent
+                              .slice(0, 1)
+                              .map(
+                                (content) => `
                                 <a href="${content.url}" target="_blank" style="color: #667eea; text-decoration: none;">
                                     📈 ${(content.views / 1000).toFixed(0)}K просмотров
                                 </a><br>
                                 <small>${content.description.substring(0, 60)}...</small>
-                            `).join('')}
+                            `
+                              )
+                              .join("")}
                         </div>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join("")}
             </div>
         </div>
 
@@ -620,7 +653,9 @@ app.get('/', (req, res) => {
         <div class="section">
             <h2>🏷️ Эффективность хэштегов</h2>
             <div class="hashtag-grid">
-                ${data.hashtags.map(tag => `
+                ${data.hashtags
+                  .map(
+                    (tag) => `
                     <div class="hashtag-card performance-${tag.performance}">
                         <h3>#${tag.name}</h3>
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0;">
@@ -637,7 +672,9 @@ app.get('/', (req, res) => {
                             💡 ${tag.recommendation}
                         </div>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join("")}
             </div>
         </div>
 
@@ -645,7 +682,9 @@ app.get('/', (req, res) => {
         <div class="section">
             <h2>🔥 Топ вирусный контент</h2>
             <div class="viral-content">
-                ${data.viralContent.map(content => `
+                ${data.viralContent
+                  .map(
+                    (content) => `
                     <div class="viral-item">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <strong>${content.author}</strong>
@@ -661,13 +700,15 @@ app.get('/', (req, res) => {
                             <div><strong>${content.engagementRate}%</strong><br><small>Engagement</small></div>
                         </div>
                         <div style="margin-bottom: 10px;">
-                            ${content.hashtags.map(tag => `<span style="background: #e9ecef; padding: 3px 8px; border-radius: 10px; font-size: 0.8em; margin-right: 5px;">${tag}</span>`).join('')}
+                            ${content.hashtags.map((tag) => `<span style="background: #e9ecef; padding: 3px 8px; border-radius: 10px; font-size: 0.8em; margin-right: 5px;">${tag}</span>`).join("")}
                         </div>
                         <a href="${content.url}" target="_blank" style="color: #667eea; text-decoration: none;">
                             🔗 Открыть пост
                         </a>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join("")}
             </div>
         </div>
 
@@ -675,12 +716,14 @@ app.get('/', (req, res) => {
         <div class="section">
             <h2>💡 Рекомендации по стратегии</h2>
             <div class="recommendations">
-                ${data.recommendations.map(rec => `
+                ${data.recommendations
+                  .map(
+                    (rec) => `
                     <div class="recommendation priority-${rec.priority}">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <h3>${rec.title}</h3>
-                            <span style="background: ${rec.priority === 'high' ? '#dc3545' : rec.priority === 'medium' ? '#ffc107' : '#28a745'}; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8em;">
-                                ${rec.priority === 'high' ? 'Высокий' : rec.priority === 'medium' ? 'Средний' : 'Низкий'} приоритет
+                            <span style="background: ${rec.priority === "high" ? "#dc3545" : rec.priority === "medium" ? "#ffc107" : "#28a745"}; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8em;">
+                                ${rec.priority === "high" ? "Высокий" : rec.priority === "medium" ? "Средний" : "Низкий"} приоритет
                             </span>
                         </div>
                         <p style="margin-bottom: 10px;">${rec.description}</p>
@@ -688,7 +731,9 @@ app.get('/', (req, res) => {
                             <strong>Ожидаемый эффект:</strong> ${rec.impact}
                         </div>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join("")}
             </div>
         </div>
     </div>
@@ -722,15 +767,15 @@ app.get('/', (req, res) => {
 });
 
 // API endpoint для получения данных дашборда
-app.get('/api/dashboard-data', (req, res) => {
+app.get("/api/dashboard-data", (req, res) => {
   res.json(getDashboardData());
 });
 
 // Export для Vercel
-module.exports = app;
+export default app;
 
 // Локальный запуск
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const PORT = process.env.PORT || 3003;
   app.listen(PORT, () => {
     console.log(`🎯 Client Dashboard running on port ${PORT}`);

@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  meta-muse-scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - APIFY_TOKEN=${APIFY_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NODE_ENV=production
+    volumes:
+      - ./exports:/app/exports
+      - ./temp:/app/temp
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    command: ["bun", "run", "src/scripts/meta-muse-automated-scraper.ts"]
+
+  meta-muse-scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - APIFY_TOKEN=${APIFY_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./exports:/app/exports
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    command: ["node", "-e", "
+      const schedule = require('node-cron');
+      schedule.schedule('0 9 * * *', () => {
+        const { exec } = require('child_process');
+        exec('docker-compose up meta-muse-scraper', (error, stdout, stderr) => {
+          if (error) console.error('Error:', error);
+          console.log(stdout);
+        });
+      });
+      console.log('🕉️ Meta Muse Scheduler started - runs daily at 9:00 AM');
+      process.stdin.resume();
+    "]
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=metamuse
+      - POSTGRES_USER=${DB_USER:-metamuse}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:

@@ -1,0 +1,45 @@
+name: 🐭 Meta Muse Daily Scraper
+
+on:
+  schedule:
+    # Каждый день в 9:00 UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Ручной запуск
+    inputs:
+      force_run:
+        description: 'Force run scraper'
+        required: false
+        default: 'false'
+
+jobs:
+  scrape-meta-muse:
+    runs-on: ubuntu-latest
+    name: 🕷️ Meta Muse Scraping
+    timeout-minutes: 240 # 4 часа максимум
+    
+    steps:
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: 📦 Install dependencies
+        run: bun install
+
+      - name: 🕷️ Run Meta Muse Scraper
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: bun run src/scripts/meta-muse-automated-scraper.ts
+
+      - name: 📊 Upload scraping reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: meta-muse-reports-${{ github.run_number }}
+          path: exports/meta-muse-report-*.json
+          retention-days: 30

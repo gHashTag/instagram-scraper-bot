@@ -1590,4 +1590,36 @@ export class SqliteAdapter implements StorageAdapter {
     );
     return [];
   }
+
+  /**
+   * Удаление проекта
+   * @param projectId ID проекта
+   * @returns true, если проект успешно удален, иначе false
+   */
+  async deleteProject(projectId: number): Promise<boolean> {
+    const db = this.ensureConnection();
+    
+    try {
+      // Сначала проверяем, существует ли проект
+      const checkStatement = db.prepare("SELECT id FROM Projects WHERE id = ?");
+      const project = checkStatement.get(projectId);
+      
+      if (!project) {
+        console.log(`Проект с ID ${projectId} не найден для удаления`);
+        return false; // Проект не найден
+      }
+      
+      // Удаляем проект (каскадные удаления настроены в схеме БД)
+      const deleteStatement = db.prepare("DELETE FROM Projects WHERE id = ?");
+      const result = deleteStatement.run(projectId);
+      
+      console.log(`Проект с ID ${projectId} успешно удален`);
+      return result.changes > 0;
+    } catch (error) {
+      console.error("[ERROR] Ошибка при удалении проекта из SQLite:", error);
+      throw new Error(
+        `Ошибка при удалении проекта: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
 }

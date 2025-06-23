@@ -2,7 +2,6 @@ import { Scenes, Markup } from "telegraf";
 import type { ScraperBotContext } from "../types";
 import { ScraperSceneStep } from "../types";
 import { logger } from "../logger";
-import { ReelsFilter } from "../schemas";
 import { formatDate, formatViews } from "./components/reels-keyboard";
 
 /**
@@ -10,9 +9,14 @@ import { formatDate, formatViews } from "./components/reels-keyboard";
  * @param ctx Контекст Telegraf
  * @param reason Причина очистки состояния (для логирования)
  */
-function clearSessionState(ctx: ScraperBotContext, reason: string = "general"): void {
+function clearSessionState(
+  ctx: ScraperBotContext,
+  reason: string = "general"
+): void {
   if (ctx.scene.session) {
-    logger.info(`[AnalyticsWizard] Clearing session state before leaving (reason: ${reason})`);
+    logger.info(
+      `[AnalyticsWizard] Clearing session state before leaving (reason: ${reason})`
+    );
     // Очистка всех необходимых полей состояния
     ctx.scene.session.textReport = undefined;
     ctx.scene.session.csvReport = undefined;
@@ -37,10 +41,15 @@ async function safeSceneTransition(
   reason: string = "general"
 ): Promise<void> {
   try {
-    logger.info(`[AnalyticsWizard] Transitioning to ${targetScene} scene (reason: ${reason})`);
+    logger.info(
+      `[AnalyticsWizard] Transitioning to ${targetScene} scene (reason: ${reason})`
+    );
     await ctx.scene.enter(targetScene);
   } catch (error) {
-    logger.error(`[AnalyticsWizard] Error entering ${targetScene} scene:`, error);
+    logger.error(
+      `[AnalyticsWizard] Error entering ${targetScene} scene:`,
+      error
+    );
     await ctx.scene.leave();
   }
 }
@@ -54,7 +63,10 @@ export const analyticsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
   // Шаг 1: Отображение меню аналитики
   async (ctx) => {
     logger.info(`[AnalyticsWizard] Шаг 1: Отображение меню аналитики`);
-    logger.debug(`[AnalyticsWizard] Содержимое ctx.wizard.state:`, ctx.wizard.state);
+    logger.debug(
+      `[AnalyticsWizard] Содержимое ctx.wizard.state:`,
+      ctx.wizard.state
+    );
 
     if (!ctx.from) {
       logger.error("[AnalyticsWizard] ctx.from is undefined");
@@ -95,10 +107,10 @@ export const analyticsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
       const project = await ctx.storage.getProjectById(projectId);
 
       if (!project) {
-        logger.error(`[AnalyticsWizard] Project with ID ${projectId} not found`);
-        await ctx.reply(
-          "Проект не найден. Возможно, он был удален."
+        logger.error(
+          `[AnalyticsWizard] Project with ID ${projectId} not found`
         );
+        await ctx.reply("Проект не найден. Возможно, он был удален.");
         clearSessionState(ctx, "project_not_found");
         await safeSceneTransition(ctx, "project_wizard", "project_not_found");
         return;
@@ -115,14 +127,29 @@ export const analyticsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
       await ctx.reply(message, {
         parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
-          [Markup.button.callback("📈 Популярность контента", `analytics_popularity`)],
-          [Markup.button.callback("🔍 Эффективность хештегов", `analytics_hashtags`)],
+          [
+            Markup.button.callback(
+              "📈 Популярность контента",
+              `analytics_popularity`
+            ),
+          ],
+          [
+            Markup.button.callback(
+              "🔍 Эффективность хештегов",
+              `analytics_hashtags`
+            ),
+          ],
           [Markup.button.callback("📊 Тренды", `analytics_trends`)],
-          [Markup.button.callback("💡 Рекомендации", `analytics_recommendations`)],
+          [
+            Markup.button.callback(
+              "💡 Рекомендации",
+              `analytics_recommendations`
+            ),
+          ],
           [Markup.button.callback("📄 Экспорт отчета", `analytics_export`)],
           [Markup.button.callback("🔙 К списку Reels", `back_to_reels`)],
-          [Markup.button.callback("🔙 К проекту", `back_to_project`)]
-        ])
+          [Markup.button.callback("🔙 К проекту", `back_to_project`)],
+        ]),
       });
     } catch (error) {
       logger.error("[AnalyticsWizard] Error in step 1:", error);
@@ -141,8 +168,13 @@ export const analyticsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
 
   // Шаг 2: Отображение анализа популярности контента
   async (ctx) => {
-    logger.info(`[AnalyticsWizard] Шаг 2: Отображение анализа популярности контента`);
-    logger.debug(`[AnalyticsWizard] Содержимое ctx.wizard.state:`, ctx.wizard.state);
+    logger.info(
+      `[AnalyticsWizard] Шаг 2: Отображение анализа популярности контента`
+    );
+    logger.debug(
+      `[AnalyticsWizard] Содержимое ctx.wizard.state:`,
+      ctx.wizard.state
+    );
 
     const { projectId, projectName } = ctx.wizard.state;
 
@@ -165,10 +197,15 @@ export const analyticsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
           {
             parse_mode: "Markdown",
             ...Markup.inlineKeyboard([
-              [Markup.button.callback("▶️ Запустить скрапинг", `scrape_project`)],
+              [
+                Markup.button.callback(
+                  "▶️ Запустить скрапинг",
+                  `scrape_project`
+                ),
+              ],
               [Markup.button.callback("🔙 К меню аналитики", `back_to_menu`)],
-              [Markup.button.callback("🔙 К проекту", `back_to_project`)]
-            ])
+              [Markup.button.callback("🔙 К проекту", `back_to_project`)],
+            ]),
           }
         );
         return;
@@ -176,17 +213,24 @@ export const analyticsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
 
       // Анализируем данные
       const totalReels = reels.length;
-      const totalViews = reels.reduce((sum, reel) => sum + (reel.views || 0), 0);
+      const totalViews = reels.reduce(
+        (sum, reel) => sum + (reel.views || 0),
+        0
+      );
       const avgViews = totalViews / totalReels;
-      const maxViews = Math.max(...reels.map(reel => reel.views || 0));
-      const minViews = Math.min(...reels.filter(reel => reel.views !== undefined).map(reel => reel.views || 0));
+      const maxViews = Math.max(...reels.map((reel) => reel.views || 0));
+      const minViews = Math.min(
+        ...reels
+          .filter((reel) => reel.views !== undefined)
+          .map((reel) => reel.views || 0)
+      );
 
       // Находим Reel с максимальным количеством просмотров
-      const mostViewedReel = reels.find(reel => reel.views === maxViews);
+      const mostViewedReel = reels.find((reel) => reel.views === maxViews);
 
       // Анализируем по дате публикации
       const reelsByDate: { [key: string]: number } = {};
-      reels.forEach(reel => {
+      reels.forEach((reel) => {
         const date = new Date(reel.published_at).toLocaleDateString("ru-RU");
         reelsByDate[date] = (reelsByDate[date] || 0) + 1;
       });
@@ -203,7 +247,7 @@ export const analyticsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
 
       // Анализируем по времени суток
       const reelsByHour: { [key: number]: number } = {};
-      reels.forEach(reel => {
+      reels.forEach((reel) => {
         const hour = new Date(reel.published_at).getHours();
         reelsByHour[hour] = (reelsByHour[hour] || 0) + 1;
       });
@@ -219,10 +263,16 @@ export const analyticsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
       }
 
       // Анализируем по длительности
-      const reelsWithDuration = reels.filter(reel => reel.duration !== null && reel.duration !== undefined);
-      const avgDuration = reelsWithDuration.length > 0
-        ? reelsWithDuration.reduce((sum, reel) => sum + (reel.duration || 0), 0) / reelsWithDuration.length
-        : 0;
+      const reelsWithDuration = reels.filter(
+        (reel) => reel.duration !== null && reel.duration !== undefined
+      );
+      const avgDuration =
+        reelsWithDuration.length > 0
+          ? reelsWithDuration.reduce(
+              (sum, reel) => sum + (reel.duration || 0),
+              0
+            ) / reelsWithDuration.length
+          : 0;
 
       // Формируем сообщение с аналитикой
       let message = `📊 *Анализ популярности контента для проекта "${projectName}"*\n\n`;
@@ -261,8 +311,8 @@ export const analyticsWizardScene = new Scenes.WizardScene<ScraperBotContext>(
         ...Markup.inlineKeyboard([
           [Markup.button.callback("🔙 К меню аналитики", `back_to_menu`)],
           [Markup.button.callback("🔙 К списку Reels", `back_to_reels`)],
-          [Markup.button.callback("🔙 К проекту", `back_to_project`)]
-        ])
+          [Markup.button.callback("🔙 К проекту", `back_to_project`)],
+        ]),
       });
     } catch (error) {
       logger.error("[AnalyticsWizard] Error in step 2:", error);
@@ -310,7 +360,9 @@ analyticsWizardScene.action("back_to_menu", async (ctx) => {
 });
 
 analyticsWizardScene.action("analytics_popularity", async (ctx) => {
-  logger.info(`[AnalyticsWizard] Обработчик кнопки 'analytics_popularity' вызван`);
+  logger.info(
+    `[AnalyticsWizard] Обработчик кнопки 'analytics_popularity' вызван`
+  );
   await ctx.answerCbQuery();
 
   // Переходим к шагу анализа популярности контента
@@ -331,15 +383,15 @@ analyticsWizardScene.action("scrape_project", async (ctx) => {
 
 // Добавляем обработчик для команды /analytics
 export function setupAnalyticsWizard(bot: any) {
-  bot.command('analytics', async (ctx: any) => {
+  bot.command("analytics", async (ctx: any) => {
     logger.info("[AnalyticsWizard] Command /analytics triggered");
-    await ctx.scene.enter('analytics_wizard');
+    await ctx.scene.enter("analytics_wizard");
   });
 
   // Добавляем обработчик для кнопки "Аналитика" в главном меню
-  bot.hears('📈 Аналитика', async (ctx: any) => {
+  bot.hears("📈 Аналитика", async (ctx: any) => {
     logger.info("[AnalyticsWizard] Button '📈 Аналитика' clicked");
-    await ctx.scene.enter('analytics_wizard');
+    await ctx.scene.enter("analytics_wizard");
   });
 }
 

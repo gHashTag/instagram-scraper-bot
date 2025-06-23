@@ -1,0 +1,10 @@
+[Unit]
+Description=Meta Muse Instagram Scraper
+Requires=meta-muse-scraper.service
+
+[Timer]
+OnCalendar=*-*-* 09:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
