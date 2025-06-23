@@ -5,8 +5,13 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1749648682547,
-      "tag": "0000_left_the_hood",
+      // <<<<<<< HEAD (REMOTE VERSION)
+      // "when": 1749648682547,
+      // "tag": "0000_left_the_hood",
+      // =======
+      "when": 1750693091931, // LOCAL VERSION (KEEPING THIS)
+      "tag": "0000_sync_existing_schema", // LOCAL VERSION (KEEPING THIS)
+      // >>>>>>> feb6063 (🔧 Fix migration conflicts in GitHub Actions)
       "breakpoints": true
     }
   ]

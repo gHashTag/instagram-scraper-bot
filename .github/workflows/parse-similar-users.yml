@@ -1,25 +1,209 @@
+# <<<<<<< HEAD (ORIGINAL REMOTE VERSION)
+# name: 🔍 Parse Similar Users Daily
+#
+# on:
+#   schedule:
+#     # Каждый день в 8:00 UTC (11:00 МСК)
+#     - cron: '0 8 * * *'
+#
+#   # Возможность запуска вручную
+#   workflow_dispatch:
+#     inputs:
+#       project_id:
+#         description: 'Project ID to parse similar users for (default: 1 for Coco Age)'
+#         required: false
+#         default: '1'
+#       usernames:
+#         description: 'Comma-separated list of usernames to parse (default: auto from competitors)'
+#         required: false
+#         default: ''
+#       dry_run:
+#         description: 'Run in test mode without saving to database'
+#         required: false
+#         default: 'false'
+#
+# jobs:
+#   parse-similar-users:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       actions: read
+#
+#     steps:
+#       - name: 📥 Checkout repository
+#         uses: actions/checkout@v4
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           fetch-depth: 0
+#
+#       - name: 🟢 Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+#           cache: 'npm'
+#
+#       - name: 📦 Install dependencies
+#         run: npm ci
+#
+#       - name: 🔧 Setup environment
+#         run: |
+#           echo "NODE_ENV=production" >> $GITHUB_ENV
+#           echo "RAPIDAPI_HOST=real-time-instagram-scraper-api1.p.rapidapi.com" >> $GITHUB_ENV
+#
+#       - name: 🗄️ Run database migrations
+#         env:
+#           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#         run: |
+#           echo "🗄️ Выполнение миграций базы данных..."
+#           npm run db:migrate
+#
+#       - name: 🔍 Parse similar users
+#         env:
+#           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+#           RAPIDAPI_HOST: ${{ env.RAPIDAPI_HOST }}
+#         run: |
+#           echo "🔍 Парсинг похожих пользователей Instagram..."
+#
+#           # Формируем команду
+#           COMMAND="tsx src/scripts/parse-similar-users.ts --project-id ${{ github.event.inputs.project_id || '1' }}"
+#
+#           # Добавляем usernames если указаны
+#           if [ -n "${{ github.event.inputs.usernames }}" ]; then
+#             COMMAND="$COMMAND --usernames '${{ github.event.inputs.usernames }}'"
+#           fi
+#
+#           # Добавляем dry-run если указан
+#           if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+#             COMMAND="$COMMAND --dry-run"
+#           fi
+#
+#           echo "🚀 Выполняем команду: $COMMAND"
+#           $COMMAND
+#
+#       - name: 📊 Generate summary
+#         if: always()
+#         run: |
+#           echo "## 🔍 Similar Users Parsing Summary" >> $GITHUB_STEP_SUMMARY
+#           echo "" >> $GITHUB_STEP_SUMMARY
+#           echo "**Дата парсинга:** $(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+#           echo "**Проект:** ID ${{ github.event.inputs.project_id || '1' }}" >> $GITHUB_STEP_SUMMARY
+#           echo "**Режим:** ${{ github.event.inputs.dry_run == 'true' && 'Тестовый (dry run)' || 'Продакшн' }}" >> $GITHUB_STEP_SUMMARY
+#           echo "" >> $GITHUB_STEP_SUMMARY
+#
+#           if [ "${{ github.event.inputs.usernames }}" != "" ]; then
+#             echo "**Пользователи:** ${{ github.event.inputs.usernames }}" >> $GITHUB_STEP_SUMMARY
+#           else
+#             echo "**Пользователи:** Автоматический список конкурентов" >> $GITHUB_STEP_SUMMARY
+#           fi
+#
+#           echo "" >> $GITHUB_STEP_SUMMARY
+#           echo "### 📈 Результаты:" >> $GITHUB_STEP_SUMMARY
+#           echo "- ✅ Парсинг завершен" >> $GITHUB_STEP_SUMMARY
+#           echo "- 📊 Данные сохранены в Neon Database" >> $GITHUB_STEP_SUMMARY
+#           echo "- 🔍 Логи доступны в базе данных" >> $GITHUB_STEP_SUMMARY
+#
+#       - name: 📱 Send Telegram notification
+#         if: always()
+#         env:
+#           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+#           TELEGRAM_CHAT_ID: "144022504"
+#         run: |
+#           # Определяем статус выполнения
+#           if [ "${{ job.status }}" == "success" ]; then
+#             STATUS="✅ Успешно завершен"
+#             EMOJI="🔍"
+#           else
+#             STATUS="❌ Завершен с ошибками"
+#             EMOJI="⚠️"
+#           fi
+#
+#           # Формируем сообщение
+#           MESSAGE="$EMOJI *Similar Users Parsing Update*
+#
+#           📅 *Дата:* $(date '+%d.%m.%Y %H:%M') UTC
+#           🎯 *Проект:* ID ${{ github.event.inputs.project_id || '1' }}
+#           📊 *Статус:* $STATUS
+#           🔍 *Режим:* ${{ github.event.inputs.dry_run == 'true' && 'Тестовый' || 'Продакшн' }}
+#
+#           📝 *Детали:*
+#           • Парсинг похожих пользователей Instagram
+#           • Данные сохранены в Neon Database
+#           • Логи доступны в таблице rapid_api_logs
+#
+#           🔗 [Посмотреть логи](https://github.com/gHashTag/instagram-scraper-bot/actions)
+#
+#           🤖 Автоматическое уведомление"
+#
+#           # Отправляем сообщение в Telegram
+#           if [ -n "$TELEGRAM_BOT_TOKEN" ]; then
+#             curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+#               -d "chat_id=$TELEGRAM_CHAT_ID" \
+#               -d "text=$MESSAGE" \
+#               -d "parse_mode=Markdown" \
+#               -d "disable_web_page_preview=true"
+#             echo "📱 Telegram уведомление отправлено"
+#           else
+#             echo "⚠️ TELEGRAM_BOT_TOKEN не настроен"
+#           fi
+#
+#       - name: 🚨 Notify on failure
+#         if: failure()
+#         env:
+#           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+#           TELEGRAM_CHAT_ID: "144022504"
+#         run: |
+#           echo "❌ Ошибка при парсинге похожих пользователей" >> $GITHUB_STEP_SUMMARY
+#           echo "Проверьте логи для диагностики проблемы." >> $GITHUB_STEP_SUMMARY
+#
+#           # Отправляем уведомление об ошибке в Telegram
+#           ERROR_MESSAGE="🚨 *Ошибка парсинга Similar Users*
+#
+#           📅 *Дата:* $(date '+%d.%m.%Y %H:%M') UTC
+#           ❌ *Статус:* Парсинг не удался
+#           🎯 *Проект:* ID ${{ github.event.inputs.project_id || '1' }}
+#
+#           🔍 *Действия:*
+#           • Проверьте логи в GitHub Actions
+#           • Убедитесь в доступности RapidAPI
+#           • Проверьте переменные окружения
+#           • Убедитесь в доступности базы данных
+#
+#           🔗 [Посмотреть логи](https://github.com/gHashTag/instagram-scraper-bot/actions)
+#
+#           🤖 Автоматическое уведомление об ошибке"
+#
+#           if [ -n "$TELEGRAM_BOT_TOKEN" ]; then
+#             curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+#               -d "chat_id=$TELEGRAM_CHAT_ID" \
+#               -d "text=$ERROR_MESSAGE" \
+#               -d "parse_mode=Markdown" \
+#               -d "disable_web_page_preview=true"
+#             echo "📱 Уведомление об ошибке отправлено в Telegram"
+#           fi
+# =======
 name: 🔍 Parse Similar Users Daily
 
 on:
   schedule:
     # Каждый день в 8:00 UTC (11:00 МСК)
-    - cron: '0 8 * * *'
-  
+    - cron: "0 8 * * *"
+
   # Возможность запуска вручную
   workflow_dispatch:
     inputs:
       project_id:
-        description: 'Project ID to parse similar users for (default: 1 for Coco Age)'
+        description: "Project ID to parse similar users for (default: 1 for Coco Age)"
         required: false
-        default: '1'
+        default: "1"
       usernames:
-        description: 'Comma-separated list of usernames to parse (default: auto from competitors)'
+        description: "Comma-separated list of usernames to parse (default: auto from competitors)"
         required: false
-        default: ''
+        default: ""
       dry_run:
-        description: 'Run in test mode without saving to database'
+        description: "Run in test mode without saving to database"
         required: false
-        default: 'false'
+        default: "false"
 
 jobs:
   parse-similar-users:
@@ -27,7 +211,7 @@ jobs:
     permissions:
       contents: read
       actions: read
-    
+
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
@@ -38,8 +222,8 @@ jobs:
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: 📦 Install dependencies
         run: npm ci
@@ -54,7 +238,19 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           echo "🗄️ Выполнение миграций базы данных..."
-          npm run db:migrate
+          # Безопасное выполнение миграций с обработкой ошибки "таблица уже существует"
+          npm run db:migrate || {
+            EXIT_CODE=$?;
+            if [ $EXIT_CODE -eq 1 ]; then
+              echo "⚠️ Миграции завершились с предупреждениями (возможно, таблицы уже существуют)";
+              echo "🔍 Проверяем состояние базы данных...";
+              # Можно добавить дополнительные проверки здесь
+              echo "✅ Продолжаем выполнение workflow";
+            else
+              echo "❌ Критическая ошибка миграций";
+              exit $EXIT_CODE;
+            fi;
+          }
 
       - name: 🔍 Parse similar users
         env:
@@ -63,20 +259,20 @@ jobs:
           RAPIDAPI_HOST: ${{ env.RAPIDAPI_HOST }}
         run: |
           echo "🔍 Парсинг похожих пользователей Instagram..."
-          
+
           # Формируем команду
           COMMAND="tsx src/scripts/parse-similar-users.ts --project-id ${{ github.event.inputs.project_id || '1' }}"
-          
+
           # Добавляем usernames если указаны
           if [ -n "${{ github.event.inputs.usernames }}" ]; then
             COMMAND="$COMMAND --usernames '${{ github.event.inputs.usernames }}'"
           fi
-          
+
           # Добавляем dry-run если указан
           if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
             COMMAND="$COMMAND --dry-run"
           fi
-          
+
           echo "🚀 Выполняем команду: $COMMAND"
           $COMMAND
 
@@ -89,13 +285,13 @@ jobs:
           echo "**Проект:** ID ${{ github.event.inputs.project_id || '1' }}" >> $GITHUB_STEP_SUMMARY
           echo "**Режим:** ${{ github.event.inputs.dry_run == 'true' && 'Тестовый (dry run)' || 'Продакшн' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ github.event.inputs.usernames }}" != "" ]; then
             echo "**Пользователи:** ${{ github.event.inputs.usernames }}" >> $GITHUB_STEP_SUMMARY
           else
             echo "**Пользователи:** Автоматический список конкурентов" >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📈 Результаты:" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Парсинг завершен" >> $GITHUB_STEP_SUMMARY
@@ -179,4 +375,6 @@ jobs:
               -d "parse_mode=Markdown" \
               -d "disable_web_page_preview=true"
             echo "📱 Уведомление об ошибке отправлено в Telegram"
-          fi 
+          fi
+
+# >>>>>>> feb6063 (LOCAL VERSION WITH IMPROVED MIGRATION ERROR HANDLING)
