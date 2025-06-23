@@ -164,3 +164,61 @@ export const parsingRunsTable = pgTable("parsing_runs", {
     .notNull()
     .$onUpdate(() => new Date()),
 });
+
+export const similarUsersTable = pgTable("similar_users", {
+  id: serial("id").primaryKey(),
+  project_id: integer("project_id")
+    .notNull()
+    .references(() => projectsTable.id, { onDelete: "cascade" }),
+  source_username: varchar("source_username", { length: 255 }).notNull(), // Исходный пользователь для поиска похожих
+  username: varchar("username", { length: 255 }).notNull(),
+  user_id: varchar("user_id", { length: 255 }),
+  full_name: varchar("full_name", { length: 255 }),
+  biography: text("biography"),
+  profile_pic_url: text("profile_pic_url"),
+  profile_pic_url_hd: text("profile_pic_url_hd"),
+  is_private: boolean("is_private").default(false),
+  is_verified: boolean("is_verified").default(false),
+  is_business_account: boolean("is_business_account").default(false),
+  is_joined_recently: boolean("is_joined_recently").default(false),
+  is_professional_account: boolean("is_professional_account").default(false),
+  followers_count: integer("followers_count"),
+  following_count: integer("following_count"),
+  posts_count: integer("posts_count"),
+  external_url: text("external_url"),
+  business_category_name: varchar("business_category_name", { length: 255 }),
+  category_name: varchar("category_name", { length: 255 }),
+  similarity_score: integer("similarity_score"), // Оценка схожести (если предоставляется API)
+  mutual_followers_count: integer("mutual_followers_count"),
+  mutual_following_count: integer("mutual_following_count"),
+  raw_data: jsonb("raw_data"), // Полные данные от API
+  scraped_at: timestamp("scraped_at").defaultNow().notNull(),
+  created_at: timestamp("created_at").defaultNow().notNull(),
+  updated_at: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+}, (table) => {
+  return {
+    projectUsernameUnq: unique("similar_users_project_username_unq").on(
+      table.project_id,
+      table.username
+    ),
+  };
+});
+
+export const rapidApiLogsTable = pgTable("rapid_api_logs", {
+  id: serial("id").primaryKey(),
+  project_id: integer("project_id")
+    .references(() => projectsTable.id, { onDelete: "set null" }),
+  endpoint: varchar("endpoint", { length: 255 }).notNull(),
+  username_or_id: varchar("username_or_id", { length: 255 }).notNull(),
+  status: varchar("status", { length: 50 }).notNull(), // 'success', 'error', 'rate_limited'
+  response_code: integer("response_code"),
+  response_time_ms: integer("response_time_ms"),
+  users_found: integer("users_found").default(0),
+  users_saved: integer("users_saved").default(0),
+  error_message: text("error_message"),
+  raw_response: jsonb("raw_response"),
+  created_at: timestamp("created_at").defaultNow().notNull(),
+});

@@ -85,7 +85,9 @@
     "test:system": "tsx scripts/test-full-system.ts",
     "server": "tsx src/scripts/start-server.ts",
     "server:dev": "NODE_ENV=development tsx src/scripts/start-server.ts",
-    "server:prod": "NODE_ENV=production tsx src/scripts/start-server.ts"
+    "server:prod": "NODE_ENV=production tsx src/scripts/start-server.ts",
+    "parse:similar-users": "tsx src/scripts/parse-similar-users.ts",
+    "parse:similar-users:dry": "tsx src/scripts/parse-similar-users.ts --dry-run"
   },
   "keywords": [
     "instagram",
