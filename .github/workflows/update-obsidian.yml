@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: Update Obsidian Vault with Live Data
 
 on:
@@ -99,3 +100,223 @@ jobs:
 
       - name: 📊 Summary
         run: echo "✅ Парсинг и обновление данных завершены успешно!"
+=======
+# name: 🔄 Update Obsidian Vault Daily
+
+# on:
+#   schedule:
+#     # Каждый день в 6:00 UTC (9:00 МСК)
+#     - cron: '0 6 * * *'
+
+#   # Возможность запуска вручную
+#   workflow_dispatch:
+#     inputs:
+#       project_id:
+#         description: 'Project ID to sync (default: 1 for Coco Age)'
+#         required: false
+#         default: '1'
+
+# jobs:
+#   update-vault:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#       actions: read
+
+#     steps:
+#       - name: 📥 Checkout repository
+#         uses: actions/checkout@v4
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           fetch-depth: 0
+
+#       - name: 🟢 Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+#           cache: 'npm'
+
+#       - name: 📦 Install dependencies
+#         run: npm ci
+
+#       - name: 🔧 Setup environment
+#         run: |
+#           echo "OBSIDIAN_VAULT_PATH=${{ github.workspace }}/vaults/coco-age" >> $GITHUB_ENV
+#           echo "NODE_ENV=production" >> $GITHUB_ENV
+
+#       - name: 🗄️ Run database migrations
+#         env:
+#           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#         run: |
+#           echo "🗄️ Выполнение миграций базы данных..."
+#           npm run db:migrate
+
+#       - name: 🔄 Update Obsidian vault data
+#         env:
+#           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+#           OBSIDIAN_VAULT_PATH: ${{ github.workspace }}/vaults/coco-age
+#         run: |
+#           echo "🔄 Синхронизация Obsidian vault для проекта ${{ github.event.inputs.project_id || '1' }}..."
+#           npm run sync-obsidian ${{ github.event.inputs.project_id || '1' }}
+
+#       - name: 📊 Check for changes
+#         id: changes
+#         run: |
+#           if git diff --quiet HEAD -- vaults/coco-age/; then
+#             echo "has_changes=false" >> $GITHUB_OUTPUT
+#             echo "ℹ️ Нет изменений в vault"
+#           else
+#             echo "has_changes=true" >> $GITHUB_OUTPUT
+#             echo "✅ Обнаружены изменения в vault"
+#             git diff --stat HEAD -- vaults/coco-age/
+#           fi
+
+#       - name: 💾 Commit and push changes
+#         if: steps.changes.outputs.has_changes == 'true'
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           git config --local user.email "action@github.com"
+#           git config --local user.name "GitHub Action Bot"
+
+#           # Настраиваем аутентификацию для push
+#           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+
+#           # Добавляем изменения в staging area перед синхронизацией
+#           git add vaults/coco-age/
+
+#           # Синхронизируемся с remote перед коммитом
+#           git fetch origin main
+#           git rebase origin/main
+
+#           # Добавляем только файлы vault
+#           git add vaults/coco-age/
+
+#           # Создаем коммит с датой
+#           COMMIT_DATE=$(date '+%Y-%m-%d %H:%M:%S UTC')
+#           git commit -m "🔄 Auto-update Obsidian vault - $COMMIT_DATE
+
+#           📊 Обновлены данные:
+#           - Статистика проектов
+#           - Анализ конкурентов
+#           - Метрики хэштегов
+#           - Топ-контент с транскрипциями
+
+#           🤖 Автоматическое обновление через GitHub Actions"
+
+#           # Пушим изменения
+#           git push origin main
+
+#       - name: 📱 Send Telegram notification
+#         if: always()
+#         env:
+#           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+#           TELEGRAM_CHAT_ID: "144022504"
+#         run: |
+#           # Определяем статус обновления
+#           if [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
+#             STATUS="✅ Успешно обновлен"
+#             EMOJI="🔄"
+#             MESSAGE_TYPE="success"
+#           else
+#             STATUS="ℹ️ Нет изменений"
+#             EMOJI="📊"
+#             MESSAGE_TYPE="no_changes"
+#           fi
+
+#           # Получаем статистику файлов
+#           TOTAL_FILES=$(find vaults/coco-age -name "*.md" | wc -l)
+#           VAULT_SIZE=$(du -sh vaults/coco-age | cut -f1)
+
+#           # Формируем сообщение
+#           MESSAGE="$EMOJI *Coco Age Vault Update*
+
+#           📅 *Дата:* $(date '+%d.%m.%Y %H:%M') UTC
+#           🎯 *Проект:* Coco Age (ID: ${{ github.event.inputs.project_id || '1' }})
+#           📊 *Статус:* $STATUS
+
+#           📁 *Статистика vault:*
+#           • Файлов: $TOTAL_FILES
+#           • Размер: $VAULT_SIZE
+
+#           🔗 *Быстрые ссылки:*
+#           • [Центральная карта](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/🥥✨%20Coco%20Age%20-%20Центральная%20карта.md)
+#           • [Планирование](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/📊%20Планирование%20контента.md)
+#           • [Конкуренты](https://github.com/gHashTag/instagram-scraper/blob/main/vaults/coco-age/👥%20Конкуренты.md)
+
+#           🤖 Автообновление через GitHub Actions"
+
+#           # Отправляем сообщение в Telegram
+#           if [ -n "$TELEGRAM_BOT_TOKEN" ]; then
+#             curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+#               -d "chat_id=$TELEGRAM_CHAT_ID" \
+#               -d "text=$MESSAGE" \
+#               -d "parse_mode=Markdown" \
+#               -d "disable_web_page_preview=true"
+#             echo "📱 Telegram уведомление отправлено"
+#           else
+#             echo "⚠️ TELEGRAM_BOT_TOKEN не настроен"
+#           fi
+
+#       - name: 📈 Generate summary
+#         if: always()
+#         run: |
+#           echo "## 🥥✨ Obsidian Vault Update Summary" >> $GITHUB_STEP_SUMMARY
+#           echo "" >> $GITHUB_STEP_SUMMARY
+#           echo "**Дата обновления:** $(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+#           echo "**Проект:** Coco Age (ID: ${{ github.event.inputs.project_id || '1' }})" >> $GITHUB_STEP_SUMMARY
+#           echo "" >> $GITHUB_STEP_SUMMARY
+
+#           if [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
+#             echo "✅ **Статус:** Vault успешно обновлен" >> $GITHUB_STEP_SUMMARY
+#             echo "" >> $GITHUB_STEP_SUMMARY
+#             echo "### 📊 Обновленные файлы:" >> $GITHUB_STEP_SUMMARY
+#             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+#             git diff --name-only HEAD~1 HEAD -- vaults/coco-age/ >> $GITHUB_STEP_SUMMARY
+#             echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+#           else
+#             echo "ℹ️ **Статус:** Нет изменений для обновления" >> $GITHUB_STEP_SUMMARY
+#           fi
+
+#           echo "" >> $GITHUB_STEP_SUMMARY
+#           echo "### 🔗 Быстрые ссылки:" >> $GITHUB_STEP_SUMMARY
+#           echo "- [📊 Центральная карта](./vaults/coco-age/🥥✨%20Coco%20Age%20-%20Центральная%20карта.md)" >> $GITHUB_STEP_SUMMARY
+#           echo "- [📅 Планирование контента](./vaults/coco-age/📊%20Планирование%20контента.md)" >> $GITHUB_STEP_SUMMARY
+#           echo "- [👥 Конкуренты](./vaults/coco-age/👥%20Конкуренты.md)" >> $GITHUB_STEP_SUMMARY
+#           echo "- [🏷️ Хэштеги](./vaults/coco-age/🏷️%20Хэштеги.md)" >> $GITHUB_STEP_SUMMARY
+
+#       - name: 🚨 Notify on failure
+#         if: failure()
+#         env:
+#           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+#           TELEGRAM_CHAT_ID: "144022504"
+#         run: |
+#           echo "❌ Ошибка при обновлении Obsidian vault" >> $GITHUB_STEP_SUMMARY
+#           echo "Проверьте логи для диагностики проблемы." >> $GITHUB_STEP_SUMMARY
+
+#           # Отправляем уведомление об ошибке в Telegram
+#           ERROR_MESSAGE="🚨 *Ошибка обновления Coco Age Vault*
+
+#           📅 *Дата:* $(date '+%d.%m.%Y %H:%M') UTC
+#           ❌ *Статус:* Обновление не удалось
+#           🎯 *Проект:* Coco Age
+
+#           🔍 *Действия:*
+#           • Проверьте логи в GitHub Actions
+#           • Убедитесь в доступности базы данных
+#           • Проверьте переменные окружения
+
+#           🔗 [Посмотреть логи](https://github.com/gHashTag/instagram-scraper/actions)
+
+#           🤖 Автоматическое уведомление об ошибке"
+
+#           if [ -n "$TELEGRAM_BOT_TOKEN" ]; then
+#             curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+#               -d "chat_id=$TELEGRAM_CHAT_ID" \
+#               -d "text=$ERROR_MESSAGE" \
+#               -d "parse_mode=Markdown" \
+#               -d "disable_web_page_preview=true"
+#             echo "📱 Уведомление об ошибке отправлено в Telegram"
+#           fi
+>>>>>>> ca483c4 (git push)
